@@ -60,6 +60,6 @@ The extensions of NPOI, that use attributes to control enumerable object export 
         reports.ToExcel(@"C:\demo.xls");
         }
 
-5. The final excel export demo
+5. NPOI.Extension demo
 
 ![NPOI.Extension demo](images/demo.PNG)
