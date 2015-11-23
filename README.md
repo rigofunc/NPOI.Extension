@@ -1,5 +1,9 @@
-# NPOI.Extension
-This repo contains the extension of NPOI, that use attributes to control enumerable object export to excel behaviors.
+# Functionality
+The extensions of NPOI, that use attributes to control enumerable object export to excel behaviors.
+- Use attribute to control excel column name, and cell index; 
+- Use attribute to control excel cells SUM and cells MERGE behaviors; 
+- Use attribute to control excel filter behaviors 
+- Use attribute to control excel freeze behaviors
 
 # How to use
 1. Install NPOI.Extension by nuget
