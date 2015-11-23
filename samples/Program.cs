@@ -1,12 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NPOI.Extension;
 
 namespace samples {
     class Program {
         static void Main(string[] args) {
+            var len = 1000;
+            var reports = new Report[len];
+            for (int i = 0; i < len; i++) {
+                reports[i] = new Report {
+                    City = "ningbo",
+                    Building = "世茂首府",
+                    HandleTime = new DateTime(2015, 11, 23),
+                    Broker = "RigoFunc 18957139**7",
+                    Customer = "RigoFunc 18957139**7",
+                    Room = "2#1703",
+                    Brokerage = 125M,
+                    Profits = 25m
+                };
+
+                // other data here...
+            }
+
+            // save the excel file
+            reports.ToExcel(@"C:\demo.xls");
         }
     }
 }
