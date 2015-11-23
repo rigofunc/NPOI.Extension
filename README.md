@@ -4,40 +4,40 @@ This repo contains the extension of NPOI, that use attributes to control enumera
 # How to use
 1. Install NPOI.Extension by nuget
 
-	PM> Install-Package NPOI.Extension
+	   PM> Install-Package NPOI.Extension
 	
 2. Using NPOI.Extension in code
 
-	using NPOI.Extension;
+	   using NPOI.Extension;
 	
 3. Applying attribute the entity
-	
-	[Filter(FirstCol = 0, FirstRow = 0, LastCol = 2)]
-    [Freeze(ColSplit = 2, RowSplit = 1, LeftMostColumn = 2, TopRow = 1)]
-    public class Report {
-        [Column(Index = 0, Title = "城市", AllowMerge = true)]
-        public string City { get; set; }
-        [Column(Index = 1, Title = "楼盘", AllowMerge = true)]
-        public string Building { get; set; }
-        [Column(Index = 2, Title = "成交时间")]
-        public DateTime HandleTime { get; set; }
-        [Column(Index = 3, Title = "经纪人")]
-        public string Broker { get; set; }
-        [Column(Index = 4, Title = "客户")]
-        public string Customer { get; set; }
-        [Column(Index = 5, Title = "房源")]
-        public string Room { get; set; }
-        [Column(Index = 6, Title = "佣金(元)", AllowSum = true)]
-        public decimal Brokerage { get; set; }
-        [Column(Index = 7, Title = "收益(元)", AllowSum = true)]
-        public decimal Profits { get; set; }
-    }
+
+        [Filter(FirstCol = 0, FirstRow = 0, LastCol = 2)]
+        [Freeze(ColSplit = 2, RowSplit = 1, LeftMostColumn = 2, TopRow = 1)]
+        public class Report {
+            [Column(Index = 0, Title = "城市", AllowMerge = true)]
+            public string City { get; set; }
+            [Column(Index = 1, Title = "楼盘", AllowMerge = true)]
+            public string Building { get; set; }
+            [Column(Index = 2, Title = "成交时间")]
+            public DateTime HandleTime { get; set; }
+            [Column(Index = 3, Title = "经纪人")]
+            public string Broker { get; set; }
+            [Column(Index = 4, Title = "客户")]
+            public string Customer { get; set; }
+            [Column(Index = 5, Title = "房源")]
+            public string Room { get; set; }
+            [Column(Index = 6, Title = "佣金(元)", AllowSum = true)]
+            public decimal Brokerage { get; set; }
+            [Column(Index = 7, Title = "收益(元)", AllowSum = true)]
+            public decimal Profits { get; set; }
+        }
 
 4. Using extension methods
 
-	var len = 1000;
-    var reports = new Report[len];
-    for (int i = 0; i < len; i++) {
+        var len = 1000;
+        var reports = new Report[len];
+        for (int i = 0; i < len; i++) {
             reports[i] = new Report {
                     City = "ningbo",
                     Building = "世茂首府",
@@ -54,6 +54,6 @@ This repo contains the extension of NPOI, that use attributes to control enumera
 
         // save the excel file
         reports.ToExcel(@"C:\demo.xls");
-	}
+        }
 
 ![NPOI.Extension demo](images/demo.PNG)
