@@ -4,11 +4,11 @@ This repo contains the extension of NPOI, that use attributes to control enumera
 # How to use
 1. Install NPOI.Extension by nuget
 
-	   PM> Install-Package NPOI.Extension
+        PM> Install-Package NPOI.Extension
 	
 2. Using NPOI.Extension in code
 
-	   using NPOI.Extension;
+        using NPOI.Extension;
 	
 3. Applying attribute the entity
 
@@ -56,4 +56,5 @@ This repo contains the extension of NPOI, that use attributes to control enumera
         reports.ToExcel(@"C:\demo.xls");
         }
 
+5. The final excel export demo
 ![NPOI.Extension demo](images/demo.PNG)
