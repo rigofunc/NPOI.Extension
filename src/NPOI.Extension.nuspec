@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/xyting/NPOI.Extension/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/xyting/NPOI.Extension</projectUrl>
+    <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Uses attributes to control enumerable objects export to excel behaviors based NPOI.</releaseNotes>
+    <copyright>Copyright © RigoFunc (xuyingting). All rights reserved.</copyright>
+    <tags>Excel, NPOI, Attributes</tags>
+  </metadata>
+</package>
