@@ -1,5 +1,5 @@
 # Functionality
-The extensions of NPOI, which use attributes to control how to save IEnumerable&lt;T&gt; to excel.
+The extensions of NPOI, which provides IEnumerable&lt;T&gt; has excel functionality.
 - Use attribute to control excel column name, and cell index; 
 - Use attribute to control excel cells SUM and cells MERGE behaviors; 
 - Use attribute to control excel filter behaviors 
@@ -14,7 +14,7 @@ The extensions of NPOI, which use attributes to control how to save IEnumerable&
 
         using NPOI.Extension;
 	
-3. Apply attribute to the specified entity
+3. Apply attribute to the model
 
         [Filter(FirstCol = 0, FirstRow = 0, LastCol = 2)]
         [Freeze(ColSplit = 2, RowSplit = 1, LeftMostColumn = 2, TopRow = 1)]
