@@ -1,5 +1,5 @@
 # Functionality
-The extensions of NPOI, that use attributes to control enumerable object export to excel behaviors.
+The extensions of NPOI, which use attributes to control how to save IEnumerable<T> to excel.
 - Use attribute to control excel column name, and cell index; 
 - Use attribute to control excel cells SUM and cells MERGE behaviors; 
 - Use attribute to control excel filter behaviors 
@@ -10,11 +10,11 @@ The extensions of NPOI, that use attributes to control enumerable object export 
 
         PM> Install-Package NPOI.Extension
 	
-2. Using NPOI.Extension in code
+2. Reference NPOI.Extension in code
 
         using NPOI.Extension;
 	
-3. Applying attribute the entity
+3. Apply attribute to the specified entity
 
         [Filter(FirstCol = 0, FirstRow = 0, LastCol = 2)]
         [Freeze(ColSplit = 2, RowSplit = 1, LeftMostColumn = 2, TopRow = 1)]
@@ -58,7 +58,6 @@ The extensions of NPOI, that use attributes to control enumerable object export 
 
         // save the excel file
         reports.ToExcel(@"C:\demo.xls");
-        }
 
 5. NPOI.Extension demo
 
