@@ -13,10 +13,14 @@ namespace NPOI.Extension {
     using SS.Util;
 
     /// <summary>
-    /// Defines some extensions of NPOI.
+    /// Defines some extensions for <see cref="IEnumerable{T}"/> that using NPOI to provides excel functionality.
     /// </summary>
     public static class NpoiExtension {
         public static byte[] ToExcelContent<T>(this IEnumerable<T> source) {
+            if (source == null) {
+                throw new ArgumentNullException(nameof(source));
+            }
+
             var book = source.ToWorkbook();
 
             using (var ms = new MemoryStream()) {
@@ -26,6 +30,10 @@ namespace NPOI.Extension {
         }
 
         public static void ToExcel<T>(this IEnumerable<T> source, string fileName) {
+            if (source == null) {
+                throw new ArgumentNullException(nameof(source));
+            }
+
             var book = source.ToWorkbook();
 
             // Write the stream data of workbook to file
@@ -35,10 +43,6 @@ namespace NPOI.Extension {
         }
 
         internal static IWorkbook ToWorkbook<T>(this IEnumerable<T> source) {
-            if (source == null) {
-                throw new ArgumentNullException(nameof(source));
-            }
-
             var properties = typeof(T).GetProperties();
 
             // find out the attribute
@@ -54,11 +58,41 @@ namespace NPOI.Extension {
                 }
             }
 
-            // Init work book.
+            // init work book.
             var workbook = InitializeWorkbook();
 
             // new sheet.
             var sheet = workbook.CreateSheet();
+
+            var rowIndex = 1;
+            foreach (var item in source) {
+                var row = sheet.CreateRow(rowIndex);
+                for (var i = 0; i < properties.Length; i++) {
+                    var property = properties[i];
+                    var column = attributes[i];
+                    if (column == null)
+                        continue;
+
+                    var value = property.GetValue(item);
+                    var cell = row.CreateCell(column.Index);
+                    if (value is ValueType) {
+                        if (property.PropertyType == typeof(bool)) {
+                            cell.SetCellValue((bool)value);
+                        }
+                        else if (property.PropertyType == typeof(DateTime)) {
+                            cell.SetCellValue(Convert.ToDateTime(value).ToString("yyyy-MM-dd"));
+                        }
+                        else {
+                            cell.SetCellValue(Convert.ToDouble(value));
+                        }
+                    }
+                    else {
+                        // even if: null + ""
+                        cell.SetCellValue(value + "");
+                    }
+                }
+                rowIndex++;
+            }
 
             // column (first row) title style
             var style = workbook.CreateCellStyle();
@@ -68,52 +102,18 @@ namespace NPOI.Extension {
             style.FillPattern = FillPattern.Bricks;
             style.FillBackgroundColor = HSSFColor.Grey40Percent.Index;
 
-            var rowIndex = 1;
-            foreach (var item in source) {
-                var row = sheet.CreateRow(rowIndex);
-                for (var i = 0; i < properties.Length; i++) {
-                    var property = properties[i];
-                    var excel = attributes[i];
-                    if (excel == null)
-                        continue;
-
-                    var value = property.GetValue(item);
-                    if (value != null) {
-                        var cell = row.CreateCell(excel.Index);
-                        if (value is ValueType) {
-                            if (property.PropertyType == typeof(bool)) {
-                                cell.SetCellValue((bool)value);
-                            }
-                            else if (property.PropertyType == typeof(DateTime)) {
-                                cell.SetCellValue(Convert.ToDateTime(value).ToString("yyyy-MM-dd"));
-                            }
-                            else {
-                                cell.SetCellValue(Convert.ToDouble(value));
-                            }
-                        }
-                        else {
-                            cell.SetCellValue(value + "");
-                        }
-                    }
-                    else {
-                        row.CreateCell(excel.Index).SetCellValue(string.Empty);
-                    }
-                }
-                rowIndex++;
-            }
-
             // first row (column title)
             var row1 = sheet.CreateRow(0);
             for (var i = 0; i < properties.Length; i++) {
                 var property = properties[i];
-                var excel = attributes[i];
-                if (excel == null)
+                var column = attributes[i];
+                if (column == null)
                     continue;
 
-                var cell = row1.CreateCell(excel.Index);
+                var cell = row1.CreateCell(column.Index);
                 cell.CellStyle = style;
 
-                cell.SetCellValue(excel.Title);
+                cell.SetCellValue(column.Title);
             }
 
             // total row
@@ -136,19 +136,19 @@ namespace NPOI.Extension {
 
             // merge cells
             for (var j = 0; j < attributes.Length; j++) {
-                var excel = attributes[j];
+                var column = attributes[j];
                 var previous = "";
                 int rowspan = 0, row = 1;
-                if (excel.AllowMerge) {
+                if (column.AllowMerge) {
                     for (row = 1; row < rowIndex; row++) {
-                        var value = sheet.GetRow(row).Cells[excel.Index].StringCellValue;
+                        var value = sheet.GetRow(row).Cells[column.Index].StringCellValue;
                         if (previous == value && !string.IsNullOrEmpty(value)) {
                             rowspan++;
                         }
                         else {
                             if (rowspan > 1) {
-                                sheet.GetRow(row - rowspan).Cells[excel.Index].CellStyle = style2;
-                                sheet.AddMergedRegion(new CellRangeAddress(row - rowspan, row - 1, excel.Index, excel.Index));
+                                sheet.GetRow(row - rowspan).Cells[column.Index].CellStyle = style2;
+                                sheet.AddMergedRegion(new CellRangeAddress(row - rowspan, row - 1, column.Index, column.Index));
                             }
                             rowspan = 1;
                             previous = value;
@@ -157,8 +157,8 @@ namespace NPOI.Extension {
 
                     // in what case? -> all rows need to be merged
                     if (rowspan > 1) {
-                        sheet.GetRow(row - rowspan).Cells[excel.Index].CellStyle = style2;
-                        sheet.AddMergedRegion(new CellRangeAddress(row - rowspan, row - 1, excel.Index, excel.Index));
+                        sheet.GetRow(row - rowspan).Cells[column.Index].CellStyle = style2;
+                        sheet.AddMergedRegion(new CellRangeAddress(row - rowspan, row - 1, column.Index, column.Index));
                     }
                 }
             }
