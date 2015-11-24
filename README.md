@@ -6,13 +6,16 @@ The extensions of NPOI, which use attributes to control how to save IEnumerable&
 - Use attribute to control excel freeze behaviors
 
 # How to use
-1. Install NPOI.Extension by nuget
+1. Using Package Manager Console to install NPOI.Extension
+
         PM> Install-Package NPOI.Extension
 	
 2. Reference NPOI.Extension in code
+
         using NPOI.Extension;
 	
 3. Apply attribute to the specified entity
+
         [Filter(FirstCol = 0, FirstRow = 0, LastCol = 2)]
         [Freeze(ColSplit = 2, RowSplit = 1, LeftMostColumn = 2, TopRow = 1)]
         public class Report {
@@ -35,6 +38,7 @@ The extensions of NPOI, which use attributes to control how to save IEnumerable&
         }
 
 4. Using extension methods
+
         var len = 1000;
         var reports = new Report[len];
         for (int i = 0; i < len; i++) {
