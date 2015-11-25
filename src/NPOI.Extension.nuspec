@@ -11,8 +11,8 @@
     <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Uses attributes to control enumerable objects export to excel behaviors based NPOI.</releaseNotes>
+    <releaseNotes>The extensions of NPOI, which provides IEnumerable&lt;T&gt; has excel functionality.</releaseNotes>
     <copyright>Copyright © RigoFunc (xuyingting). All rights reserved.</copyright>
-    <tags>Excel, NPOI, Attributes</tags>
+    <tags>Excel, NPOI</tags>
   </metadata>
 </package>
