@@ -2,6 +2,7 @@
 using NPOI.Extension;
 
 namespace samples {
+    [Statistics(Name = "合计", Formula = "SUM", Columns = new[] { 6, 7 })]
     [Filter(FirstCol = 0, FirstRow = 0, LastCol = 2)]
     [Freeze(ColSplit = 2, RowSplit = 1, LeftMostColumn = 2, TopRow = 1)]
     public class Report {
@@ -17,9 +18,9 @@ namespace samples {
         public string Customer { get; set; }
         [Column(Index = 5, Title = "房源")]
         public string Room { get; set; }
-        [Column(Index = 6, Title = "佣金(元)", AllowSum = true)]
+        [Column(Index = 6, Title = "佣金(元)")]
         public decimal Brokerage { get; set; }
-        [Column(Index = 7, Title = "收益(元)", AllowSum = true)]
+        [Column(Index = 7, Title = "收益(元)")]
         public decimal Profits { get; set; }
     }
 }

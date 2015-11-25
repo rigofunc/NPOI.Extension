@@ -94,6 +94,39 @@ namespace NPOI.Extension {
                 rowIndex++;
             }
 
+            // merge cell style
+            var vStyle = workbook.CreateCellStyle();
+            vStyle.VerticalAlignment = VerticalAlignment.Center;
+
+            // merge cells
+            for (var j = 0; j < attributes.Length; j++) {
+                var column = attributes[j];
+                var previous = "";
+                int rowspan = 0, row = 1;
+                if (column.AllowMerge) {
+                    for (row = 1; row < rowIndex; row++) {
+                        var value = sheet.GetRow(row).Cells[column.Index].StringCellValue;
+                        if (previous == value && !string.IsNullOrEmpty(value)) {
+                            rowspan++;
+                        }
+                        else {
+                            if (rowspan > 1) {
+                                sheet.GetRow(row - rowspan).Cells[column.Index].CellStyle = vStyle;
+                                sheet.AddMergedRegion(new CellRangeAddress(row - rowspan, row - 1, column.Index, column.Index));
+                            }
+                            rowspan = 1;
+                            previous = value;
+                        }
+                    }
+
+                    // in what case? -> all rows need to be merged
+                    if (rowspan > 1) {
+                        sheet.GetRow(row - rowspan).Cells[column.Index].CellStyle = vStyle;
+                        sheet.AddMergedRegion(new CellRangeAddress(row - rowspan, row - 1, column.Index, column.Index));
+                    }
+                }
+            }
+
             // column (first row) title style
             var style = workbook.CreateCellStyle();
             style.Alignment = HorizontalAlignment.Center;
@@ -116,65 +149,33 @@ namespace NPOI.Extension {
                 cell.SetCellValue(column.Title);
             }
 
-            // total row
             if (rowIndex > 0) {
-                var totalRow = sheet.CreateRow(rowIndex);
-                var cell = totalRow.CreateCell(0);
-                cell.CellStyle = style;
-                cell.SetCellValue("Total");
-                foreach (var item in attributes) {
-                    if (item.AllowSum) {
-                        cell = totalRow.CreateCell(item.Index);
-                        cell.CellFormula = $"SUM({GetCellPosition(1, item.Index)}:{GetCellPosition(rowIndex - 1, item.Index)})";
+                // statistics row
+                var statistics = typeof(T).GetCustomAttributes(typeof(StatisticsAttribute), true) as StatisticsAttribute[];
+                if (statistics != null && statistics.Length > 0) {
+                    var first = statistics[0];
+                    var lastRow = sheet.CreateRow(rowIndex);
+                    var cell = lastRow.CreateCell(0);
+                    cell.SetCellValue(first.Name);
+                    foreach (var column in first.Columns) {
+                        cell = lastRow.CreateCell(column);
+                        cell.CellFormula = $"{first.Formula}({GetCellPosition(1, column)}:{GetCellPosition(rowIndex - 1, column)})";
                     }
                 }
-            }
 
-            // merge cell style
-            var style2 = workbook.CreateCellStyle();
-            style2.VerticalAlignment = VerticalAlignment.Center;
-
-            // merge cells
-            for (var j = 0; j < attributes.Length; j++) {
-                var column = attributes[j];
-                var previous = "";
-                int rowspan = 0, row = 1;
-                if (column.AllowMerge) {
-                    for (row = 1; row < rowIndex; row++) {
-                        var value = sheet.GetRow(row).Cells[column.Index].StringCellValue;
-                        if (previous == value && !string.IsNullOrEmpty(value)) {
-                            rowspan++;
-                        }
-                        else {
-                            if (rowspan > 1) {
-                                sheet.GetRow(row - rowspan).Cells[column.Index].CellStyle = style2;
-                                sheet.AddMergedRegion(new CellRangeAddress(row - rowspan, row - 1, column.Index, column.Index));
-                            }
-                            rowspan = 1;
-                            previous = value;
-                        }
-                    }
-
-                    // in what case? -> all rows need to be merged
-                    if (rowspan > 1) {
-                        sheet.GetRow(row - rowspan).Cells[column.Index].CellStyle = style2;
-                        sheet.AddMergedRegion(new CellRangeAddress(row - rowspan, row - 1, column.Index, column.Index));
-                    }
+                // set the freeze
+                var fattrs = typeof(T).GetCustomAttributes(typeof(FreezeAttribute), true) as FreezeAttribute[];
+                if (fattrs != null && fattrs.Length > 0) {
+                    var freeze = fattrs[0];
+                    sheet.CreateFreezePane(freeze.ColSplit, freeze.RowSplit, freeze.LeftMostColumn, freeze.TopRow);
                 }
-            }
 
-            // set the freeze
-            var fattrs = typeof(T).GetCustomAttributes(typeof(FreezeAttribute), true) as FreezeAttribute[];
-            if (fattrs != null && fattrs.Length > 0) {
-                var freeze = fattrs[0];
-                sheet.CreateFreezePane(freeze.ColSplit, freeze.RowSplit, freeze.LeftMostColumn, freeze.TopRow);
-            }
-
-            // set the auto filter
-            var filters = typeof(T).GetCustomAttributes(typeof(FilterAttribute), true) as FilterAttribute[];
-            if (filters != null && filters.Length > 0) {
-                var filter = filters[0];
-                sheet.SetAutoFilter(new CellRangeAddress(filter.FirstRow, filter.LastRow ?? rowIndex, filter.FirstCol, filter.LastCol));
+                // set the auto filter
+                var filters = typeof(T).GetCustomAttributes(typeof(FilterAttribute), true) as FilterAttribute[];
+                if (filters != null && filters.Length > 0) {
+                    var filter = filters[0];
+                    sheet.SetAutoFilter(new CellRangeAddress(filter.FirstRow, filter.LastRow ?? rowIndex, filter.FirstCol, filter.LastCol));
+                }
             }
 
             // autosize the all columns
