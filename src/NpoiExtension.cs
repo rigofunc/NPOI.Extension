@@ -44,7 +44,7 @@ namespace NPOI.Extension {
 
         internal static IWorkbook ToWorkbook<T>(this IEnumerable<T> source) {
             // can static properties or only instance properties?
-            var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
 
             // find out the attribute
             var attributes = new ColumnAttribute[properties.Length];
@@ -70,10 +70,6 @@ namespace NPOI.Extension {
                 var row = sheet.CreateRow(rowIndex);
                 for (var i = 0; i < properties.Length; i++) {
                     var property = properties[i];
-                    if (!property.CanRead) {
-                        continue;
-                    }
-
                     var column = attributes[i];
                     if (column == null)
                         continue;
