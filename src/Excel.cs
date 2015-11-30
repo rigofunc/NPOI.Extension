@@ -42,6 +42,13 @@ namespace NPOI.Extension {
             var list = new List<T>();
             while (rows.MoveNext()) {
                 var row = rows.Current as HSSFRow;
+
+                // logical row maybe null, only physical row not be null
+                // this is the title row
+                if (row == null || row.RowNum == 0) {
+                    continue;
+                }
+
                 var item = new T();
                 for (int i = 0; i < properties.Length; i++) {
                     var prop = properties[i];
@@ -72,6 +79,10 @@ namespace NPOI.Extension {
 
         public static object GetCellValue(this IRow row, int index) {
             var cell = row.GetCell(index);
+            if (cell == null) {
+                return null;
+            }
+
             switch (cell.CellType) {
                 // This is a trick to get the correct value of the cell.
                 // NumericCellValue will return a numeric value no matter the cell value is a date or a number.

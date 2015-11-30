@@ -22,10 +22,10 @@ namespace samples {
             }
 
             // save to excel file
-            reports.ToExcel(@"C:\demo.xls");
+            reports.ToExcel(@"D:\demo.xls");
 
             // load from excel
-            var loadFromExcel = Excel.Load<Report>(@"C:\demo.xls");
+            var loadFromExcel = Excel.Load<Model>(@"D:\load.xls");
         }
     }
 }
