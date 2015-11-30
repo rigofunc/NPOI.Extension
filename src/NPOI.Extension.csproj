@@ -55,9 +55,12 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExcelAttribute.cs" />
+    <Compile Include="ColumnAttribute.cs" />
+    <Compile Include="FilterAttribute.cs" />
+    <Compile Include="FreezeAttribute.cs" />
     <Compile Include="NpoiExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StatisticsAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
