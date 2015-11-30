@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("NPOI.Extension")]
-[assembly: AssemblyDescription("Extension of NPOI, that use attributes to control enumerable objects export  to excel behaviors.")]
+[assembly: AssemblyDescription("The extensions of NPOI, which provides IEnumerable<T> save to and load from excel functionality.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("RigoFunc (xuyingting)")]
 [assembly: AssemblyProduct("NPOI.Extension")]
