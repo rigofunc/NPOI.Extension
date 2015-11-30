@@ -1,11 +1,8 @@
-# Functionality
-The extensions of NPOI, which provides IEnumerable&lt;T&gt; has excel functionality.
-- Use attribute to control excel column name, and cell index; 
-- Use attribute to control excel cells SUM and cells MERGE behaviors; 
-- Use attribute to control excel filter behaviors 
-- Use attribute to control excel freeze behaviors
+# Overview
+The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load from excel functionality.
 
-# How to use
+![NPOI.Extension demo](images/demo.PNG)
+# Get Started
 1. Using Package Manager Console to install NPOI.Extension
 
         PM> Install-Package NPOI.Extension
@@ -59,7 +56,9 @@ The extensions of NPOI, which provides IEnumerable&lt;T&gt; has excel functional
 
         // save the excel file
         reports.ToExcel(@"C:\demo.xls");
+        
+5. Load IEnumerable&lg;T&gt; from excel
 
-5. NPOI.Extension demo
+        // load from excel
+        var loadFromExcel = Excel.Load<Report>(@"C:\demo.xls");
 
-![NPOI.Extension demo](images/demo.PNG)

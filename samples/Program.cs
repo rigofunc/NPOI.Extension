@@ -21,8 +21,11 @@ namespace samples {
                 // other data here...
             }
 
-            // save the excel file
+            // save to excel file
             reports.ToExcel(@"C:\demo.xls");
+
+            // load from excel
+            var loadFromExcel = Excel.Load<Report>(@"C:\demo.xls");
         }
     }
 }
