@@ -4,7 +4,7 @@ namespace NPOI.Extension {
     using System;
     using System.Collections.Generic;
     using System.IO;
-
+    using System.Reflection;
     // NPOI
     using HPSF;
     using HSSF.UserModel;
@@ -43,7 +43,8 @@ namespace NPOI.Extension {
         }
 
         internal static IWorkbook ToWorkbook<T>(this IEnumerable<T> source) {
-            var properties = typeof(T).GetProperties();
+            // can static properties or only instance properties?
+            var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             // find out the attribute
             var attributes = new ColumnAttribute[properties.Length];
@@ -69,6 +70,10 @@ namespace NPOI.Extension {
                 var row = sheet.CreateRow(rowIndex);
                 for (var i = 0; i < properties.Length; i++) {
                     var property = properties[i];
+                    if (!property.CanRead) {
+                        continue;
+                    }
+
                     var column = attributes[i];
                     if (column == null)
                         continue;
