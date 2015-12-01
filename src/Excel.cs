@@ -43,9 +43,8 @@ namespace NPOI.Extension {
             while (rows.MoveNext()) {
                 var row = rows.Current as HSSFRow;
 
-                // logical row maybe null, only physical row not be null
                 // this is the title row
-                if (row == null || row.RowNum == 0) {
+                if (row.RowNum == 0) {
                     continue;
                 }
 

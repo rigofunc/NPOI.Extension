@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using NPOI.Extension;
 
 namespace samples {
@@ -24,8 +25,11 @@ namespace samples {
             // save to excel file
             reports.ToExcel(@"D:\demo.xls");
 
-            // load from excel
-            var loadFromExcel = Excel.Load<Model>(@"D:\load.xls");
+            var files = Directory.GetFiles(@"D:\excels", "*.xls", SearchOption.TopDirectoryOnly);
+            foreach (var file in files) {
+                // load from excel
+                var loadFromExcel = Excel.Load<Model>(file);
+            }
         }
     }
 }
