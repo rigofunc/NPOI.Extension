@@ -139,7 +139,6 @@ namespace NPOI.Extension {
             // first row (column title)
             var row1 = sheet.CreateRow(0);
             for (var i = 0; i < properties.Length; i++) {
-                var property = properties[i];
                 var column = attributes[i];
                 if (column == null)
                     continue;
@@ -147,7 +146,14 @@ namespace NPOI.Extension {
                 var cell = row1.CreateCell(column.Index);
                 cell.CellStyle = style;
 
-                cell.SetCellValue(column.Title);
+                // if not title, using property name as title.
+                if (string.IsNullOrEmpty(column.Title)) {
+                    var property = properties[i];
+                    cell.SetCellValue(property.Name);
+                }
+                else {
+                    cell.SetCellValue(column.Title);
+                }
             }
 
             if (rowIndex > 0) {
