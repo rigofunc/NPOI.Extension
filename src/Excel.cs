@@ -28,13 +28,16 @@ namespace NPOI.Extension {
             // get the writable properties
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty);
 
-            // find out the attribute
+            // find out the attributes
+            var haventCols = true;
             var attributes = new ColumnAttribute[properties.Length];
             for (var j = 0; j < properties.Length; j++) {
                 var property = properties[j];
                 var attrs = property.GetCustomAttributes(typeof(ColumnAttribute), true) as ColumnAttribute[];
                 if (attrs != null && attrs.Length > 0) {
                     attributes[j] = attrs[0];
+
+                    haventCols = false;
                 }
                 else {
                     attributes[j] = null;
@@ -52,14 +55,19 @@ namespace NPOI.Extension {
                 var item = new T();
                 for (int i = 0; i < properties.Length; i++) {
                     var prop = properties[i];
-                    var attr = attributes[i];
-                    if (attr == null) {
-                        continue;
+
+                    int index = i;
+                    if (!haventCols) {
+                        var column = attributes[i];
+                        if (column == null)
+                            continue;
+                        else
+                            index = column.Index;
                     }
 
-                    var value = row.GetCellValue(attr.Index);
+                    var value = row.GetCellValue(index);
                     if (valueConverter != null) {
-                        value = valueConverter(row.RowNum, attr.Index, value);
+                        value = valueConverter(row.RowNum, index, value);
                     }
                     if (value != null) {
                         // property type
