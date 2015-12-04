@@ -46,13 +46,17 @@ namespace NPOI.Extension {
             // can static properties or only instance properties?
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
 
-            // find out the attribute
+            // find out the attributes
+            var haventCols = true;
             var attributes = new ColumnAttribute[properties.Length];
             for (var j = 0; j < properties.Length; j++) {
                 var property = properties[j];
                 var attrs = property.GetCustomAttributes(typeof(ColumnAttribute), true) as ColumnAttribute[];
                 if (attrs != null && attrs.Length > 0) {
                     attributes[j] = attrs[0];
+
+                    // attribute configure first(Hight Priority)
+                    haventCols = false;
                 }
                 else {
                     attributes[j] = null;
@@ -70,12 +74,18 @@ namespace NPOI.Extension {
                 var row = sheet.CreateRow(rowIndex);
                 for (var i = 0; i < properties.Length; i++) {
                     var property = properties[i];
-                    var column = attributes[i];
-                    if (column == null)
-                        continue;
+
+                    int index = i;
+                    if (!haventCols) {
+                        var column = attributes[i];
+                        if (column == null)
+                            continue;
+                        else
+                            index = column.Index;
+                    }
 
                     var value = property.GetValue(item);
-                    var cell = row.CreateCell(column.Index);
+                    var cell = row.CreateCell(index);
                     if (value is ValueType) {
                         if (property.PropertyType == typeof(bool)) {
                             cell.SetCellValue((bool)value);
@@ -95,35 +105,41 @@ namespace NPOI.Extension {
                 rowIndex++;
             }
 
-            // merge cell style
-            var vStyle = workbook.CreateCellStyle();
-            vStyle.VerticalAlignment = VerticalAlignment.Center;
+            if (!haventCols) {
+                // merge cell style
+                var vStyle = workbook.CreateCellStyle();
+                vStyle.VerticalAlignment = VerticalAlignment.Center;
 
-            // merge cells
-            for (var j = 0; j < attributes.Length; j++) {
-                var column = attributes[j];
-                var previous = "";
-                int rowspan = 0, row = 1;
-                if (column.AllowMerge) {
-                    for (row = 1; row < rowIndex; row++) {
-                        var value = sheet.GetRow(row).Cells[column.Index].StringCellValue;
-                        if (previous == value && !string.IsNullOrEmpty(value)) {
-                            rowspan++;
-                        }
-                        else {
-                            if (rowspan > 1) {
-                                sheet.GetRow(row - rowspan).Cells[column.Index].CellStyle = vStyle;
-                                sheet.AddMergedRegion(new CellRangeAddress(row - rowspan, row - 1, column.Index, column.Index));
-                            }
-                            rowspan = 1;
-                            previous = value;
-                        }
+                // merge cells
+                for (var j = 0; j < attributes.Length; j++) {
+                    var column = attributes[j];
+                    if (column == null) {
+                        continue;
                     }
 
-                    // in what case? -> all rows need to be merged
-                    if (rowspan > 1) {
-                        sheet.GetRow(row - rowspan).Cells[column.Index].CellStyle = vStyle;
-                        sheet.AddMergedRegion(new CellRangeAddress(row - rowspan, row - 1, column.Index, column.Index));
+                    var previous = "";
+                    int rowspan = 0, row = 1;
+                    if (column.AllowMerge) {
+                        for (row = 1; row < rowIndex; row++) {
+                            var value = sheet.GetRow(row).Cells[column.Index].StringCellValue;
+                            if (previous == value && !string.IsNullOrEmpty(value)) {
+                                rowspan++;
+                            }
+                            else {
+                                if (rowspan > 1) {
+                                    sheet.GetRow(row - rowspan).Cells[column.Index].CellStyle = vStyle;
+                                    sheet.AddMergedRegion(new CellRangeAddress(row - rowspan, row - 1, column.Index, column.Index));
+                                }
+                                rowspan = 1;
+                                previous = value;
+                            }
+                        }
+
+                        // in what case? -> all rows need to be merged
+                        if (rowspan > 1) {
+                            sheet.GetRow(row - rowspan).Cells[column.Index].CellStyle = vStyle;
+                            sheet.AddMergedRegion(new CellRangeAddress(row - rowspan, row - 1, column.Index, column.Index));
+                        }
                     }
                 }
             }
@@ -139,21 +155,26 @@ namespace NPOI.Extension {
             // first row (column title)
             var row1 = sheet.CreateRow(0);
             for (var i = 0; i < properties.Length; i++) {
-                var column = attributes[i];
-                if (column == null)
-                    continue;
+                var property = properties[i];
 
-                var cell = row1.CreateCell(column.Index);
+                var title = property.Name;
+                int index = i;
+                if (!haventCols) {
+                    var column = attributes[i];
+                    if (column == null)
+                        continue;
+                    else {
+                        index = column.Index;
+                        // if not title, using property name as title.
+                        if (!string.IsNullOrEmpty(column.Title)) {
+                            title = column.Title;
+                        }
+                    }
+                }
+
+                var cell = row1.CreateCell(index);
                 cell.CellStyle = style;
-
-                // if not title, using property name as title.
-                if (string.IsNullOrEmpty(column.Title)) {
-                    var property = properties[i];
-                    cell.SetCellValue(property.Name);
-                }
-                else {
-                    cell.SetCellValue(column.Title);
-                }
+                cell.SetCellValue(title);
             }
 
             if (rowIndex > 0) {
