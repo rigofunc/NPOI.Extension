@@ -9,8 +9,10 @@ namespace NPOI.Extension {
     using HSSF.UserModel;
     using SS.UserModel;
 
+    public delegate object ValueConverter(int row, int cell, object value);
+
     public static class Excel {
-        public static IEnumerable<T> Load<T>(string excelFile) where T : new() {
+        public static IEnumerable<T> Load<T>(string excelFile, int startRow = 1, ValueConverter valueConverter = null) where T : new() {
             if (!File.Exists(excelFile)) {
                 throw new FileNotFoundException();
             }
@@ -43,8 +45,7 @@ namespace NPOI.Extension {
             while (rows.MoveNext()) {
                 var row = rows.Current as HSSFRow;
 
-                // this is the title row
-                if (row.RowNum == 0) {
+                if (row.RowNum < startRow) {
                     continue;
                 }
 
@@ -52,8 +53,14 @@ namespace NPOI.Extension {
                 for (int i = 0; i < properties.Length; i++) {
                     var prop = properties[i];
                     var attr = attributes[i];
+                    if (attr == null) {
+                        continue;
+                    }
 
                     var value = row.GetCellValue(attr.Index);
+                    if (valueConverter != null) {
+                        value = valueConverter(row.RowNum, attr.Index, value);
+                    }
                     if (value != null) {
                         // property type
                         var propType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
@@ -70,13 +77,7 @@ namespace NPOI.Extension {
             return list;
         }
 
-        private static HSSFWorkbook InitializeWorkbook(string excelFile) {
-            using (var file = new FileStream(excelFile, FileMode.Open, FileAccess.Read)) {
-                return new HSSFWorkbook(file);
-            }
-        }
-
-        public static object GetCellValue(this IRow row, int index) {
+        internal static object GetCellValue(this IRow row, int index) {
             var cell = row.GetCell(index);
             if (cell == null) {
                 return null;
@@ -91,11 +92,12 @@ namespace NPOI.Extension {
                     return cell.StringCellValue;
                 case CellType.Boolean:
                     return cell.BooleanCellValue;
+                case CellType.Error:
+                    return cell.ErrorCellValue;
+
                 // how?
                 case CellType.Formula:
                     return cell.ToString();
-                case CellType.Error:
-                    return cell.ErrorCellValue;
 
                 case CellType.Blank:
                 case CellType.Unknown:
@@ -104,12 +106,18 @@ namespace NPOI.Extension {
             }
         }
 
-        public static object GetDefault(this Type type) {
+        internal static object GetDefault(this Type type) {
             if (type.IsValueType) {
                 return Activator.CreateInstance(type);
             }
 
             return null;
+        }
+
+        private static HSSFWorkbook InitializeWorkbook(string excelFile) {
+            using (var file = new FileStream(excelFile, FileMode.Open, FileAccess.Read)) {
+                return new HSSFWorkbook(file);
+            }
         }
     }
 }
