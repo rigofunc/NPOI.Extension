@@ -81,7 +81,7 @@ namespace NPOI.Extension {
                             cell.SetCellValue((bool)value);
                         }
                         else if (property.PropertyType == typeof(DateTime)) {
-                            cell.SetCellValue(Convert.ToDateTime(value).ToString("yyyy-MM-dd"));
+                            cell.SetCellValue(Convert.ToDateTime(value));
                         }
                         else {
                             cell.SetCellValue(Convert.ToDouble(value));
