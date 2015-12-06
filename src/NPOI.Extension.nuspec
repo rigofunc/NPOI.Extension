@@ -11,7 +11,7 @@
     <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load from excel functionality.</releaseNotes>
+    <releaseNotes>IEnumerable&lt;T&gt; save to and load from excel supports T is POCO.</releaseNotes>
     <copyright>Copyright © RigoFunc (xuyingting). All rights reserved.</copyright>
     <tags>Excel, NPOI</tags>
   </metadata>
