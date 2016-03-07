@@ -93,6 +93,9 @@ namespace NPOI.Extension {
                         else if (property.PropertyType == typeof(DateTime)) {
                             cell.SetCellValue(Convert.ToDateTime(value));
                         }
+                        else if (property.PropertyType == typeof(Guid)) {
+                            cell.SetCellValue(Convert.ToString(value));
+                        }
                         else {
                             cell.SetCellValue(Convert.ToDouble(value));
                         }
