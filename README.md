@@ -13,6 +13,7 @@ The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load fro
 	
 3. Apply attribute to the model
 
+```csharp
         [Filter(FirstCol = 0, FirstRow = 0, LastCol = 2)]
         [Freeze(ColSplit = 2, RowSplit = 1, LeftMostColumn = 2, TopRow = 1)]
         [Statistics(Name = "合计", Formula = "SUM", Columns = new[] { 6, 7 })]
@@ -34,9 +35,11 @@ The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load fro
             [Column(Index = 7, Title = "收益(元)")]
             public decimal Profits { get; set; }
         }
+```
 
 4. Using extension methods
 
+```csharp
         var len = 1000;
         var reports = new Report[len];
         for (int i = 0; i < len; i++) {
@@ -56,9 +59,10 @@ The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load fro
 
         // save the excel file
         reports.ToExcel(@"C:\demo.xls");
-        
+ ```       
 5. Load IEnumerable&lg;T&gt; from excel
 
+```csharp
         // load from excel
         var loadFromExcel = Excel.Load<Report>(@"C:\demo.xls");
-
+```
