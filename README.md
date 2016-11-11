@@ -5,8 +5,8 @@ The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load fro
 
 # Features
 - [x] Support POCO, so that if your mother langurage is Engilish, none any configuration;
-- [x] Support attribute base configuration, this feature will very useful for English not their mother language developers
-- [ ] Decouple the configuration from the POCO model
+- [x] Support attribute base configuration, this feature will be very useful for English not their mother language developers
+- [ ] Decouple the configuration from the POCO model, like `FluentValidation`
 
 # Get Started
 1. Using Package Manager Console to install NPOI.Extension
