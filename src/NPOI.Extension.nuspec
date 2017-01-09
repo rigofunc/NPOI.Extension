@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <package >
   <metadata>
     <id>$id$</id>
@@ -11,8 +11,8 @@
     <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>IEnumerable&lt;T&gt; save to and load from excel supports T is POCO.</releaseNotes>
-    <copyright>Copyright © RigoFunc (xuyingting). All rights reserved.</copyright>
-    <tags>Excel, NPOI</tags>
+    <releaseNotes>1. Support export to exist exel file; 2. Support xls, xlsx; 3. Support multiple sheets;</releaseNotes>
+    <copyright>Copyright © rigofunc (xuyingting). All rights reserved.</copyright>
+    <tags>npoi, xlsx, xls, Excel, Word, docx</tags>
   </metadata>
 </package>

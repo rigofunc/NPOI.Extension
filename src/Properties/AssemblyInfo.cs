@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NPOI.Extension")]
 [assembly: AssemblyDescription("The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load from excel functionality.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("RigoFunc (xuyingting)")]
+[assembly: AssemblyCompany("rigofunc (xuyingting)")]
 [assembly: AssemblyProduct("NPOI.Extension")]
-[assembly: AssemblyCopyright("Copyright © RigoFunc (xuyingting). All rights reserved.")]
+[assembly: AssemblyCopyright("Copyright © rigofunc (xuyingting). All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.2.0.1")]
-[assembly: AssemblyFileVersion("1.2.0.1")]
+[assembly: AssemblyVersion("1.3.0.0")]
+[assembly: AssemblyFileVersion("1.3.0.0")]
