@@ -291,7 +291,7 @@ namespace NPOI.Extension
             var setting = Excel.Setting;
             if (setting.UserXlsx)
             {
-                if (!string.IsNullOrEmpty(excelFile) || File.Exists(excelFile))
+                if (!string.IsNullOrEmpty(excelFile) && File.Exists(excelFile))
                 {
                     using (var file = new FileStream(excelFile, FileMode.Open, FileAccess.Read))
                     {
@@ -305,7 +305,7 @@ namespace NPOI.Extension
             }
             else
             {
-                if (!string.IsNullOrEmpty(excelFile) || File.Exists(excelFile))
+                if (!string.IsNullOrEmpty(excelFile) && File.Exists(excelFile))
                 {
                     using (var file = new FileStream(excelFile, FileMode.Open, FileAccess.Read))
                     {
