@@ -66,7 +66,7 @@ The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load fro
         // save the excel file
         reports.ToExcel(@"C:\demo.xlsx");
  ```       
-## Load IEnumerable&lg;T&gt; from excel
+## Load IEnumerable&lt;T&gt; from excel
 
 ```csharp
         // load from excel
@@ -75,10 +75,9 @@ The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load fro
 
 ## Custom excel export setting
 
-```csharp
-    
-    Excel.Setting.DateFormatter = "yyyy-MM-dd";
+The POCO export use following setting, so, the end user can costomize the setting like `Excel.Setting.DateFormatter = "yyyy-MM-dd";`
 
+```csharp
     public class ExcelSetting
     {
         public string Company { get; set; } = "rigofunc (xuyingting)";
