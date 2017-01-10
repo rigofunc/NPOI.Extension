@@ -9,15 +9,15 @@ The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load fro
 - [ ] Decouple the configuration from the POCO model, like `FluentValidation`
 
 # Get Started
-1. Using Package Manager Console to install NPOI.Extension
+## Using Package Manager Console to install NPOI.Extension
 
         PM> Install-Package NPOI.Extension
     
-2. Reference NPOI.Extension in code
+## Reference NPOI.Extension in code
 
         using NPOI.Extension;
     
-3. Apply attribute to the model
+## Apply attribute to the model
 
 ```csharp
         [Filter(FirstCol = 0, FirstRow = 0, LastCol = 2)]
@@ -43,7 +43,7 @@ The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load fro
         }
 ```
 
-4. Export POCO to excel.
+## Export POCO to excel.
 
 ```csharp
         var len = 1000;
@@ -66,14 +66,14 @@ The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load fro
         // save the excel file
         reports.ToExcel(@"C:\demo.xlsx");
  ```       
-5. Load IEnumerable&lg;T&gt; from excel
+## Load IEnumerable&lg;T&gt; from excel
 
 ```csharp
         // load from excel
         var loadFromExcel = Excel.Load<Report>(@"C:\demo.xlsx");
 ```
 
-6. Custom excel export setting
+## Custom excel export setting
 
 ```csharp
     
