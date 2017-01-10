@@ -1,17 +1,20 @@
-﻿// Copyright (c) RigoFunc (xuyingting). All rights reserved.
+﻿// Copyright (c) rigofunc (xuyingting). All rights reserved.
 
-namespace NPOI.Extension {
+namespace NPOI.Extension
+{
     using System;
 
     /// <summary>
     /// Represents a custom attribute to control excel filter behaviors.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public class FilterAttribute : Attribute {
+    public class FilterAttribute : Attribute
+    {
         /// <summary>
         /// Initializes a new instance of the <see cref="FilterAttribute"/> class.
         /// </summary>
-        public FilterAttribute() {
+        public FilterAttribute()
+        {
             LastRow = null;
         }
 

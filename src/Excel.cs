@@ -1,4 +1,4 @@
-﻿// Copyright (c) RigoFunc (xuyingting). All rights reserved.
+﻿// Copyright (c) rigofunc (xuyingting). All rights reserved.
 
 namespace NPOI.Extension
 {
@@ -21,7 +21,7 @@ namespace NPOI.Extension
         /// <value>The setting.</value>
         public static ExcelSetting Setting { get; set; } = new ExcelSetting();
 
-        public static IEnumerable<T> Load<T>(string excelFile, int startRow = 1, ValueConverter valueConverter = null) where T : new()
+        public static IEnumerable<T> Load<T>(string excelFile, int startRow = 1, int sheetIndex = 0, ValueConverter valueConverter = null) where T : class, new()
         {
             if (!File.Exists(excelFile))
             {
@@ -30,8 +30,8 @@ namespace NPOI.Extension
 
             var workbook = InitializeWorkbook(excelFile);
 
-            // currently, only handle sheet one
-            var sheet = workbook.GetSheetAt(0);
+            // currently, only handle sheet one (or call side using foreach to support multiple sheet)
+            var sheet = workbook.GetSheetAt(sheetIndex);
 
             // get the physical rows
             var rows = sheet.GetRowEnumerator();
@@ -94,19 +94,24 @@ namespace NPOI.Extension
                             index = column.Index;
                             title = column.Title;
                             autoIndex = column.AutoIndex;
-                        }
-                    }
 
-                    if (index < 0 && autoIndex && !string.IsNullOrEmpty(title))
-                    {
-                        // Try to autodiscover index from title
-                        foreach (var cell in headerRow.Cells)
-                        {
-                            if (!string.IsNullOrEmpty(cell.StringCellValue))
+                            // Try to autodiscover index from title and cache
+                            if (index < 0 && autoIndex && !string.IsNullOrEmpty(title))
                             {
-                                if (cell.StringCellValue.Equals(title))
+                                foreach (var cell in headerRow.Cells)
                                 {
-                                    index = cell.ColumnIndex;
+                                    if (!string.IsNullOrEmpty(cell.StringCellValue))
+                                    {
+                                        if (cell.StringCellValue.Equals(title))
+                                        {
+                                            index = cell.ColumnIndex;
+
+                                            // cache
+                                            column.Index = index;
+
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }

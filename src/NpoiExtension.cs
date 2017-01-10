@@ -1,4 +1,4 @@
-﻿// Copyright (c) RigoFunc (xuyingting). All rights reserved.
+﻿// Copyright (c) rigofunc (xuyingting). All rights reserved.
 
 namespace NPOI.Extension
 {
@@ -26,7 +26,7 @@ namespace NPOI.Extension
                 throw new ArgumentNullException(nameof(source));
             }
 
-            var book = source.ToWorkbook();
+            var book = source.ToWorkbook(null, "sheet0");
 
             using (var ms = new MemoryStream())
             {
@@ -35,7 +35,7 @@ namespace NPOI.Extension
             }
         }
 
-        public static void ToExcel<T>(this IEnumerable<T> source, string excelFile, string sheetName = null)
+        public static void ToExcel<T>(this IEnumerable<T> source, string excelFile, string sheetName = "sheet0") where T : class
         {
             if (source == null)
             {
@@ -55,16 +55,16 @@ namespace NPOI.Extension
                 throw new NotSupportedException($"not an excel file extension (*.xls | *.xlsx) {excelFile}");
             }
 
-            var book = source.ToWorkbook(sheetName);
+            var book = source.ToWorkbook(excelFile, sheetName);
 
             // Write the stream data of workbook to file
-            using (var stream = new FileStream(excelFile, FileMode.OpenOrCreate))
+            using (var stream = new FileStream(excelFile, FileMode.OpenOrCreate, FileAccess.Write))
             {
                 book.Write(stream);
             }
         }
 
-        internal static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, string sheetName = null)
+        internal static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, string excelFile, string sheetName)
         {
             // can static properties or only instance properties?
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
@@ -90,18 +90,13 @@ namespace NPOI.Extension
             }
 
             // init work book.
-            var workbook = InitializeWorkbook();
+            var workbook = InitializeWorkbook(excelFile);
 
             // new sheet
-            ISheet sheet = null;
-            if (string.IsNullOrEmpty(sheetName))
-            {
-                sheet = workbook.CreateSheet();
-            }
-            else
-            {
-                sheet = workbook.CreateSheet(sheetName);
-            }
+            var sheet = workbook.CreateSheet(sheetName);
+
+            // cache for datetime format
+            ICellStyle dateCellStyle = null;
 
             var rowIndex = 1;
             foreach (var item in source)
@@ -131,6 +126,18 @@ namespace NPOI.Extension
                         }
                         else if (property.PropertyType == typeof(DateTime))
                         {
+                            if (dateCellStyle == null)
+                            {
+                                // create the cache.
+                                dateCellStyle = workbook.CreateCellStyle();
+
+                                var dateFormat = workbook.CreateDataFormat();
+
+                                dateCellStyle.DataFormat = dateFormat.GetFormat(Excel.Setting.DateFormatter);
+                            }
+
+                            cell.CellStyle = dateCellStyle;
+
                             cell.SetCellValue(Convert.ToDateTime(value));
                         }
                         else if (property.PropertyType == typeof(Guid))
@@ -279,27 +286,47 @@ namespace NPOI.Extension
             return workbook;
         }
 
-        private static IWorkbook InitializeWorkbook()
+        private static IWorkbook InitializeWorkbook(string excelFile)
         {
             var setting = Excel.Setting;
             if (setting.UserXlsx)
             {
-                return new XSSFWorkbook();
+                if (!string.IsNullOrEmpty(excelFile) || File.Exists(excelFile))
+                {
+                    using (var file = new FileStream(excelFile, FileMode.Open, FileAccess.Read))
+                    {
+                        return new XSSFWorkbook(file);
+                    }
+                }
+                else
+                {
+                    return new XSSFWorkbook();
+                }
             }
             else
             {
-                var hssf = new HSSFWorkbook();
+                if (!string.IsNullOrEmpty(excelFile) || File.Exists(excelFile))
+                {
+                    using (var file = new FileStream(excelFile, FileMode.Open, FileAccess.Read))
+                    {
+                        return new HSSFWorkbook(file);
+                    }
+                }
+                else
+                {
+                    var hssf = new HSSFWorkbook();
 
-                var dsi = PropertySetFactory.CreateDocumentSummaryInformation();
-                dsi.Company = setting.Company;
-                hssf.DocumentSummaryInformation = dsi;
+                    var dsi = PropertySetFactory.CreateDocumentSummaryInformation();
+                    dsi.Company = setting.Company;
+                    hssf.DocumentSummaryInformation = dsi;
 
-                var si = PropertySetFactory.CreateSummaryInformation();
-                si.Author = setting.Author;
-                si.Subject = setting.Subject;
-                hssf.SummaryInformation = si;
+                    var si = PropertySetFactory.CreateSummaryInformation();
+                    si.Author = setting.Author;
+                    si.Subject = setting.Subject;
+                    hssf.SummaryInformation = si;
 
-                return hssf;
+                    return hssf;
+                }
             }
         }
 

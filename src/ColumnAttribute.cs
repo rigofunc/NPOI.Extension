@@ -1,4 +1,4 @@
-﻿// Copyright (c) RigoFunc (xuyingting). All rights reserved
+﻿// Copyright (c) rigofunc (xuyingting). All rights reserved
 
 namespace NPOI.Extension
 {
@@ -10,8 +10,6 @@ namespace NPOI.Extension
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public class ColumnAttribute : Attribute
     {
-        private int index = -1;
-
         /// <summary>
         /// Gets or sets the title of the column.
         /// </summary>
@@ -25,11 +23,11 @@ namespace NPOI.Extension
         /// </summary>
         public bool AutoIndex { get; set; }
 
-        public int Index
-        {
-            get { return index; }
-            set { index = value; }
-        }
+        /// <summary>
+        /// Gets or sets the column index.
+        /// </summary>
+        /// <value>The index.</value>
+        public int Index { get; set; } = -1;
 
         /// <summary>
         /// Gets or sets a value indicating whether allow merge the same value cells.

@@ -1,17 +1,20 @@
-﻿// Copyright (c) RigoFunc (xuyingting). All rights reserved.
+﻿// Copyright (c) rigofunc (xuyingting). All rights reserved.
 
-namespace NPOI.Extension {
+namespace NPOI.Extension
+{
     using System;
 
     /// <summary>
     /// Represents a custom attribute to control excel freeze behaviors.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public class FreezeAttribute : Attribute {
+    public class FreezeAttribute : Attribute
+    {
         /// <summary>
         /// Initializes a new instance of the <see cref="FreezeAttribute"/> class.
         /// </summary>
-        public FreezeAttribute() {
+        public FreezeAttribute()
+        {
             ColSplit = 0;
             RowSplit = 1;
             LeftMostColumn = 0;

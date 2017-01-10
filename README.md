@@ -12,11 +12,11 @@ The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load fro
 1. Using Package Manager Console to install NPOI.Extension
 
         PM> Install-Package NPOI.Extension
-	
+    
 2. Reference NPOI.Extension in code
 
         using NPOI.Extension;
-	
+    
 3. Apply attribute to the model
 
 ```csharp
@@ -43,7 +43,7 @@ The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load fro
         }
 ```
 
-4. Using extension methods
+4. Export POCO to excel.
 
 ```csharp
         var len = 1000;
@@ -64,11 +64,31 @@ The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load fro
         }
 
         // save the excel file
-        reports.ToExcel(@"C:\demo.xls");
+        reports.ToExcel(@"C:\demo.xlsx");
  ```       
 5. Load IEnumerable&lg;T&gt; from excel
 
 ```csharp
         // load from excel
-        var loadFromExcel = Excel.Load<Report>(@"C:\demo.xls");
+        var loadFromExcel = Excel.Load<Report>(@"C:\demo.xlsx");
+```
+
+6. Custom excel export setting
+
+```csharp
+    
+    Excel.Setting.DateFormatter = "yyyy-MM-dd";
+
+    public class ExcelSetting
+    {
+        public string Company { get; set; } = "rigofunc (xuyingting)";
+
+        public string Author { get; set; } = "rigofunc (xuyingting)";
+
+        public string Subject { get; set; } = "The extensions of NPOI, which provides IEnumerable<T>; save to and load from excel.";
+
+        public bool UserXlsx { get; set; } = true;
+
+        public string DateFormatter { get; set; } = "yyyy-MM-dd HH:mm:ss";
+    }
 ```

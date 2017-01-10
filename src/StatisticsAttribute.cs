@@ -1,6 +1,7 @@
-﻿// Copyright (c) RigoFunc (xuyingting). All rights reserved.
+﻿// Copyright (c) rigofunc (xuyingting). All rights reserved.
 
-namespace NPOI.Extension {
+namespace NPOI.Extension
+{
     using System;
 
     /// <summary>
@@ -11,7 +12,8 @@ namespace NPOI.Extension {
     /// doesn't allow apply multiple <see cref="StatisticsAttribute"/> to one class.
     /// </remarks>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public class StatisticsAttribute : Attribute {
+    public class StatisticsAttribute : Attribute
+    {
         /// <summary>
         /// Gets or sets the statistics name. (e.g. Total)
         /// </summary>
