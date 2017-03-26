@@ -120,11 +120,17 @@ namespace NPOI.Extension
                     var cell = row.CreateCell(index);
                     if (value is ValueType)
                     {
-                        if (property.PropertyType == typeof(bool))
+                        if (value == null)
+                        {
+                            // do nothing here?
+                            continue;
+                        }
+
+                        if (property.PropertyType.UnwrapNullableType() == typeof(bool))
                         {
                             cell.SetCellValue((bool)value);
                         }
-                        else if (property.PropertyType == typeof(DateTime))
+                        else if (property.PropertyType.UnwrapNullableType() == typeof(DateTime))
                         {
                             if (dateCellStyle == null)
                             {
@@ -140,7 +146,7 @@ namespace NPOI.Extension
 
                             cell.SetCellValue(Convert.ToDateTime(value));
                         }
-                        else if (property.PropertyType == typeof(Guid))
+                        else if (property.PropertyType.UnwrapNullableType() == typeof(Guid))
                         {
                             cell.SetCellValue(Convert.ToString(value));
                         }
