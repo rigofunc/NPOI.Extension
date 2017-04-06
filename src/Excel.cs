@@ -2,17 +2,27 @@
 
 namespace NPOI.Extension
 {
+    using HSSF.UserModel;
+    using SS.UserModel;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
     using System.Reflection;
-    using HSSF.UserModel;
-    using SS.UserModel;
     using XSSF.UserModel;
 
+    /// <summary>
+    /// Represents the cell value converter, which convert the value to another value.
+    /// </summary>
+    /// <param name="row">The row of the excel sheet.</param>
+    /// <param name="cell">The cell of the excel sheet.</param>
+    /// <param name="value">The value to convert.</param>
+    /// <returns>The converted value.</returns>
     public delegate object ValueConverter(int row, int cell, object value);
 
+    /// <summary>
+    /// Provides some methods for loading <see cref="IEnumerable{T}"/> from excel.
+    /// </summary>
     public static class Excel
     {
         /// <summary>
@@ -21,6 +31,15 @@ namespace NPOI.Extension
         /// <value>The setting.</value>
         public static ExcelSetting Setting { get; set; } = new ExcelSetting();
 
+        /// <summary>
+        /// Loading <see cref="IEnumerable{T}"/> from specified excel file.
+        /// /// </summary>
+        /// <typeparam name="T">The type of the model.</typeparam>
+        /// <param name="excelFile">The excel file.</param>
+        /// <param name="startRow">The row to start read.</param>
+        /// <param name="sheetIndex">Which sheet to read.</param>
+        /// <param name="valueConverter">The cell value convert.</param>
+        /// <returns>The <see cref="IEnumerable{T}"/> loading from excel.</returns>
         public static IEnumerable<T> Load<T>(string excelFile, int startRow = 1, int sheetIndex = 0, ValueConverter valueConverter = null) where T : class, new()
         {
             if (!File.Exists(excelFile))

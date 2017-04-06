@@ -11,14 +11,6 @@ namespace NPOI.Extension
     public class FilterAttribute : Attribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="FilterAttribute"/> class.
-        /// </summary>
-        public FilterAttribute()
-        {
-            LastRow = null;
-        }
-
-        /// <summary>
         /// Gets or sets the first row index.
         /// </summary>
         public int FirstRow { get; set; }
@@ -29,7 +21,7 @@ namespace NPOI.Extension
         /// <remarks>
         /// If the <see cref="LastRow"/> is null, the value is dynamic calculate by code.
         /// </remarks>
-        public int? LastRow { get; set; }
+        public int? LastRow { get; set; } = null;
 
         /// <summary>
         /// Gets or sets the first column index.
