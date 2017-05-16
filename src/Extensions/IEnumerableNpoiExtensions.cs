@@ -17,16 +17,16 @@ namespace NPOI.Extension
     /// <summary>
     /// Defines some extensions for <see cref="IEnumerable{T}"/> that using NPOI to provides excel functionality.
     /// </summary>
-    public static class NpoiExtension
+    public static class IEnumerableNpoiExtensions
     {
-        public static byte[] ToExcelContent<T>(this IEnumerable<T> source)
+        public static byte[] ToExcelContent<T>(this IEnumerable<T> source, string sheetName = "sheet0")
         {
             if (source == null)
             {
                 throw new ArgumentNullException(nameof(source));
             }
 
-            var book = source.ToWorkbook(null, "sheet0");
+            var book = source.ToWorkbook(null, sheetName);
 
             using (var ms = new MemoryStream())
             {
