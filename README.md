@@ -1,12 +1,15 @@
-# Overview
-The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load from excel functionality.
-
-![NPOI.Extension demo](images/demo.PNG)
+The extensions for the NPOI, which provides IEnumerable&lt;T&gt; have save to and load from excel functionality.
 
 # Features
-- [x] Decouple the configuration from the POCO model use fluent api.
-- [x] Support POCO, so that if your mother langurage is Engilish, none any configuration;
-- [x] Support attribute base configuration, this feature will be very useful for English not their mother language developers
+- [x] Decouple the configuration from the POCO model by using `fluent api`.
+- [x] Support attributes based configuration.
+- [x] Support POCO, so that if your mother langurage is Engilish, none any configurations;
+
+The first two features will be very useful for English not their mother language developers.
+
+# Overview
+
+![NPOI.Extension demo](images/demo.PNG)
 
 # Get Started
 ## Using Package Manager Console to install NPOI.Extension
@@ -17,7 +20,7 @@ The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load fro
 
         using NPOI.Extension;
     
-## Model's Excel Configurations
+## Configure model's excel behaviors
 
 We can use `fluent api` or `attribute` to configure the model excel behaviors.
 
