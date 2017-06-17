@@ -31,5 +31,15 @@ namespace NPOI.Extension
         /// Gets or sets the date time formatter.
         /// </summary>
         public string DateFormatter { get; set; } = "yyyy-MM-dd HH:mm:ss";
+
+		/// <summary>
+		/// Gets the fluent configuration entry point for the specified <typeparamref name="TModel"/>.
+		/// </summary>
+		/// <returns>The <see cref="ModelConfiguration{TModel}"/>.</returns>
+		/// <typeparam name="TModel">The type of the model.</typeparam>
+		public ModelConfiguration<TModel> For<TModel>() where TModel : class
+		{
+			return new ModelConfiguration<TModel>();
+		}
     }
 }

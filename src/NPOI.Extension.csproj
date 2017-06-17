@@ -62,6 +62,8 @@
     <Compile Include="Attributes\StatisticsAttribute.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Extensions\IEnumerableNpoiExtensions.cs" />
+    <Compile Include="FluentConfiguration\ModelConfiguration.cs" />
+    <Compile Include="FluentConfiguration\PropertyConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
@@ -71,6 +73,7 @@
   <ItemGroup>
     <Folder Include="Attributes\" />
     <Folder Include="Extensions\" />
+    <Folder Include="FluentConfiguration\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

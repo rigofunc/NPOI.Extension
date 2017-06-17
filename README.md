@@ -4,9 +4,9 @@ The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load fro
 ![NPOI.Extension demo](images/demo.PNG)
 
 # Features
+- [x] Decouple the configuration from the POCO model use fluent api.
 - [x] Support POCO, so that if your mother langurage is Engilish, none any configuration;
 - [x] Support attribute base configuration, this feature will be very useful for English not their mother language developers
-- [ ] Decouple the configuration from the POCO model, like `FluentValidation`
 
 # Get Started
 ## Using Package Manager Console to install NPOI.Extension
@@ -17,7 +17,72 @@ The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load fro
 
         using NPOI.Extension;
     
-## Apply attribute to the model
+## Model's Excel Configurations
+
+We can use `fluent api` or `attribute` to configure the model excel behaviors.
+
+### 1. Use Fluent Api
+
+```csharp
+        public class Report {
+            public string City { get; set; }
+            public string Building { get; set; }
+            public DateTime HandleTime { get; set; }
+            public string Broker { get; set; }
+            public string Customer { get; set; }
+            public string Room { get; set; }
+            public decimal Brokerage { get; set; }
+            public decimal Profits { get; set; }
+        }
+
+        /// <summary>
+        /// Use fluent configuration api. (doesn't poison your POCO)
+        /// </summary>
+        static void ExcelFluentConfig() 
+        {
+            var mc = Excel.Setting.For<Report>();
+
+            mc.HasStatistics("合计", "SUM", 6, 7)
+              .HasFilter(firstColumn: 0, lastColumn: 2, firstRow: 0)
+              .HasFreeze(columnSplit: 2,rowSplit: 1, leftMostColumn: 2, topMostRow: 1);
+
+            mc.Property(r => r.City)
+              .HasExcelIndex(0)
+              .HasExcelTitle("城市")
+              .IsMergeEnabled(true);
+
+            mc.Property(r => r.Building)
+              .HasExcelIndex(1)
+              .HasExcelTitle("楼盘")
+              .IsMergeEnabled(true);
+
+            mc.Property(r => r.HandleTime)
+              .HasExcelIndex(2)
+              .HasExcelTitle("成交时间");
+            
+            mc.Property(r => r.Broker)
+              .HasExcelIndex(3)
+              .HasExcelTitle("经纪人");
+            
+            mc.Property(r => r.Customer)
+              .HasExcelIndex(4)
+              .HasExcelTitle("客户");
+
+            mc.Property(r => r.Room)
+              .HasExcelIndex(5)
+              .HasExcelTitle("房源");
+
+            mc.Property(r => r.Brokerage)
+              .HasExcelIndex(6)
+              .HasExcelTitle("佣金(元)");
+
+            mc.Property(r => r.Profits)
+              .HasExcelIndex(7)
+              .HasExcelTitle("收益(元)");
+        }
+```
+
+### 2. Use attributes
 
 ```csharp
         [Filter(FirstCol = 0, FirstRow = 0, LastCol = 2)]
