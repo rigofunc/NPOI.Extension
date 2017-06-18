@@ -1,4 +1,4 @@
-The extensions for the NPOI, which provides IEnumerable&lt;T&gt; have save to and load from excel functionality.
+The extensions for the NPOI, which provides IEnumerable&lt;T&gt; have save to and load from excel functionalities.
 
 # Features
 - [x] Decouple the configuration from the POCO model by using `fluent api`.
@@ -22,7 +22,7 @@ The first two features will be very useful for English not their mother language
     
 ## Configure model's excel behaviors
 
-We can use `fluent api` or `attribute` to configure the model excel behaviors.
+We can use `fluent api` or `attributes` to configure the model excel behaviors.
 
 ### 1. Use Fluent Api
 

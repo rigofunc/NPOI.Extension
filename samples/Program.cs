@@ -52,12 +52,12 @@ namespace samples
             mc.Property(r => r.City)
               .HasExcelIndex(0)
               .HasExcelTitle("城市")
-              .IsMergeEnabled(true);
+              .IsMergeEnabled();
 
             mc.Property(r => r.Building)
               .HasExcelIndex(1)
               .HasExcelTitle("楼盘")
-              .IsMergeEnabled(true);
+              .IsMergeEnabled();
 
 			mc.Property(r => r.HandleTime)
 			  .HasExcelIndex(2)

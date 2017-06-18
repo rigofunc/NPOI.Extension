@@ -64,6 +64,10 @@
     <Compile Include="Extensions\IEnumerableNpoiExtensions.cs" />
     <Compile Include="FluentConfiguration\ModelConfiguration.cs" />
     <Compile Include="FluentConfiguration\PropertyConfiguration.cs" />
+    <Compile Include="Internal\StatisticsConfig.cs" />
+    <Compile Include="Internal\FreezeConfig.cs" />
+    <Compile Include="Internal\FilterConfig.cs" />
+    <Compile Include="Internal\CellConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
@@ -74,6 +78,7 @@
     <Folder Include="Attributes\" />
     <Folder Include="Extensions\" />
     <Folder Include="FluentConfiguration\" />
+    <Folder Include="Internal\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
