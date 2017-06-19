@@ -2,6 +2,9 @@
 
 namespace NPOI.Extension
 {
+    /// <summary>
+    /// Represents the excel fileter configration for the specified model.
+    /// </summary>
     internal class FilterConfig
     {
 		/// <summary>

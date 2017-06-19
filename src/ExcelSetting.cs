@@ -2,6 +2,9 @@
 
 namespace NPOI.Extension
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// Represents the all setting for save to and loading from excel.
     /// </summary>
@@ -35,11 +38,21 @@ namespace NPOI.Extension
 		/// <summary>
 		/// Gets the fluent configuration entry point for the specified <typeparamref name="TModel"/>.
 		/// </summary>
-		/// <returns>The <see cref="ModelConfiguration{TModel}"/>.</returns>
+        /// <returns>The <see cref="FluentConfiguration{TModel}"/>.</returns>
 		/// <typeparam name="TModel">The type of the model.</typeparam>
-		public ModelConfiguration<TModel> For<TModel>() where TModel : class
+        public FluentConfiguration<TModel> For<TModel>() where TModel : class
 		{
-			return new ModelConfiguration<TModel>();
+            var mc = new FluentConfiguration<TModel>();
+
+            FluentConfigs[typeof(TModel)] = mc;
+
+            return mc;
 		}
-    }
+
+        /// <summary>
+        /// Gets the model fluent configs.
+        /// </summary>
+        /// <value>The model fluent configs.</value>
+        internal IDictionary<Type, IFluentConfiguration> FluentConfigs { get; } = new Dictionary<Type, IFluentConfiguration>();
+	}
 }

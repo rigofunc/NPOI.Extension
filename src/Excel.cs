@@ -2,13 +2,13 @@
 
 namespace NPOI.Extension
 {
-    using HSSF.UserModel;
-    using SS.UserModel;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
     using System.Reflection;
+	using SS.UserModel;
+	using HSSF.UserModel;
     using XSSF.UserModel;
 
     /// <summary>

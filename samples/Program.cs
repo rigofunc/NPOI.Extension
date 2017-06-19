@@ -43,43 +43,43 @@ namespace samples
 		/// </summary>
 		static void FluentConfiguration() 
         {
-            var mc = Excel.Setting.For<Report>();
+            var fc = Excel.Setting.For<Report>();
 
-            mc.HasStatistics("合计", "SUM", 6, 7)
+            fc.HasStatistics("合计", "SUM", 6, 7)
               .HasFilter(firstColumn: 0, lastColumn: 2, firstRow: 0)
               .HasFreeze(columnSplit: 2,rowSplit: 1, leftMostColumn: 2, topMostRow: 1);
 
-            mc.Property(r => r.City)
+            fc.Property(r => r.City)
               .HasExcelIndex(0)
               .HasExcelTitle("城市")
               .IsMergeEnabled();
 
-            mc.Property(r => r.Building)
+            fc.Property(r => r.Building)
               .HasExcelIndex(1)
               .HasExcelTitle("楼盘")
               .IsMergeEnabled();
 
-			mc.Property(r => r.HandleTime)
+			fc.Property(r => r.HandleTime)
 			  .HasExcelIndex(2)
 			  .HasExcelTitle("成交时间");
             
-			mc.Property(r => r.Broker)
+			fc.Property(r => r.Broker)
 			  .HasExcelIndex(3)
 			  .HasExcelTitle("经纪人");
             
-			mc.Property(r => r.Customer)
+			fc.Property(r => r.Customer)
 			  .HasExcelIndex(4)
 			  .HasExcelTitle("客户");
 
-			mc.Property(r => r.Room)
+			fc.Property(r => r.Room)
 			  .HasExcelIndex(5)
 			  .HasExcelTitle("房源");
 
-			mc.Property(r => r.Brokerage)
+			fc.Property(r => r.Brokerage)
 			  .HasExcelIndex(6)
 			  .HasExcelTitle("佣金(元)");
 
-            mc.Property(r => r.Profits)
+            fc.Property(r => r.Profits)
 			  .HasExcelIndex(7)
 			  .HasExcelTitle("收益(元)");
         }

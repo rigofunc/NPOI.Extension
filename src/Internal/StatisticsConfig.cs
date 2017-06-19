@@ -2,6 +2,9 @@
 
 namespace NPOI.Extension
 {
+    /// <summary>
+    /// Represents the excel statistics for the specified model.
+    /// </summary>
     internal class StatisticsConfig
     {
 		/// <summary>

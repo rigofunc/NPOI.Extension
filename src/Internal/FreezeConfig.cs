@@ -2,6 +2,9 @@
 
 namespace NPOI.Extension
 {
+    /// <summary>
+    /// Represents the excel freeze configuration for the specified model.
+    /// </summary>
     internal class FreezeConfig
     {
 		/// <summary>

@@ -2,6 +2,9 @@
 
 namespace NPOI.Extension
 {
+    /// <summary>
+    /// Represents the excel cell configuration for the specified model's property.
+    /// </summary>
     internal class CellConfig
     {
 		/// <summary>

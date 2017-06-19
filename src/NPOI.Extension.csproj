@@ -62,12 +62,13 @@
     <Compile Include="Attributes\StatisticsAttribute.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Extensions\IEnumerableNpoiExtensions.cs" />
-    <Compile Include="FluentConfiguration\ModelConfiguration.cs" />
+    <Compile Include="FluentConfiguration\FluentConfiguration.cs" />
     <Compile Include="FluentConfiguration\PropertyConfiguration.cs" />
     <Compile Include="Internal\StatisticsConfig.cs" />
     <Compile Include="Internal\FreezeConfig.cs" />
     <Compile Include="Internal\FilterConfig.cs" />
     <Compile Include="Internal\CellConfig.cs" />
+    <Compile Include="FluentConfiguration\IFluentConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
