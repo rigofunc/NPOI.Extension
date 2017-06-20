@@ -69,23 +69,39 @@ namespace NPOI.Extension
             // can static properties or only instance properties?
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
 
-            // find out the attributes
+            bool fluentConfigEnabled = false;
+            // get the fluent config
+            if (Excel.Setting.FluentConfigs.TryGetValue(typeof(T), out var fluentConfig))
+            {
+                fluentConfigEnabled = true;
+            }
+
+            // find out the configs
             var haventCols = true;
-            var attributes = new ColumnAttribute[properties.Length];
+            var cellConfigs = new CellConfig[properties.Length];
             for (var j = 0; j < properties.Length; j++)
             {
                 var property = properties[j];
-                var attrs = property.GetCustomAttributes(typeof(ColumnAttribute), true) as ColumnAttribute[];
-                if (attrs != null && attrs.Length > 0)
-                {
-                    attributes[j] = attrs[0];
 
-                    // attribute configure first(Hight Priority)
-                    haventCols = false;
+                // get the property config
+                if (fluentConfigEnabled && fluentConfig.PropertyConfigs.TryGetValue(property, out var pc))
+                {
+					// fluent configure first(Hight Priority)
+                    cellConfigs[j] = pc.CellConfig;
+					haventCols = false;
                 }
                 else
                 {
-                    attributes[j] = null;
+					var attrs = property.GetCustomAttributes(typeof(ColumnAttribute), true) as ColumnAttribute[];
+					if (attrs != null && attrs.Length > 0)
+					{
+                        cellConfigs[j] = attrs[0].CellConfig;
+						haventCols = false;
+					}
+					else
+					{
+						cellConfigs[j] = null;
+					}
                 }
             }
 
@@ -109,11 +125,11 @@ namespace NPOI.Extension
                     int index = i;
                     if (!haventCols)
                     {
-                        var column = attributes[i];
-                        if (column == null)
+                        var config = cellConfigs[i];
+                        if (config == null)
                             continue;
                         else
-                            index = column.Index;
+                            index = config.Index;
                     }
 
                     var value = property.GetValue(item, null);
@@ -171,22 +187,25 @@ namespace NPOI.Extension
                 vStyle.VerticalAlignment = VerticalAlignment.Center;
 
                 // merge cells
-                for (var j = 0; j < attributes.Length; j++)
+                for (var j = 0; j < cellConfigs.Length; j++)
                 {
-                    var column = attributes[j];
-                    if (column == null)
+                    var config = cellConfigs[j];
+                    if (config == null)
                     {
                         continue;
                     }
 
-                    var previous = "";
+					var previous = "";
+                    //object previous = null;
                     int rowspan = 0, row = 1;
-                    if (column.AllowMerge)
+                    if (config.AllowMerge)
                     {
                         for (row = 1; row < rowIndex; row++)
                         {
-                            var value = sheet.GetRow(row).Cells[column.Index].StringCellValue;
-                            if (previous == value && !string.IsNullOrEmpty(value))
+							var value = sheet.GetRow(row).Cells[config.Index].StringCellValue;
+							if (previous == value && !string.IsNullOrEmpty(value))
+                            //var value = sheet.GetRow(row).GetCellValue(config.Index);
+                            //if (previous == value && value != null)
                             {
                                 rowspan++;
                             }
@@ -194,8 +213,8 @@ namespace NPOI.Extension
                             {
                                 if (rowspan > 1)
                                 {
-                                    sheet.GetRow(row - rowspan).Cells[column.Index].CellStyle = vStyle;
-                                    sheet.AddMergedRegion(new CellRangeAddress(row - rowspan, row - 1, column.Index, column.Index));
+                                    sheet.GetRow(row - rowspan).Cells[config.Index].CellStyle = vStyle;
+                                    sheet.AddMergedRegion(new CellRangeAddress(row - rowspan, row - 1, config.Index, config.Index));
                                 }
                                 rowspan = 1;
                                 previous = value;
@@ -205,8 +224,8 @@ namespace NPOI.Extension
                         // in what case? -> all rows need to be merged
                         if (rowspan > 1)
                         {
-                            sheet.GetRow(row - rowspan).Cells[column.Index].CellStyle = vStyle;
-                            sheet.AddMergedRegion(new CellRangeAddress(row - rowspan, row - 1, column.Index, column.Index));
+                            sheet.GetRow(row - rowspan).Cells[config.Index].CellStyle = vStyle;
+                            sheet.AddMergedRegion(new CellRangeAddress(row - rowspan, row - 1, config.Index, config.Index));
                         }
                     }
                 }
@@ -230,16 +249,16 @@ namespace NPOI.Extension
                 int index = i;
                 if (!haventCols)
                 {
-                    var column = attributes[i];
-                    if (column == null)
+                    var config = cellConfigs[i];
+                    if (config == null)
                         continue;
                     else
                     {
-                        index = column.Index;
+                        index = config.Index;
                         // if not title, using property name as title.
-                        if (!string.IsNullOrEmpty(column.Title))
+                        if (!string.IsNullOrEmpty(config.Title))
                         {
-                            title = column.Title;
+                            title = config.Title;
                         }
                     }
                 }
@@ -251,36 +270,71 @@ namespace NPOI.Extension
 
             if (rowIndex > 0)
             {
-                // statistics row
-                var statistics = typeof(T).GetCustomAttributes(typeof(StatisticsAttribute), true) as StatisticsAttribute[];
-                if (statistics != null && statistics.Length > 0)
+                var statistics = new List<StatisticsConfig>();
+		        var filterConfigs = new List<FilterConfig>();
+		        var freezeConfigs = new List<FreezeConfig>();
+                if (fluentConfigEnabled) 
                 {
-                    var first = statistics[0];
-                    var lastRow = sheet.CreateRow(rowIndex);
-                    var cell = lastRow.CreateCell(0);
-                    cell.SetCellValue(first.Name);
-                    foreach (var column in first.Columns)
-                    {
-                        cell = lastRow.CreateCell(column);
-                        cell.CellFormula = $"{first.Formula}({GetCellPosition(1, column)}:{GetCellPosition(rowIndex - 1, column)})";
+                    statistics.AddRange(fluentConfig.StatisticsConfigs);
+                    freezeConfigs.AddRange(fluentConfig.FreezeConfigs);
+                    filterConfigs.AddRange(fluentConfig.FilterConfigs);
+                }
+                else
+                {
+                    var attributes = typeof(T).GetCustomAttributes(typeof(StatisticsAttribute), true) as StatisticsAttribute[];
+					if (attributes != null && attributes.Length > 0)
+					{
+                        foreach (var item in attributes)
+                        {
+                            statistics.Add(item.StatisticsConfig);
+                        }
+                    }
+
+					var freezes = typeof(T).GetCustomAttributes(typeof(FreezeAttribute), true) as FreezeAttribute[];
+					if (freezes != null && freezes.Length > 0)
+					{
+                        foreach (var item in freezes)
+                        {
+                            freezeConfigs.Add(item.FreezeConfig);
+                        }
+                    }
+
+					var filters = typeof(T).GetCustomAttributes(typeof(FilterAttribute), true) as FilterAttribute[];
+					if (filters != null && filters.Length > 0)
+					{
+                        foreach (var item in filters)
+                        {
+                            filterConfigs.Add(item.FilterConfig);
+                        }
                     }
                 }
 
-                // set the freeze
-                var fattrs = typeof(T).GetCustomAttributes(typeof(FreezeAttribute), true) as FreezeAttribute[];
-                if (fattrs != null && fattrs.Length > 0)
-                {
-                    var freeze = fattrs[0];
-                    sheet.CreateFreezePane(freeze.ColSplit, freeze.RowSplit, freeze.LeftMostColumn, freeze.TopRow);
-                }
+				// statistics row
+				foreach (var item in statistics)
+				{
+					var lastRow = sheet.CreateRow(rowIndex);
+					var cell = lastRow.CreateCell(0);
+					cell.SetCellValue(item.Name);
+					foreach (var column in item.Columns)
+					{
+						cell = lastRow.CreateCell(column);
+						cell.CellFormula = $"{item.Formula}({GetCellPosition(1, column)}:{GetCellPosition(rowIndex - 1, column)})";
+					}
 
-                // set the auto filter
-                var filters = typeof(T).GetCustomAttributes(typeof(FilterAttribute), true) as FilterAttribute[];
-                if (filters != null && filters.Length > 0)
-                {
-                    var filter = filters[0];
-                    sheet.SetAutoFilter(new CellRangeAddress(filter.FirstRow, filter.LastRow ?? rowIndex, filter.FirstCol, filter.LastCol));
-                }
+					rowIndex++;
+				}
+
+                // set the freeze
+                foreach (var freeze in freezeConfigs)
+				{
+					sheet.CreateFreezePane(freeze.ColSplit, freeze.RowSplit, freeze.LeftMostColumn, freeze.TopRow);
+				}
+
+				// set the auto filter
+				foreach (var filter in filterConfigs)
+				{
+					sheet.SetAutoFilter(new CellRangeAddress(filter.FirstRow, filter.LastRow ?? rowIndex, filter.FirstCol, filter.LastCol));
+				}
             }
 
             // autosize the all columns

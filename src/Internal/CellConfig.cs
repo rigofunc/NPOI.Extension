@@ -29,6 +29,6 @@ namespace NPOI.Extension
         /// <summary>
         /// Gets or sets a value indicating whether allow merge the same value cells.
         /// </summary>
-        public bool AllowMerge { get; set; } = true;
+        public bool AllowMerge { get; set; }
     }
 }

@@ -8,7 +8,10 @@ namespace samples
     {
         static void Main(string[] args)
         {
-            var len = 1000;
+            // global call this
+            FluentConfiguration();
+
+            var len = 10;
             var reports = new Report[len];
             for (int i = 0; i < len; i++)
             {
@@ -23,20 +26,18 @@ namespace samples
                     Brokerage = 125M,
                     Profits = 25m
                 };
-
-                // other data here...
             }
 
             // save to excel file
-            reports.ToExcel(@"D:\demo.xlsx");
+            reports.ToExcel(@"/Users/rigofunc/Documents/sample.xlsx");
 
-            var files = Directory.GetFiles(@"D:\excels", "*.xlsx", SearchOption.TopDirectoryOnly);
-            foreach (var file in files)
-            {
-                // load from excel
-                var loadFromExcel = Excel.Load<Model>(file);
-            }
-        }
+			//var files = Directory.GetFiles(@"/Users/rigofunc/Documents/excels", "*.xlsx", SearchOption.TopDirectoryOnly);
+			//foreach (var file in files)
+			//{
+			//	// load from excel
+			//	var loadFromExcel = Excel.Load<Model>(file);
+			//}
+		}
 
 		/// <summary>
         /// Use fluent configuration api. (doesn't poison your POCO)
