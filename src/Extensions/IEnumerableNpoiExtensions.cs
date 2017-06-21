@@ -195,17 +195,14 @@ namespace NPOI.Extension
                         continue;
                     }
 
-					var previous = "";
-                    //object previous = null;
+                    object previous = null;
                     int rowspan = 0, row = 1;
                     if (config.AllowMerge)
                     {
                         for (row = 1; row < rowIndex; row++)
                         {
-							var value = sheet.GetRow(row).Cells[config.Index].StringCellValue;
-							if (previous == value && !string.IsNullOrEmpty(value))
-                            //var value = sheet.GetRow(row).GetCellValue(config.Index);
-                            //if (previous == value && value != null)
+                            var value = sheet.GetRow(row).GetCellValue(config.Index);
+                            if (object.Equals(previous, value) && value != null)
                             {
                                 rowspan++;
                             }
