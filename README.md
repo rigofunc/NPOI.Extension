@@ -13,7 +13,7 @@ The first two features will be very useful for English not their mother language
 
 # Get Started
 
-The following demo codes come from [sample](samples/NPOI.Extension.Example)
+The following demo codes come from [sample](samples), download and run it for more information.
 
 ## Using Package Manager Console to install NPOI.Extension
 

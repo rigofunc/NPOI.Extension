@@ -3,10 +3,10 @@
 namespace NPOI.Extension
 {
     using System;
-    using System.Collections.Generic;
-    using System.Globalization;
     using System.IO;
-    using System.Reflection;
+    using System.Globalization;
+    using System.Collections.Generic;
+	using System.Reflection;
 	using SS.UserModel;
 	using HSSF.UserModel;
     using XSSF.UserModel;
@@ -60,23 +60,39 @@ namespace NPOI.Extension
             // get the writable properties
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty);
 
+            bool fluentConfigEnabled = false;
+            // get the fluent config
+            if (Excel.Setting.FluentConfigs.TryGetValue(typeof(T), out var fluentConfig))
+            {
+                fluentConfigEnabled = true;
+            }
+
             // find out the attributes
             var haventCols = true;
-            var attributes = new ColumnAttribute[properties.Length];
+            var cellConfigs = new CellConfig[properties.Length];
             for (var j = 0; j < properties.Length; j++)
             {
                 var property = properties[j];
-                var attrs = property.GetCustomAttributes(typeof(ColumnAttribute), true) as ColumnAttribute[];
-                if (attrs != null && attrs.Length > 0)
-                {
-                    attributes[j] = attrs[0];
-
-                    haventCols = false;
-                }
-                else
-                {
-                    attributes[j] = null;
-                }
+				// get the property config
+				if (fluentConfigEnabled && fluentConfig.PropertyConfigs.TryGetValue(property, out var pc))
+				{
+					// fluent configure first(Hight Priority)
+					cellConfigs[j] = pc.CellConfig;
+					haventCols = false;
+				}
+				else
+				{
+					var attrs = property.GetCustomAttributes(typeof(ColumnAttribute), true) as ColumnAttribute[];
+					if (attrs != null && attrs.Length > 0)
+					{
+						cellConfigs[j] = attrs[0].CellConfig;
+						haventCols = false;
+					}
+					else
+					{
+						cellConfigs[j] = null;
+					}
+				}
             }
 
             var list = new List<T>();
@@ -105,14 +121,14 @@ namespace NPOI.Extension
 
                     if (!haventCols)
                     {
-                        var column = attributes[i];
-                        if (column == null)
+                        var config = cellConfigs[i];
+                        if (config == null)
                             continue;
                         else
                         {
-                            index = column.Index;
-                            title = column.Title;
-                            autoIndex = column.AutoIndex;
+                            index = config.Index;
+                            title = config.Title;
+                            autoIndex = config.AutoIndex;
 
                             // Try to autodiscover index from title and cache
                             if (index < 0 && autoIndex && !string.IsNullOrEmpty(title))
@@ -126,7 +142,7 @@ namespace NPOI.Extension
                                             index = cell.ColumnIndex;
 
                                             // cache
-                                            column.Index = index;
+                                            config.Index = index;
 
                                             break;
                                         }
