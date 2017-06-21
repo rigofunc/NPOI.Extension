@@ -12,6 +12,9 @@ The first two features will be very useful for English not their mother language
 ![NPOI.Extension demo](images/demo.PNG)
 
 # Get Started
+
+The following demo codes come from [sample](samples/NPOI.Extension.Example)
+
 ## Using Package Manager Console to install NPOI.Extension
 
         PM> Install-Package NPOI.Extension
