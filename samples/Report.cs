@@ -10,7 +10,7 @@ namespace samples {
         public string City { get; set; }
         [Column(Index = 1, Title = "楼盘", AllowMerge = true)]
         public string Building { get; set; }
-        [Column(Index = 2, Title = "成交时间")]
+        [Column(Index = 2, Title = "成交时间", Formatter = "yyyy-MM-dd HH:mm:ss")]
         public DateTime HandleTime { get; set; }
         [Column(Index = 3, Title = "经纪人")]
         public string Broker { get; set; }

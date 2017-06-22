@@ -62,7 +62,8 @@ namespace samples
 
 			fc.Property(r => r.HandleTime)
 			  .HasExcelIndex(2)
-			  .HasExcelTitle("成交时间");
+			  .HasExcelTitle("成交时间")
+              .HasDataFormatter("yyyy-MM-dd");
             
 			fc.Property(r => r.Broker)
 			  .HasExcelIndex(3)
@@ -78,7 +79,8 @@ namespace samples
 
 			fc.Property(r => r.Brokerage)
 			  .HasExcelIndex(6)
-			  .HasExcelTitle("佣金(元)");
+			  .HasExcelTitle("佣金(元)")
+              .HasDataFormatter("C");
 
             fc.Property(r => r.Profits)
 			  .HasExcelIndex(7)

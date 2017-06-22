@@ -30,5 +30,17 @@ namespace NPOI.Extension
         /// Gets or sets a value indicating whether allow merge the same value cells.
         /// </summary>
         public bool AllowMerge { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this value of the property is ignored.
+        /// </summary>
+        /// <value><c>true</c> if is ignored; otherwise, <c>false</c>.</value>
+        public bool IsIgnored { get; set; }
+
+        /// <summary>
+        /// Gets or sets the formatter for formatting the value.
+        /// </summary>
+        /// <value>The formatter.</value>
+        public string Formatter { get; set; }
     }
 }
