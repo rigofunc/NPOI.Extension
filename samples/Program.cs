@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using NPOI.Extension;
 
 namespace samples
@@ -28,15 +27,13 @@ namespace samples
                 };
             }
 
-            // save to excel file
-            reports.ToExcel(@"/Users/rigofunc/Documents/sample.xlsx");
+            var excelFile = @"/Users/rigofunc/Documents/sample.xlsx";
 
-			//var files = Directory.GetFiles(@"/Users/rigofunc/Documents/excels", "*.xlsx", SearchOption.TopDirectoryOnly);
-			//foreach (var file in files)
-			//{
-			//	// load from excel
-			//	var loadFromExcel = Excel.Load<Model>(file);
-			//}
+            // save to excel file
+            reports.ToExcel(excelFile);
+
+			// load from excel
+			var loadFromExcel = Excel.Load<Report>(excelFile);
 		}
 
 		/// <summary>
@@ -79,8 +76,7 @@ namespace samples
 
 			fc.Property(r => r.Brokerage)
 			  .HasExcelIndex(6)
-			  .HasExcelTitle("佣金(元)")
-              .HasDataFormatter("C");
+			  .HasExcelTitle("佣金(元)");
 
             fc.Property(r => r.Profits)
 			  .HasExcelIndex(7)

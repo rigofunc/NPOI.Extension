@@ -115,51 +115,93 @@ We can use `fluent api` or `attributes` to configure the model excel behaviors. 
     }
 ```
 
-## Export POCO to excel.
+## Export POCO to excel & Load IEnumerable&lt;T&gt; from excel.
 
 ```csharp
-        var len = 1000;
-        var reports = new Report[len];
-        for (int i = 0; i < len; i++) {
-            reports[i] = new Report {
+using System;
+using NPOI.Extension;
+
+namespace samples
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // global call this
+            FluentConfiguration();
+
+            var len = 10;
+            var reports = new Report[len];
+            for (int i = 0; i < len; i++)
+            {
+                reports[i] = new Report
+                {
                     City = "ningbo",
                     Building = "世茂首府",
                     HandleTime = new DateTime(2015, 11, 23),
-                    Broker = "RigoFunc 18957139**7",
-                    Customer = "RigoFunc 18957139**7",
+                    Broker = "rigofunc 18957139**7",
+                    Customer = "rigofunc 18957139**7",
                     Room = "2#1703",
                     Brokerage = 125M,
                     Profits = 25m
-            };
+                };
+            }
 
-            // other data here...
+            var excelFile = @"/Users/rigofunc/Documents/sample.xlsx";
+
+            // save to excel file
+            reports.ToExcel(excelFile);
+
+            // load from excel
+            var loadFromExcel = Excel.Load<Report>(excelFile);
         }
 
-        // save the excel file
-        reports.ToExcel(@"C:\demo.xlsx");
- ```       
-## Load IEnumerable&lt;T&gt; from excel
+        /// <summary>
+        /// Use fluent configuration api. (doesn't poison your POCO)
+        /// </summary>
+        static void FluentConfiguration() 
+        {
+            var fc = Excel.Setting.For<Report>();
 
-```csharp
-        // load from excel
-        var loadFromExcel = Excel.Load<Report>(@"C:\demo.xlsx");
-```
+            fc.HasStatistics("合计", "SUM", 6, 7)
+              .HasFilter(firstColumn: 0, lastColumn: 2, firstRow: 0)
+              .HasFreeze(columnSplit: 2,rowSplit: 1, leftMostColumn: 2, topMostRow: 1);
 
-## Custom excel export setting
+            fc.Property(r => r.City)
+              .HasExcelIndex(0)
+              .HasExcelTitle("城市")
+              .IsMergeEnabled();
 
-The POCO export use following setting, so, the end user can costomize the setting like `Excel.Setting.DateFormatter = "yyyy-MM-dd";`
+            fc.Property(r => r.Building)
+              .HasExcelIndex(1)
+              .HasExcelTitle("楼盘")
+              .IsMergeEnabled();
 
-```csharp
-    public class ExcelSetting
-    {
-        public string Company { get; set; } = "rigofunc (xuyingting)";
+            fc.Property(r => r.HandleTime)
+              .HasExcelIndex(2)
+              .HasExcelTitle("成交时间")
+              .HasDataFormatter("yyyy-MM-dd");
+            
+            fc.Property(r => r.Broker)
+              .HasExcelIndex(3)
+              .HasExcelTitle("经纪人");
+            
+            fc.Property(r => r.Customer)
+              .HasExcelIndex(4)
+              .HasExcelTitle("客户");
 
-        public string Author { get; set; } = "rigofunc (xuyingting)";
+            fc.Property(r => r.Room)
+              .HasExcelIndex(5)
+              .HasExcelTitle("房源");
 
-        public string Subject { get; set; } = "The extensions of NPOI, which provides IEnumerable<T>; save to and load from excel.";
+            fc.Property(r => r.Brokerage)
+              .HasExcelIndex(6)
+              .HasExcelTitle("佣金(元)");
 
-        public bool UserXlsx { get; set; } = true;
-
-        public string DateFormatter { get; set; } = "yyyy-MM-dd HH:mm:ss";
+            fc.Property(r => r.Profits)
+              .HasExcelIndex(7)
+              .HasExcelTitle("收益(元)");
+        }
     }
-```
+}
+ ```       

@@ -3,6 +3,7 @@
 namespace NPOI.Extension
 {
     using System;
+    using System.Linq;
     using System.IO;
     using System.Globalization;
     using System.Collections.Generic;
@@ -52,11 +53,6 @@ namespace NPOI.Extension
             // currently, only handle sheet one (or call side using foreach to support multiple sheet)
             var sheet = workbook.GetSheetAt(sheetIndex);
 
-            // get the physical rows
-            var rows = sheet.GetRowEnumerator();
-
-            IRow headerRow = null;
-
             // get the writable properties
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty);
 
@@ -67,18 +63,14 @@ namespace NPOI.Extension
                 fluentConfigEnabled = true;
             }
 
-            // find out the attributes
-            var haventCols = true;
             var cellConfigs = new CellConfig[properties.Length];
             for (var j = 0; j < properties.Length; j++)
             {
                 var property = properties[j];
-				// get the property config
 				if (fluentConfigEnabled && fluentConfig.PropertyConfigs.TryGetValue(property, out var pc))
 				{
 					// fluent configure first(Hight Priority)
 					cellConfigs[j] = pc.CellConfig;
-					haventCols = false;
 				}
 				else
 				{
@@ -86,7 +78,6 @@ namespace NPOI.Extension
 					if (attrs != null && attrs.Length > 0)
 					{
 						cellConfigs[j] = attrs[0].CellConfig;
-						haventCols = false;
 					}
 					else
 					{
@@ -95,9 +86,31 @@ namespace NPOI.Extension
 				}
             }
 
+			var statistics = new List<StatisticsConfig>();
+			if (fluentConfigEnabled)
+			{
+				statistics.AddRange(fluentConfig.StatisticsConfigs);
+			}
+			else
+			{
+				var attributes = typeof(T).GetCustomAttributes(typeof(StatisticsAttribute), true) as StatisticsAttribute[];
+				if (attributes != null && attributes.Length > 0)
+				{
+					foreach (var item in attributes)
+					{
+						statistics.Add(item.StatisticsConfig);
+					}
+				}
+			}
+
             var list = new List<T>();
             int idx = 0;
-            while (rows.MoveNext())
+			
+            IRow headerRow = null;
+
+			// get the physical rows
+			var rows = sheet.GetRowEnumerator();
+			while (rows.MoveNext())
             {
                 var row = rows.Current as IRow;
 
@@ -111,64 +124,81 @@ namespace NPOI.Extension
                 }
 
                 var item = new T();
+                var itemIsValid = true;
                 for (int i = 0; i < properties.Length; i++)
                 {
                     var prop = properties[i];
 
                     int index = i;
-                    var title = string.Empty;
-                    var autoIndex = false;
+                    var config = cellConfigs[i];
+					if (config != null)
+					{
+						index = config.Index;
+						
+                        // Try to autodiscover index from title and cache
+						if (index < 0 && config.AutoIndex && !string.IsNullOrEmpty(config.Title))
+						{
+							foreach (var cell in headerRow.Cells)
+							{
+								if (!string.IsNullOrEmpty(cell.StringCellValue))
+								{
+                                    if (cell.StringCellValue.Equals(config.Title, StringComparison.InvariantCultureIgnoreCase))
+									{
+										index = cell.ColumnIndex;
 
-                    if (!haventCols)
-                    {
-                        var config = cellConfigs[i];
-                        if (config == null)
-                            continue;
-                        else
+										// cache
+										config.Index = index;
+
+										break;
+									}
+								}
+							}
+						}
+
+                        // check again
+                        if (index < 0) 
                         {
-                            index = config.Index;
-                            title = config.Title;
-                            autoIndex = config.AutoIndex;
+                            throw new ApplicationException("Please set the 'index' or 'autoIndex' by fluent api or attributes");
+                        }
+					}
 
-                            // Try to autodiscover index from title and cache
-                            if (index < 0 && autoIndex && !string.IsNullOrEmpty(title))
-                            {
-                                foreach (var cell in headerRow.Cells)
-                                {
-                                    if (!string.IsNullOrEmpty(cell.StringCellValue))
-                                    {
-                                        if (cell.StringCellValue.Equals(title))
-                                        {
-                                            index = cell.ColumnIndex;
+                    var value = row.GetCellValue(index);
+					if (valueConverter != null)
+					{
+						value = valueConverter(row.RowNum, index, value);
+					}
 
-                                            // cache
-                                            config.Index = index;
+                    if (value == null) 
+                    {
+                        continue;
+                    }
 
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
+                    // check whether is statics row
+                    if (idx > startRow + 1 && index == 0 
+                        && 
+                        statistics.Any(s => s.Name.Equals(value.ToString(), StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        var st = statistics.FirstOrDefault(s => s.Name.Equals(value.ToString(), StringComparison.InvariantCultureIgnoreCase));
+                        var formula = row.GetCellValue(st.Columns.First()).ToString();
+                        if (formula.StartsWith(st.Formula, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            itemIsValid = false;
+                            break;
                         }
                     }
 
-                    var value = row.GetCellValue(index);
-                    if (valueConverter != null)
-                    {
-                        value = valueConverter(row.RowNum, index, value);
-                    }
-                    if (value != null)
-                    {
-                        // property type
-                        var propType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+					// property type
+					var propType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
 
-                        var safeValue = Convert.ChangeType(value, propType, CultureInfo.CurrentCulture);
+					var safeValue = Convert.ChangeType(value, propType, CultureInfo.CurrentCulture);
 
-                        prop.SetValue(item, safeValue, null);
-                    }
+					prop.SetValue(item, safeValue, null);
                 }
 
-                list.Add(item);
+                if (itemIsValid)
+                {
+					list.Add(item);
+				}
             }
 
             return list;
@@ -180,6 +210,12 @@ namespace NPOI.Extension
             if (cell == null)
             {
                 return null;
+            }
+
+            if (cell.IsMergedCell)
+            {
+                // what can I do here?
+
             }
 
             switch (cell.CellType)

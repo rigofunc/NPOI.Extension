@@ -130,7 +130,6 @@ namespace NPOI.Extension
                 {
                     var property = properties[i];
 
-					var title = property.Name;
 					int index = i;
 					var config = cellConfigs[i];
 					if (config != null)
@@ -139,22 +138,29 @@ namespace NPOI.Extension
 							continue;
 
 						index = config.Index;
+					}
+
+                    // this is the first time.
+                    if (rowIndex == 1)
+                    {
 						// if not title, using property name as title.
+                        var title = property.Name;
 						if (!string.IsNullOrEmpty(config.Title))
 						{
 							title = config.Title;
 						}
-						if (!string.IsNullOrEmpty(config.Formatter) && !cellStyles.TryGetValue(i, out var cs))
+
+						if (!string.IsNullOrEmpty(config.Formatter))
 						{
 							try
 							{
-								cs = workbook.CreateCellStyle();
+								var style = workbook.CreateCellStyle();
 
 								var dataFormat = workbook.CreateDataFormat();
 
-								cs.DataFormat = dataFormat.GetFormat(config.Formatter);
+								style.DataFormat = dataFormat.GetFormat(config.Formatter);
 
-								cellStyles[i] = cs;
+								cellStyles[i] = style;
 							}
 							catch (Exception ex)
 							{
@@ -162,11 +168,7 @@ namespace NPOI.Extension
 								System.Diagnostics.Debug.WriteLine(ex.ToString());
 							}
 						}
-					}
 
-                    // this is the first time.
-                    if (rowIndex == 1)
-                    {
 						var titleCell = titleRow.CreateCell(index);
 						titleCell.CellStyle = titleStyle;
 						titleCell.SetCellValue(title);
@@ -220,7 +222,7 @@ namespace NPOI.Extension
 
 			// merge cells
 			var mergableConfigs = cellConfigs.Where(c => c != null && c.AllowMerge).ToList();
-            if (mergableConfigs.Count > 0)
+            if (mergableConfigs.Any())
             {
 				// merge cell style
 				var vStyle = workbook.CreateCellStyle();
