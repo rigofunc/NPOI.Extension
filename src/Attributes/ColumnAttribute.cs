@@ -83,6 +83,38 @@ namespace NPOI.Extension
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this value of the propery is ignored.
+        /// </summary>
+        /// <value><c>true</c> if is ignored; otherwise, <c>false</c>.</value>
+        public bool IsIgnored 
+        {
+            get
+            {
+                return CellConfig.IsIgnored;
+            }
+            set
+            {
+                CellConfig.IsIgnored = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the formatter for formatting the value.
+        /// </summary>
+        /// <value>The format.</value>
+		public string Formatter
+		{
+			get
+			{
+                return CellConfig.Formatter;
+			}
+			set
+			{
+                CellConfig.Formatter = value;
+			}
+		}
+
+        /// <summary>
         /// Gets the cell config.
         /// </summary>
         /// <value>The cell config.</value>

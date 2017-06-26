@@ -52,6 +52,21 @@ namespace NPOI.Extension
         }
 
 		/// <summary>
+		/// Configures the formatter will be used for formatting the value for the property.
+		/// </summary>
+		/// <returns>The <see cref="PropertyConfiguration"/>.</returns>
+		/// <param name="formatter">The formatter will be used for formatting the value.</param>
+		/// <remarks>
+		/// If the title is string.Empty, will not set the excel cell, and if the title is NULL, the property's name will be used.
+		/// </remarks>
+		public PropertyConfiguration HasDataFormatter(string formatter)
+		{
+            CellConfig.Formatter = formatter;
+
+			return this;
+		}
+
+		/// <summary>
 		/// Configures whether to autodiscover the column index by its title setting for the specified property.
 		/// </summary>
 		/// <returns>The <see cref="PropertyConfiguration"/>.</returns>
@@ -77,31 +92,43 @@ namespace NPOI.Extension
         }
 
 		/// <summary>
-		/// Configures the excel cell for the property.
+		/// Configures whether to ignore the specified property.
 		/// </summary>
-		/// <param name="index">The excel cell index.</param>
-		/// <param name="title">The excel cell title (fist row).</param>
-		/// <param name="allowMerge">If set to <c>true</c> allow merge the same value cells.</param>
-		public void HasExcelCell(int index, string title, bool allowMerge)
+		public void IsIgnored()
         {
-            CellConfig.Index = index;
-            CellConfig.Title = title;
-            CellConfig.AutoIndex = false;
-            CellConfig.AllowMerge = allowMerge;
+            CellConfig.IsIgnored = true;
         }
 
 		/// <summary>
 		/// Configures the excel cell for the property.
 		/// </summary>
+		/// <param name="index">The excel cell index.</param>
 		/// <param name="title">The excel cell title (fist row).</param>
+		/// <param name="formatter">The formatter will be used for formatting the value.</param>
+		/// <param name="allowMerge">If set to <c>true</c> allow merge the same value cells.</param>
+		public void HasExcelCell(int index, string title, string formatter, bool allowMerge)
+        {
+            CellConfig.Index = index;
+            CellConfig.Title = title;
+            CellConfig.Formatter = formatter;
+            CellConfig.AutoIndex = false;
+            CellConfig.AllowMerge = allowMerge;
+        }
+
+		/// <summary>
+		/// Configures the excel cell for the property. This method will try to autodiscover the column index by its <paramref name="title"/>
+		/// </summary>
+		/// <param name="title">The excel cell title (fist row).</param>
+		/// <param name="formatter">The formatter will be used for formatting the value.</param>
 		/// <param name="allowMerge">If set to <c>true</c> allow merge the same value cells.</param>
 		/// <remarks>
 		/// This method will try to autodiscover the column index by its <paramref name="title"/>
 		/// </remarks>
-		public void HasExcelCell(string title, bool allowMerge)
+		public void HasExcelCell(string title, string formatter, bool allowMerge)
 		{
 			CellConfig.Index = -1;
 			CellConfig.Title = title;
+            CellConfig.Formatter = formatter;
             CellConfig.AutoIndex = true;
 			CellConfig.AllowMerge = allowMerge;
 		}

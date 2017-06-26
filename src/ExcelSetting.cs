@@ -33,6 +33,7 @@ namespace NPOI.Extension
         /// <summary>
         /// Gets or sets the date time formatter.
         /// </summary>
+        [Obsolete("This configuration doesn't work now, please using fluent api or attribute to configure this.", true)]
         public string DateFormatter { get; set; } = "yyyy-MM-dd HH:mm:ss";
 
 		/// <summary>
