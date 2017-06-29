@@ -14,13 +14,13 @@ The first features will be very useful for English not their mother language dev
 
 The following demo codes come from [sample](samples), download and run it for more information.
 
-## Using Package Manager Console to install NPOI.Extension
+## Using Package Manager Console to install Arch.FluentExcel
 
-        PM> Install-Package NPOI.Extension
+        PM> Install-Package Arch.FluentExcel
     
-## Reference NPOI.Extension in code
+## Reference Arch.FluentExcel in code
 
-        using NPOI.Extension;
+        using Arch.FluentExcel;
     
 ## Use Fluent Api to configure POCO's excel behaviors
 
