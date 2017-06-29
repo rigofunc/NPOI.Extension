@@ -1,7 +1,7 @@
+The extensions for the NPOI, which provides IEnumerable&lt;T&gt; have save to and load from excel functionalities.
+
 # IMPORTAMT
 The future features will be support by [FluentExcel](https://github.com/Arch/FluentExcel), and will only support `Fluent API`.
-
-The extensions for the NPOI, which provides IEnumerable&lt;T&gt; have save to and load from excel functionalities.
 
 # Features
 - [x] Decouple the configuration from the POCO model by using `fluent api`.
