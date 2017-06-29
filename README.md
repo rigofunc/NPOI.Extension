@@ -1,11 +1,10 @@
-The extensions for the NPOI, which provides IEnumerable&lt;T&gt; have save to and load from excel functionalities.
+Using `Fluent API` to configure POCO excel behaviors, and then provides IEnumerable&lt;T&gt; have save to and load from excel functionalities.
 
 # Features
 - [x] Decouple the configuration from the POCO model by using `fluent api`.
-- [x] Support attributes based configuration.
 - [x] Support POCO, so that if your mother langurage is Engilish, none any configurations;
 
-The first two features will be very useful for English not their mother language developers.
+The first features will be very useful for English not their mother language developers.
 
 # Overview
 
@@ -23,11 +22,9 @@ The following demo codes come from [sample](samples), download and run it for mo
 
         using NPOI.Extension;
     
-## Configure model's excel behaviors
+## Use Fluent Api to configure POCO's excel behaviors
 
-We can use `fluent api` or `attributes` to configure the model excel behaviors. If both had been used, `fluent` configurations will has the `Hight Priority`
-
-### 1. Use Fluent Api
+We can use `fluent api` to configure the model excel behaviors.
 
 ```csharp
         public class Report {
@@ -87,32 +84,6 @@ We can use `fluent api` or `attributes` to configure the model excel behaviors. 
               .HasExcelIndex(7)
               .HasExcelTitle("收益(元)");
         }
-```
-
-### 2. Use attributes
-
-```csharp
-    [Statistics(Name = "合计", Formula = "SUM", Columns = new[] { 6, 7 })]
-    [Filter(FirstCol = 0, FirstRow = 0, LastCol = 2)]
-    [Freeze(ColSplit = 2, RowSplit = 1, LeftMostColumn = 2, TopRow = 1)]
-    public class Report {
-        [Column(Index = 0, Title = "城市", AllowMerge = true)]
-        public string City { get; set; }
-        [Column(Index = 1, Title = "楼盘", AllowMerge = true)]
-        public string Building { get; set; }
-        [Column(Index = 2, Title = "成交时间", Formatter = "yyyy-MM-dd HH:mm:ss")]
-        public DateTime HandleTime { get; set; }
-        [Column(Index = 3, Title = "经纪人")]
-        public string Broker { get; set; }
-        [Column(Index = 4, Title = "客户")]
-        public string Customer { get; set; }
-        [Column(Index = 5, Title = "房源")]
-        public string Room { get; set; }
-        [Column(Index = 6, Title = "佣金(元)")]
-        public decimal Brokerage { get; set; }
-        [Column(Index = 7, Title = "收益(元)")]
-        public decimal Profits { get; set; }
-    }
 ```
 
 ## Export POCO to excel & Load IEnumerable&lt;T&gt; from excel.
