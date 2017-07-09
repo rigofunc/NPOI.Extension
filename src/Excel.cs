@@ -1,16 +1,16 @@
 ﻿// Copyright (c) rigofunc (xuyingting). All rights reserved.
 
-namespace NPOI.Extension
+namespace Arch.FluentExcel
 {
     using System;
-    using System.Linq;
-    using System.IO;
-    using System.Globalization;
     using System.Collections.Generic;
-	using System.Reflection;
-	using SS.UserModel;
-	using HSSF.UserModel;
-    using XSSF.UserModel;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+    using NPOI.HSSF.UserModel;
+    using NPOI.SS.UserModel;
+    using NPOI.XSSF.UserModel;
 
     /// <summary>
     /// Represents the cell value converter, which convert the value to another value.
@@ -67,50 +67,50 @@ namespace NPOI.Extension
             for (var j = 0; j < properties.Length; j++)
             {
                 var property = properties[j];
-				if (fluentConfigEnabled && fluentConfig.PropertyConfigs.TryGetValue(property, out var pc))
-				{
-					// fluent configure first(Hight Priority)
-					cellConfigs[j] = pc.CellConfig;
-				}
-				else
-				{
-					var attrs = property.GetCustomAttributes(typeof(ColumnAttribute), true) as ColumnAttribute[];
-					if (attrs != null && attrs.Length > 0)
-					{
-						cellConfigs[j] = attrs[0].CellConfig;
-					}
-					else
-					{
-						cellConfigs[j] = null;
-					}
-				}
+                if (fluentConfigEnabled && fluentConfig.PropertyConfigs.TryGetValue(property, out var pc))
+                {
+                    // fluent configure first(Hight Priority)
+                    cellConfigs[j] = pc.CellConfig;
+                }
+                else
+                {
+                    var attrs = property.GetCustomAttributes(typeof(ColumnAttribute), true) as ColumnAttribute[];
+                    if (attrs != null && attrs.Length > 0)
+                    {
+                        cellConfigs[j] = attrs[0].CellConfig;
+                    }
+                    else
+                    {
+                        cellConfigs[j] = null;
+                    }
+                }
             }
 
-			var statistics = new List<StatisticsConfig>();
-			if (fluentConfigEnabled)
-			{
-				statistics.AddRange(fluentConfig.StatisticsConfigs);
-			}
-			else
-			{
-				var attributes = typeof(T).GetCustomAttributes(typeof(StatisticsAttribute), true) as StatisticsAttribute[];
-				if (attributes != null && attributes.Length > 0)
-				{
-					foreach (var item in attributes)
-					{
-						statistics.Add(item.StatisticsConfig);
-					}
-				}
-			}
+            var statistics = new List<StatisticsConfig>();
+            if (fluentConfigEnabled)
+            {
+                statistics.AddRange(fluentConfig.StatisticsConfigs);
+            }
+            else
+            {
+                var attributes = typeof(T).GetCustomAttributes(typeof(StatisticsAttribute), true) as StatisticsAttribute[];
+                if (attributes != null && attributes.Length > 0)
+                {
+                    foreach (var item in attributes)
+                    {
+                        statistics.Add(item.StatisticsConfig);
+                    }
+                }
+            }
 
             var list = new List<T>();
             int idx = 0;
-			
+
             IRow headerRow = null;
 
-			// get the physical rows
-			var rows = sheet.GetRowEnumerator();
-			while (rows.MoveNext())
+            // get the physical rows
+            var rows = sheet.GetRowEnumerator();
+            while (rows.MoveNext())
             {
                 var row = rows.Current as IRow;
 
@@ -131,51 +131,51 @@ namespace NPOI.Extension
 
                     int index = i;
                     var config = cellConfigs[i];
-					if (config != null)
-					{
-						index = config.Index;
-						
+                    if (config != null)
+                    {
+                        index = config.Index;
+
                         // Try to autodiscover index from title and cache
-						if (index < 0 && config.AutoIndex && !string.IsNullOrEmpty(config.Title))
-						{
-							foreach (var cell in headerRow.Cells)
-							{
-								if (!string.IsNullOrEmpty(cell.StringCellValue))
-								{
+                        if (index < 0 && config.AutoIndex && !string.IsNullOrEmpty(config.Title))
+                        {
+                            foreach (var cell in headerRow.Cells)
+                            {
+                                if (!string.IsNullOrEmpty(cell.StringCellValue))
+                                {
                                     if (cell.StringCellValue.Equals(config.Title, StringComparison.InvariantCultureIgnoreCase))
-									{
-										index = cell.ColumnIndex;
+                                    {
+                                        index = cell.ColumnIndex;
 
-										// cache
-										config.Index = index;
+                                        // cache
+                                        config.Index = index;
 
-										break;
-									}
-								}
-							}
-						}
+                                        break;
+                                    }
+                                }
+                            }
+                        }
 
                         // check again
-                        if (index < 0) 
+                        if (index < 0)
                         {
                             throw new ApplicationException("Please set the 'index' or 'autoIndex' by fluent api or attributes");
                         }
-					}
+                    }
 
                     var value = row.GetCellValue(index);
-					if (valueConverter != null)
-					{
-						value = valueConverter(row.RowNum, index, value);
-					}
+                    if (valueConverter != null)
+                    {
+                        value = valueConverter(row.RowNum, index, value);
+                    }
 
-                    if (value == null) 
+                    if (value == null)
                     {
                         continue;
                     }
 
                     // check whether is statics row
-                    if (idx > startRow + 1 && index == 0 
-                        && 
+                    if (idx > startRow + 1 && index == 0
+                        &&
                         statistics.Any(s => s.Name.Equals(value.ToString(), StringComparison.InvariantCultureIgnoreCase)))
                     {
                         var st = statistics.FirstOrDefault(s => s.Name.Equals(value.ToString(), StringComparison.InvariantCultureIgnoreCase));
@@ -187,18 +187,18 @@ namespace NPOI.Extension
                         }
                     }
 
-					// property type
-					var propType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+                    // property type
+                    var propType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
 
-					var safeValue = Convert.ChangeType(value, propType, CultureInfo.CurrentCulture);
+                    var safeValue = Convert.ChangeType(value, propType, CultureInfo.CurrentCulture);
 
-					prop.SetValue(item, safeValue, null);
+                    prop.SetValue(item, safeValue, null);
                 }
 
                 if (itemIsValid)
                 {
-					list.Add(item);
-				}
+                    list.Add(item);
+                }
             }
 
             return list;

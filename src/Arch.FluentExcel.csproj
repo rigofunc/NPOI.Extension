@@ -7,8 +7,8 @@
     <ProjectGuid>{5ADDD29D-B3AF-4966-B730-5E5192D0E9DF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NPOI.Extension</RootNamespace>
-    <AssemblyName>NPOI.Extension</AssemblyName>
+    <RootNamespace>Arch.FluentExcel</RootNamespace>
+    <AssemblyName>Arch.FluentExcel</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -75,12 +75,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Attributes\" />
-    <Folder Include="Extensions\" />
-    <Folder Include="FluentConfiguration\" />
-    <Folder Include="Internal\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

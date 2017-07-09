@@ -1,6 +1,6 @@
 ﻿// Copyright (c) rigofunc (xuyingting). All rights reserved.
 
-namespace NPOI.Extension
+namespace Arch.FluentExcel
 {
     using System;
 

@@ -6,12 +6,12 @@
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <licenseUrl>https://github.com/xyting/NPOI.Extension/blob/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/xyting/NPOI.Extension</projectUrl>
+    <licenseUrl>https://github.com/Arch/FluentExcel/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/Arch/FluentExcel</projectUrl>
     <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>1. Support fluent configuration api; 2. Support more custom cell formartter; 3. Fixed some issues;</releaseNotes>
+    <releaseNotes>1. Decouple the configuration from the POCO model by using fluent api; 2. Support POCO, so that if your mother langurage is Engilish, none any configurations;</releaseNotes>
     <copyright>Copyright © rigofunc (xuyingting). All rights reserved.</copyright>
     <tags>npoi, xlsx, xls, Excel, Word, docx</tags>
   </metadata>

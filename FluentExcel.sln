@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8016EBDF-3080-41D2-8864-756493FAE3D8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{E05FA5CC-E386-42EB-BFD3-A72FE5E8F00F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPOI.Extension", "src\NPOI.Extension.csproj", "{5ADDD29D-B3AF-4966-B730-5E5192D0E9DF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arch.FluentExcel", "src\Arch.FluentExcel.csproj", "{5ADDD29D-B3AF-4966-B730-5E5192D0E9DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPOI.Extension.Example", "samples\NPOI.Extension.Example.csproj", "{08DCA8C6-8AB5-4341-AB82-001EC59B9ACC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arch.FluentExcel.Samples", "samples\Arch.FluentExcel.Samples.csproj", "{08DCA8C6-8AB5-4341-AB82-001EC59B9ACC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8BF2A404-4265-4765-89EA-E0642F142C4B}"
 	ProjectSection(SolutionItems) = preProject

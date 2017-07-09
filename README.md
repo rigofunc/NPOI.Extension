@@ -8,7 +8,7 @@ The first features will be very useful for English not their mother language dev
 
 # Overview
 
-![NPOI.Extension demo](images/demo.PNG)
+![Arch.FluentExcel demo](images/demo.PNG)
 
 # Get Started
 
@@ -90,7 +90,7 @@ We can use `fluent api` to configure the model excel behaviors.
 
 ```csharp
 using System;
-using NPOI.Extension;
+using Arch.FluentExcel;
 
 namespace samples
 {

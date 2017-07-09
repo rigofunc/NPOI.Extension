@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace NPOI.Extension
+namespace Arch.FluentExcel
 {
     /// <summary>
     /// The extension methods for <see cref="Type"/>.

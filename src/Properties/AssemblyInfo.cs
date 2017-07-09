@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NPOI.Extension")]
-[assembly: AssemblyDescription("The extensions of NPOI, which provides IEnumerable&lt;T&gt; save to and load from excel.")]
+[assembly: AssemblyTitle("Arch.FluentExcel")]
+[assembly: AssemblyDescription("Use Fluent API to configure POCO excel behaviors, and then provides IEnumerable&lt;T&gt; save to and load from excel functionalities.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("rigofunc (xuyingting)")]
-[assembly: AssemblyProduct("NPOI.Extension")]
+[assembly: AssemblyProduct("Arch.FluentExcel")]
 [assembly: AssemblyCopyright("Copyright © rigofunc (xuyingting). All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.1.0.0")]
-[assembly: AssemblyFileVersion("2.1.0.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

@@ -1,11 +1,13 @@
 ﻿using System;
-using NPOI.Extension;
+using Arch.FluentExcel;
 
-namespace samples {
+namespace samples
+{
     [Statistics(Name = "合计", Formula = "SUM", Columns = new[] { 6, 7 })]
     [Filter(FirstCol = 0, FirstRow = 0, LastCol = 2)]
     [Freeze(ColSplit = 2, RowSplit = 1, LeftMostColumn = 2, TopRow = 1)]
-    public class Report {
+    public class Report
+    {
         [Column(Index = 0, Title = "城市", AllowMerge = true)]
         public string City { get; set; }
         [Column(Index = 1, Title = "楼盘", AllowMerge = true)]

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) rigofunc (xuyingting). All rights reserved
 
-namespace NPOI.Extension
+namespace Arch.FluentExcel
 {
     using System;
 
@@ -24,7 +24,7 @@ namespace NPOI.Extension
         /// <remarks>
         /// If the <see cref="Title"/> is null or empty, will use property name as the excel column title.
         /// </remarks>
-        public string Title 
+        public string Title
         {
             get
             {
@@ -37,9 +37,9 @@ namespace NPOI.Extension
         }
 
         /// <summary>
-        /// If <see cref="Index"/> was not set and AutoIndex is true NPOI.Extension will try to autodiscover the column index by its <see cref="Title"/> property.
+        /// If <see cref="Index"/> was not set and AutoIndex is true Arch.FluentExcel will try to autodiscover the column index by its <see cref="Title"/> property.
         /// </summary>
-        public bool AutoIndex 
+        public bool AutoIndex
         {
             get
             {
@@ -70,7 +70,7 @@ namespace NPOI.Extension
         /// <summary>
         /// Gets or sets a value indicating whether allow merge the same value cells.
         /// </summary>
-        public bool AllowMerge 
+        public bool AllowMerge
         {
             get
             {
@@ -86,7 +86,7 @@ namespace NPOI.Extension
         /// Gets or sets a value indicating whether this value of the propery is ignored.
         /// </summary>
         /// <value><c>true</c> if is ignored; otherwise, <c>false</c>.</value>
-        public bool IsIgnored 
+        public bool IsIgnored
         {
             get
             {
@@ -103,16 +103,16 @@ namespace NPOI.Extension
         /// </summary>
         /// <value>The format.</value>
 		public string Formatter
-		{
-			get
-			{
+        {
+            get
+            {
                 return CellConfig.Formatter;
-			}
-			set
-			{
+            }
+            set
+            {
                 CellConfig.Formatter = value;
-			}
-		}
+            }
+        }
 
         /// <summary>
         /// Gets the cell config.

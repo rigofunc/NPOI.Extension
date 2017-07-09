@@ -1,5 +1,5 @@
 ﻿using System;
-using NPOI.Extension;
+using Arch.FluentExcel;
 
 namespace samples
 {
@@ -32,20 +32,20 @@ namespace samples
             // save to excel file
             reports.ToExcel(excelFile);
 
-			// load from excel
-			var loadFromExcel = Excel.Load<Report>(excelFile);
-		}
+            // load from excel
+            var loadFromExcel = Excel.Load<Report>(excelFile);
+        }
 
-		/// <summary>
+        /// <summary>
         /// Use fluent configuration api. (doesn't poison your POCO)
-		/// </summary>
-		static void FluentConfiguration() 
+        /// </summary>
+        static void FluentConfiguration()
         {
             var fc = Excel.Setting.For<Report>();
 
             fc.HasStatistics("合计", "SUM", 6, 7)
               .HasFilter(firstColumn: 0, lastColumn: 2, firstRow: 0)
-              .HasFreeze(columnSplit: 2,rowSplit: 1, leftMostColumn: 2, topMostRow: 1);
+              .HasFreeze(columnSplit: 2, rowSplit: 1, leftMostColumn: 2, topMostRow: 1);
 
             fc.Property(r => r.City)
               .HasExcelIndex(0)
@@ -57,30 +57,30 @@ namespace samples
               .HasExcelTitle("楼盘")
               .IsMergeEnabled();
 
-			fc.Property(r => r.HandleTime)
-			  .HasExcelIndex(2)
-			  .HasExcelTitle("成交时间")
+            fc.Property(r => r.HandleTime)
+              .HasExcelIndex(2)
+              .HasExcelTitle("成交时间")
               .HasDataFormatter("yyyy-MM-dd");
-            
-			fc.Property(r => r.Broker)
-			  .HasExcelIndex(3)
-			  .HasExcelTitle("经纪人");
-            
-			fc.Property(r => r.Customer)
-			  .HasExcelIndex(4)
-			  .HasExcelTitle("客户");
 
-			fc.Property(r => r.Room)
-			  .HasExcelIndex(5)
-			  .HasExcelTitle("房源");
+            fc.Property(r => r.Broker)
+              .HasExcelIndex(3)
+              .HasExcelTitle("经纪人");
 
-			fc.Property(r => r.Brokerage)
-			  .HasExcelIndex(6)
-			  .HasExcelTitle("佣金(元)");
+            fc.Property(r => r.Customer)
+              .HasExcelIndex(4)
+              .HasExcelTitle("客户");
+
+            fc.Property(r => r.Room)
+              .HasExcelIndex(5)
+              .HasExcelTitle("房源");
+
+            fc.Property(r => r.Brokerage)
+              .HasExcelIndex(6)
+              .HasExcelTitle("佣金(元)");
 
             fc.Property(r => r.Profits)
-			  .HasExcelIndex(7)
-			  .HasExcelTitle("收益(元)");
+              .HasExcelIndex(7)
+              .HasExcelTitle("收益(元)");
         }
     }
 }
