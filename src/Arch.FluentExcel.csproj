@@ -56,10 +56,6 @@
     <Compile Include="Excel.cs" />
     <Compile Include="ExcelSetting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Attributes\ColumnAttribute.cs" />
-    <Compile Include="Attributes\FilterAttribute.cs" />
-    <Compile Include="Attributes\FreezeAttribute.cs" />
-    <Compile Include="Attributes\StatisticsAttribute.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Extensions\IEnumerableNpoiExtensions.cs" />
     <Compile Include="FluentConfiguration\FluentConfiguration.cs" />

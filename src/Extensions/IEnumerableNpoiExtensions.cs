@@ -91,15 +91,7 @@ namespace Arch.FluentExcel
                 }
                 else
                 {
-                    var attrs = property.GetCustomAttributes(typeof(ColumnAttribute), true) as ColumnAttribute[];
-                    if (attrs != null && attrs.Length > 0)
-                    {
-                        cellConfigs[j] = attrs[0].CellConfig;
-                    }
-                    else
-                    {
-                        cellConfigs[j] = null;
-                    }
+                    cellConfigs[j] = null;
                 }
             }
 
@@ -107,7 +99,16 @@ namespace Arch.FluentExcel
             var workbook = InitializeWorkbook(excelFile);
 
             // new sheet
-            var sheet = workbook.CreateSheet(sheetName);
+            var sheet = workbook.GetSheet(sheetName);
+            if (sheet == null)
+            {
+                sheet = workbook.CreateSheet(sheetName);
+            }
+            else
+            {
+                // doesn't override the exist sheet
+                sheet = workbook.CreateSheet();
+            }
 
             // cache cell styles
             var cellStyles = new Dictionary<int, ICellStyle>();
@@ -181,33 +182,26 @@ namespace Arch.FluentExcel
                     if (cellStyles.TryGetValue(i, out var cellStyle))
                     {
                         cell.CellStyle = cellStyle;
-
-                        var unwrapType = property.PropertyType.UnwrapNullableType();
-                        if (unwrapType == typeof(bool))
-                        {
-                            cell.SetCellValue((bool)value);
-                        }
-                        else if (unwrapType == typeof(DateTime))
-                        {
-                            cell.SetCellValue(Convert.ToDateTime(value));
-                        }
-                        else if (unwrapType == typeof(double))
-                        {
-                            cell.SetCellValue(Convert.ToDouble(value));
-                        }
-                        else if (value is IFormattable)
-                        {
-                            var fv = value as IFormattable;
-                            cell.SetCellValue(fv.ToString(config.Formatter, CultureInfo.CurrentCulture));
-                        }
-                        else
-                        {
-                            cell.SetCellValue(value.ToString());
-                        }
                     }
-                    else if (value is IFormattable)
+
+                    var unwrapType = property.PropertyType.UnwrapNullableType();
+                    if (unwrapType == typeof(bool))
                     {
-                        var fv = value as IFormattable;
+                        cell.SetCellValue((bool)value);
+                    }
+                    else if (unwrapType == typeof(DateTime))
+                    {
+                        cell.SetCellValue(Convert.ToDateTime(value));
+                    }
+                    else if (unwrapType.IsInteger()
+                            || unwrapType == typeof(decimal)
+                            || unwrapType == typeof(double)
+                            || unwrapType == typeof(float))
+                    {
+                        cell.SetCellValue(Convert.ToDouble(value));
+                    }
+                    else if (!string.IsNullOrEmpty(config.Formatter) && value is IFormattable fv)
+                    {
                         cell.SetCellValue(fv.ToString(config.Formatter, CultureInfo.CurrentCulture));
                     }
                     else
@@ -259,46 +253,11 @@ namespace Arch.FluentExcel
                 }
             }
 
-            if (rowIndex > 1)
+            if (rowIndex > 1 && fluentConfigEnabled)
             {
-                var statistics = new List<StatisticsConfig>();
-                var filterConfigs = new List<FilterConfig>();
-                var freezeConfigs = new List<FreezeConfig>();
-                if (fluentConfigEnabled)
-                {
-                    statistics.AddRange(fluentConfig.StatisticsConfigs);
-                    freezeConfigs.AddRange(fluentConfig.FreezeConfigs);
-                    filterConfigs.AddRange(fluentConfig.FilterConfigs);
-                }
-                else
-                {
-                    var attributes = typeof(T).GetCustomAttributes(typeof(StatisticsAttribute), true) as StatisticsAttribute[];
-                    if (attributes != null && attributes.Length > 0)
-                    {
-                        foreach (var item in attributes)
-                        {
-                            statistics.Add(item.StatisticsConfig);
-                        }
-                    }
-
-                    var freezes = typeof(T).GetCustomAttributes(typeof(FreezeAttribute), true) as FreezeAttribute[];
-                    if (freezes != null && freezes.Length > 0)
-                    {
-                        foreach (var item in freezes)
-                        {
-                            freezeConfigs.Add(item.FreezeConfig);
-                        }
-                    }
-
-                    var filters = typeof(T).GetCustomAttributes(typeof(FilterAttribute), true) as FilterAttribute[];
-                    if (filters != null && filters.Length > 0)
-                    {
-                        foreach (var item in filters)
-                        {
-                            filterConfigs.Add(item.FilterConfig);
-                        }
-                    }
-                }
+                var statistics = fluentConfig.StatisticsConfigs;
+                var filterConfigs = fluentConfig.FilterConfigs;
+                var freezeConfigs = fluentConfig.FreezeConfigs;
 
                 // statistics row
                 foreach (var item in statistics)

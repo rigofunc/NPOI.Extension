@@ -85,11 +85,13 @@ namespace Arch.FluentExcel
         /// <typeparam name="TProperty">The type of parameter.</typeparam>
         public PropertyConfiguration Property<TProperty>(Expression<Func<TModel, TProperty>> propertyExpression)
         {
-            var pc = new PropertyConfiguration();
-
             var propertyInfo = GetPropertyInfo(propertyExpression);
 
-            _propertyConfigs[propertyInfo] = pc;
+            if (!_propertyConfigs.TryGetValue(propertyInfo, out var pc))
+            {
+                pc = new PropertyConfiguration();
+                _propertyConfigs[propertyInfo] = pc;
+            }
 
             return pc;
         }

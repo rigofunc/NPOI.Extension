@@ -39,15 +39,20 @@ namespace Arch.FluentExcel
         /// <summary>
         /// Gets the fluent configuration entry point for the specified <typeparamref name="TModel"/>.
         /// </summary>
-        /// <returns>The <see cref="FluentConfiguration{TModel}"/>.</returns>
         /// <typeparam name="TModel">The type of the model.</typeparam>
-        public FluentConfiguration<TModel> For<TModel>() where TModel : class
+        /// <param name="refreshCache"><c>True</c> if to refresh cache, ortherwise, <c>false</c>.</param>
+        /// <returns>The <see cref="FluentConfiguration{TModel}"/>.</returns>
+        public FluentConfiguration<TModel> For<TModel>(bool refreshCache = false) where TModel : class
         {
-            var mc = new FluentConfiguration<TModel>();
+            var type = typeof(TModel);
+            if (!FluentConfigs.TryGetValue(type, out var mc) || refreshCache)
+            {
+                mc = new FluentConfiguration<TModel>();
 
-            FluentConfigs[typeof(TModel)] = mc;
+                FluentConfigs[type] = mc;
+            }
 
-            return mc;
+            return mc as FluentConfiguration<TModel>;
         }
 
         /// <summary>

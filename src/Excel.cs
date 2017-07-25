@@ -58,7 +58,7 @@ namespace Arch.FluentExcel
 
             bool fluentConfigEnabled = false;
             // get the fluent config
-            if (Excel.Setting.FluentConfigs.TryGetValue(typeof(T), out var fluentConfig))
+            if (Setting.FluentConfigs.TryGetValue(typeof(T), out var fluentConfig))
             {
                 fluentConfigEnabled = true;
             }
@@ -74,15 +74,7 @@ namespace Arch.FluentExcel
                 }
                 else
                 {
-                    var attrs = property.GetCustomAttributes(typeof(ColumnAttribute), true) as ColumnAttribute[];
-                    if (attrs != null && attrs.Length > 0)
-                    {
-                        cellConfigs[j] = attrs[0].CellConfig;
-                    }
-                    else
-                    {
-                        cellConfigs[j] = null;
-                    }
+                    cellConfigs[j] = null;
                 }
             }
 
@@ -90,17 +82,6 @@ namespace Arch.FluentExcel
             if (fluentConfigEnabled)
             {
                 statistics.AddRange(fluentConfig.StatisticsConfigs);
-            }
-            else
-            {
-                var attributes = typeof(T).GetCustomAttributes(typeof(StatisticsAttribute), true) as StatisticsAttribute[];
-                if (attributes != null && attributes.Length > 0)
-                {
-                    foreach (var item in attributes)
-                    {
-                        statistics.Add(item.StatisticsConfig);
-                    }
-                }
             }
 
             var list = new List<T>();

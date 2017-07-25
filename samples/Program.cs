@@ -10,7 +10,7 @@ namespace samples
             // global call this
             FluentConfiguration();
 
-            var len = 10;
+            var len = 2;
             var reports = new Report[len];
             for (int i = 0; i < len; i++)
             {
@@ -27,7 +27,7 @@ namespace samples
                 };
             }
 
-            var excelFile = @"/Users/rigofunc/Documents/sample.xlsx";
+            var excelFile = @"D:\sample.xlsx";
 
             // save to excel file
             reports.ToExcel(excelFile);
