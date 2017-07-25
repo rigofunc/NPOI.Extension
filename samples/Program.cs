@@ -1,5 +1,5 @@
 ﻿using System;
-using Arch.FluentExcel;
+using FluentExcel;
 
 namespace samples
 {

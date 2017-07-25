@@ -1,6 +1,6 @@
 ﻿// Copyright (c) rigofunc (xuyingting). All rights reserved.
 
-namespace Arch.FluentExcel
+namespace FluentExcel
 {
     /// <summary>
     /// Represents the excel cell configuration for the specified model's property.
@@ -16,7 +16,7 @@ namespace Arch.FluentExcel
         public string Title { get; set; }
 
         /// <summary>
-        /// If <see cref="Index"/> was not set and AutoIndex is true Arch.FluentExcel will try to autodiscover the column index by its <see cref="Title"/> property.
+        /// If <see cref="Index"/> was not set and AutoIndex is true FluentExcel will try to autodiscover the column index by its <see cref="Title"/> property.
         /// </summary>
         public bool AutoIndex { get; set; }
 

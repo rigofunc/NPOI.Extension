@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Arch.FluentExcel.Example")]
-[assembly: AssemblyDescription("The examples of the Arch.FluentExcel")]
+[assembly: AssemblyTitle("FluentExcel.Example")]
+[assembly: AssemblyDescription("The examples of the FluentExcel")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("RigoFunc (xuyingting)")]
-[assembly: AssemblyProduct("Arch.FluentExcel.Example")]
+[assembly: AssemblyProduct("FluentExcel.Example")]
 [assembly: AssemblyCopyright("Copyright © RigoFunc (xuyingting). All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

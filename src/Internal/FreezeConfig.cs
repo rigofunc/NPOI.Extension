@@ -1,6 +1,6 @@
 ﻿// Copyright (c) rigofunc (xuyingting). All rights reserved.
 
-namespace Arch.FluentExcel
+namespace FluentExcel
 {
     /// <summary>
     /// Represents the excel freeze configuration for the specified model.

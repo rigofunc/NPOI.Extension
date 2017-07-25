@@ -8,19 +8,19 @@ The first features will be very useful for English not their mother language dev
 
 # Overview
 
-![Arch.FluentExcel demo](images/demo.PNG)
+![FluentExcel demo](images/demo.PNG)
 
 # Get Started
 
 The following demo codes come from [sample](samples), download and run it for more information.
 
-## Using Package Manager Console to install Arch.FluentExcel
+## Using Package Manager Console to install FluentExcel
 
-        PM> Install-Package Arch.FluentExcel
+        PM> Install-Package FluentExcel
     
-## Reference Arch.FluentExcel in code
+## Reference FluentExcel in code
 
-        using Arch.FluentExcel;
+        using FluentExcel;
     
 ## Use Fluent Api to configure POCO's excel behaviors
 
@@ -90,7 +90,7 @@ We can use `fluent api` to configure the model excel behaviors.
 
 ```csharp
 using System;
-using Arch.FluentExcel;
+using FluentExcel;
 
 namespace samples
 {

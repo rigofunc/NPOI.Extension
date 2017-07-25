@@ -1,6 +1,6 @@
 ﻿// Copyright (c) rigofunc (xuyingting). All rights reserved
 
-namespace Arch.FluentExcel
+namespace FluentExcel
 {
     /// <summary>
     /// Represents the configuration for the specfidied property.
@@ -27,7 +27,7 @@ namespace Arch.FluentExcel
         /// <returns>The <see cref="PropertyConfiguration"/>.</returns>
         /// <param name="index">The excel cell index.</param>
         /// <remarks>
-        /// If index was not set and AutoIndex is true Arch.FluentExcel will try to autodiscover the column index by its title setting.
+        /// If index was not set and AutoIndex is true FluentExcel will try to autodiscover the column index by its title setting.
         /// </remarks>
         public PropertyConfiguration HasExcelIndex(int index)
         {
@@ -71,7 +71,7 @@ namespace Arch.FluentExcel
         /// </summary>
         /// <returns>The <see cref="PropertyConfiguration"/>.</returns>
         /// <remarks>
-        /// If index was not set and AutoIndex is true Arch.FluentExcel will try to autodiscover the column index by its title setting.
+        /// If index was not set and AutoIndex is true FluentExcel will try to autodiscover the column index by its title setting.
         /// </remarks>
         public PropertyConfiguration HasAutoIndex()
         {

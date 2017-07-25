@@ -1,6 +1,6 @@
 ﻿// Copyright (c) rigofunc (xuyingting). All rights reserved.
 
-namespace Arch.FluentExcel
+namespace FluentExcel
 {
     /// <summary>
     /// Represents the excel fileter configration for the specified model.

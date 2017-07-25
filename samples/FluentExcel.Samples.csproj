@@ -7,8 +7,8 @@
     <ProjectGuid>{08DCA8C6-8AB5-4341-AB82-001EC59B9ACC}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Arch.FluentExcel.Samples</RootNamespace>
-    <AssemblyName>Arch.FluentExcel.Samples</AssemblyName>
+    <RootNamespace>FluentExcel.Samples</RootNamespace>
+    <AssemblyName>FluentExcel.Samples</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -42,9 +42,9 @@
     <Compile Include="Report.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\Arch.FluentExcel.csproj">
+    <ProjectReference Include="..\src\FluentExcel.csproj">
       <Project>{5addd29d-b3af-4966-b730-5e5192d0e9df}</Project>
-      <Name>Arch.FluentExcel</Name>
+      <Name>FluentExcel</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
