@@ -20,6 +20,8 @@ namespace FluentExcel
     /// </summary>
     public static class IEnumerableNpoiExtensions
     {
+        private static IFormulaEvaluator _formulaEvaluator;
+
         public static byte[] ToExcelContent<T>(this IEnumerable<T> source, string sheetName = "sheet0")
         {
             if (source == null)
@@ -227,7 +229,7 @@ namespace FluentExcel
                     int rowspan = 0, row = 1;
                     for (row = 1; row < rowIndex; row++)
                     {
-                        var value = sheet.GetRow(row).GetCellValue(config.Index);
+                        var value = sheet.GetRow(row).GetCellValue(config.Index, _formulaEvaluator);
                         if (object.Equals(previous, value) && value != null)
                         {
                             rowspan++;
@@ -305,12 +307,20 @@ namespace FluentExcel
                 {
                     using (var file = new FileStream(excelFile, FileMode.Open, FileAccess.Read))
                     {
-                        return new XSSFWorkbook(file);
+                        var workbook = new XSSFWorkbook(file);
+
+                        _formulaEvaluator = new XSSFFormulaEvaluator(workbook);
+
+                        return workbook;
                     }
                 }
                 else
                 {
-                    return new XSSFWorkbook();
+                    var workbook = new XSSFWorkbook();
+
+                    _formulaEvaluator = new XSSFFormulaEvaluator(workbook);
+
+                    return workbook;
                 }
             }
             else
@@ -319,23 +329,29 @@ namespace FluentExcel
                 {
                     using (var file = new FileStream(excelFile, FileMode.Open, FileAccess.Read))
                     {
-                        return new HSSFWorkbook(file);
+                        var workbook = new HSSFWorkbook(file);
+
+                        _formulaEvaluator = new HSSFFormulaEvaluator(workbook);
+
+                        return workbook;
                     }
                 }
                 else
                 {
-                    var hssf = new HSSFWorkbook();
+                    var workbook = new HSSFWorkbook();
+
+                    _formulaEvaluator = new HSSFFormulaEvaluator(workbook);
 
                     var dsi = PropertySetFactory.CreateDocumentSummaryInformation();
                     dsi.Company = setting.Company;
-                    hssf.DocumentSummaryInformation = dsi;
+                    workbook.DocumentSummaryInformation = dsi;
 
                     var si = PropertySetFactory.CreateSummaryInformation();
                     si.Author = setting.Author;
                     si.Subject = setting.Subject;
-                    hssf.SummaryInformation = si;
+                    workbook.SummaryInformation = si;
 
-                    return hssf;
+                    return workbook;
                 }
             }
         }

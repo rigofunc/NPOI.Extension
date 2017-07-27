@@ -26,6 +26,8 @@ namespace FluentExcel
     /// </summary>
     public static class Excel
     {
+        private static IFormulaEvaluator _formulaEvaluator;
+
         /// <summary>
         /// Gets or sets the setting.
         /// </summary>
@@ -143,7 +145,7 @@ namespace FluentExcel
                         }
                     }
 
-                    var value = row.GetCellValue(index);
+                    var value = row.GetCellValue(index, _formulaEvaluator);
                     if (valueConverter != null)
                     {
                         value = valueConverter(row.RowNum, index, value);
@@ -185,7 +187,7 @@ namespace FluentExcel
             return list;
         }
 
-        internal static object GetCellValue(this IRow row, int index)
+        internal static object GetCellValue(this IRow row, int index, IFormulaEvaluator eval = null)
         {
             var cell = row.GetCell(index);
             if (cell == null)
@@ -193,28 +195,39 @@ namespace FluentExcel
                 return null;
             }
 
+            return cell.GetCellValue(eval);
+        }
+
+        internal static object GetCellValue(this ICell cell, IFormulaEvaluator eval = null)
+        {
             if (cell.IsMergedCell)
             {
                 // what can I do here?
-
             }
 
             switch (cell.CellType)
             {
-                // This is a trick to get the correct value of the cell.
-                // NumericCellValue will return a numeric value no matter the cell value is a date or a number.
                 case CellType.Numeric:
-                    return cell.ToString();
+                    if (DateUtil.IsCellDateFormatted(cell))
+                    {
+                        return cell.DateCellValue;
+                    }
+                    else
+                    {
+                        return cell.NumericCellValue;
+                    }
                 case CellType.String:
                     return cell.StringCellValue;
                 case CellType.Boolean:
                     return cell.BooleanCellValue;
                 case CellType.Error:
-                    return cell.ErrorCellValue;
+                    return FormulaError.ForInt(cell.ErrorCellValue).String;
 
-                // how?
                 case CellType.Formula:
-                    return cell.ToString();
+                    if (eval != null)
+                        return GetCellValue(eval.EvaluateInCell(cell));
+                    else
+                        return cell.CellFormula;
 
                 case CellType.Blank:
                 case CellType.Unknown:
@@ -239,14 +252,22 @@ namespace FluentExcel
             {
                 using (var file = new FileStream(excelFile, FileMode.Open, FileAccess.Read))
                 {
-                    return new HSSFWorkbook(file);
+                    var workbook = new HSSFWorkbook(file);
+
+                    _formulaEvaluator = new HSSFFormulaEvaluator(workbook);
+
+                    return workbook;
                 }
             }
             else if (Path.GetExtension(excelFile).Equals(".xlsx"))
             {
                 using (var file = new FileStream(excelFile, FileMode.Open, FileAccess.Read))
                 {
-                    return new XSSFWorkbook(file);
+                    var workbook = new XSSFWorkbook(file);
+
+                    _formulaEvaluator = new XSSFFormulaEvaluator(workbook);
+
+                    return workbook;
                 }
             }
             else
