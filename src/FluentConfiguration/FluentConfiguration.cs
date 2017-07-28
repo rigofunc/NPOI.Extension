@@ -13,7 +13,7 @@ namespace FluentExcel
     /// <typeparam name="TModel">The type of model.</typeparam>
     public class FluentConfiguration<TModel> : IFluentConfiguration where TModel : class
     {
-        private IDictionary<PropertyInfo, PropertyConfiguration> _propertyConfigs;
+        private IDictionary<string, PropertyConfiguration> _propertyConfigs;
         private IList<StatisticsConfig> _statisticsConfigs;
         private IList<FilterConfig> _filterConfigs;
         private IList<FreezeConfig> _freezeConfigs;
@@ -23,7 +23,7 @@ namespace FluentExcel
         /// </summary>
         public FluentConfiguration()
         {
-            _propertyConfigs = new Dictionary<PropertyInfo, PropertyConfiguration>();
+            _propertyConfigs = new Dictionary<string, PropertyConfiguration>();
             _statisticsConfigs = new List<StatisticsConfig>();
             _filterConfigs = new List<FilterConfig>();
             _freezeConfigs = new List<FreezeConfig>();
@@ -33,7 +33,7 @@ namespace FluentExcel
         /// Gets the property configs.
         /// </summary>
         /// <value>The property configs.</value>
-        IDictionary<PropertyInfo, PropertyConfiguration> IFluentConfiguration.PropertyConfigs
+        IDictionary<string, PropertyConfiguration> IFluentConfiguration.PropertyConfigs
         {
             get
             {
@@ -87,10 +87,10 @@ namespace FluentExcel
         {
             var propertyInfo = GetPropertyInfo(propertyExpression);
 
-            if (!_propertyConfigs.TryGetValue(propertyInfo, out var pc))
+            if (!_propertyConfigs.TryGetValue(propertyInfo.Name, out var pc))
             {
                 pc = new PropertyConfiguration();
-                _propertyConfigs[propertyInfo] = pc;
+                _propertyConfigs[propertyInfo.Name] = pc;
             }
 
             return pc;

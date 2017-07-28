@@ -69,7 +69,7 @@ namespace FluentExcel
             for (var j = 0; j < properties.Length; j++)
             {
                 var property = properties[j];
-                if (fluentConfigEnabled && fluentConfig.PropertyConfigs.TryGetValue(property, out var pc))
+                if (fluentConfigEnabled && fluentConfig.PropertyConfigs.TryGetValue(property.Name, out var pc))
                 {
                     // fluent configure first(Hight Priority)
                     cellConfigs[j] = pc.CellConfig;

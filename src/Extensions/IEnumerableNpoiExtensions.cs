@@ -86,7 +86,7 @@ namespace FluentExcel
                 var property = properties[j];
 
                 // get the property config
-                if (fluentConfigEnabled && fluentConfig.PropertyConfigs.TryGetValue(property, out var pc))
+                if (fluentConfigEnabled && fluentConfig.PropertyConfigs.TryGetValue(property.Name, out var pc))
                 {
                     // fluent configure first(Hight Priority)
                     cellConfigs[j] = pc.CellConfig;

@@ -3,7 +3,6 @@
 namespace FluentExcel
 {
     using System.Collections.Generic;
-    using System.Reflection;
 
     /// <summary>
     /// Provides the interfaces for the fluent configuration.
@@ -14,7 +13,7 @@ namespace FluentExcel
         /// Gets the property configs.
         /// </summary>
         /// <value>The property configs.</value>
-        IDictionary<PropertyInfo, PropertyConfiguration> PropertyConfigs { get; }
+        IDictionary<string, PropertyConfiguration> PropertyConfigs { get; }
 
         /// <summary>
         /// Gets the statistics configs.
