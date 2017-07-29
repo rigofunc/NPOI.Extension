@@ -11,7 +11,7 @@
     <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>1. Decouple the configuration from the POCO model by using fluent api; 2. Support POCO, so that if your mother langurage is Engilish, none any configurations;</releaseNotes>
+    <releaseNotes>1. Decouple the configuration from the POCO model by using fluent api; 2. Support none configuration POCO, so that if English is your mother language, none any more configurations;</releaseNotes>
     <copyright>Copyright © rigofunc (xuyingting). All rights reserved.</copyright>
     <tags>npoi, xlsx, xls, Excel, Word, docx</tags>
   </metadata>
