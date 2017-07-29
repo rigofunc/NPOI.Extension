@@ -6,8 +6,8 @@ The extensions for the NPOI, which provides IEnumerable&lt;T&gt; have save to an
 
 # Features
 - [x] Decouple the configuration from the POCO model by using `fluent api`.
-- [x] Support attributes based configuration.
-- [x] Support POCO, so that if your mother langurage is Engilish, none any configurations;
+- [x] Support attributes based configurations.
+- [x] Support none configuration POCO, so that if English is your mother langurage, none any more configurations;
 
 The first two features will be very useful for English not their mother language developers.
 
