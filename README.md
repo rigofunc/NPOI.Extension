@@ -2,7 +2,7 @@ Using `Fluent API` to configure POCO excel behaviors, and then provides IEnumera
 
 # Features
 - [x] Decouple the configuration from the POCO model by using `fluent api`.
-- [x] Support none configuration POCO, so that if Engilish is your mother langurage, none any configurations;
+- [x] Support none configuration POCO, so that if English is your mother language, none any more configurations;
 
 The first features will be very useful for English not their mother language developers.
 
