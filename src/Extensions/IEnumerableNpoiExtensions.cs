@@ -136,7 +136,7 @@ namespace FluentExcel
                     var config = cellConfigs[i];
                     if (config != null)
                     {
-                        if (config.IsIgnored)
+                        if (config.IsExportIgnored)
                             continue;
 
                         index = config.Index;

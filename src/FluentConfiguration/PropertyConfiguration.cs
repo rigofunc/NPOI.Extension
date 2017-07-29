@@ -92,11 +92,14 @@ namespace FluentExcel
         }
 
         /// <summary>
-        /// Configures whether to ignore the specified property.
+        /// Configures whether to ignore the specified property when exporting or importing.
         /// </summary>
-        public void IsIgnored()
+        /// <param name="exportingIsIgnored">If set to <c>true</c> exporting is ignored.</param>
+        /// <param name="importingIsIgnored">If set to <c>true</c> importing is ignored.</param>
+        public void IsIgnored(bool exportingIsIgnored, bool importingIsIgnored)
         {
-            CellConfig.IsIgnored = true;
+            CellConfig.IsExportIgnored = exportingIsIgnored;
+            CellConfig.IsImportIgnored = importingIsIgnored;
         }
 
         /// <summary>

@@ -116,7 +116,10 @@ namespace FluentExcel
                     var config = cellConfigs[i];
                     if (config != null)
                     {
-                        index = config.Index;
+                        if (config.IsImportIgnored)
+							continue;
+
+						index = config.Index;
 
                         // Try to autodiscover index from title and cache
                         if (index < 0 && config.AutoIndex && !string.IsNullOrEmpty(config.Title))

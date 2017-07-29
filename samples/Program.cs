@@ -60,8 +60,9 @@ namespace samples
               .HasExcelTitle("楼盘")
               .IsMergeEnabled();
 
-            // or
-            //fc.Property(r => r.Building).HasExcelCell(1, "楼盘", allowMerge: true);
+            // configures the ignore when exporting or importing.
+            fc.Property(r => r.Area)
+              .IsIgnored(exportingIsIgnored: false, importingIsIgnored: true);
 
             fc.Property(r => r.HandleTime)
               .HasExcelIndex(2)

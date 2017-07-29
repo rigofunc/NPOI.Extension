@@ -6,7 +6,8 @@ namespace samples
     {
         public string City { get; set; }
         public string Building { get; set; }
-        public DateTime HandleTime { get; set; }
+		public string Area { get; set; }
+		public DateTime HandleTime { get; set; }
         public string Broker { get; set; }
         public string Customer { get; set; }
         public string Room { get; set; }
