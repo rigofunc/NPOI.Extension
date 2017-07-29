@@ -10,7 +10,7 @@ namespace samples
             // global call this
             FluentConfiguration();
 
-            var len = 2;
+            var len = 20;
             var reports = new Report[len];
             for (int i = 0; i < len; i++)
             {
@@ -18,16 +18,16 @@ namespace samples
                 {
                     City = "ningbo",
                     Building = "世茂首府",
-                    HandleTime = new DateTime(2015, 11, 23),
+                    HandleTime = DateTime.Now,
                     Broker = "rigofunc 18957139**7",
-                    Customer = "rigofunc 18957139**7",
+                    Customer = "yingting 18957139**7",
                     Room = "2#1703",
-                    Brokerage = 125M,
-                    Profits = 25m
+                    Brokerage = 125 * i,
+                    Profits = 25 * i
                 };
             }
 
-            var excelFile = @"D:\sample.xlsx";
+            var excelFile = @"/Users/rigofunc/Documents/sample.xlsx";
 
             // save to excel file
             reports.ToExcel(excelFile);
@@ -52,17 +52,29 @@ namespace samples
               .HasExcelTitle("城市")
               .IsMergeEnabled();
 
+            // or
+            //fc.Property(r => r.City).HasExcelCell(0,"城市", allowMerge: true);
+
             fc.Property(r => r.Building)
               .HasExcelIndex(1)
               .HasExcelTitle("楼盘")
               .IsMergeEnabled();
+
+            // or
+            //fc.Property(r => r.Building).HasExcelCell(1, "楼盘", allowMerge: true);
 
             fc.Property(r => r.HandleTime)
               .HasExcelIndex(2)
               .HasExcelTitle("成交时间")
               .HasDataFormatter("yyyy-MM-dd");
 
-            fc.Property(r => r.Broker)
+            // or 
+            //fc.Property(r => r.HandleTime).HasExcelCell(2, "成交时间", formatter: "yyyy-MM-dd", allowMerge: false);
+			// or
+            //fc.Property(r => r.HandleTime).HasExcelCell(2, "成交时间", "yyyy-MM-dd");
+
+
+			fc.Property(r => r.Broker)
               .HasExcelIndex(3)
               .HasExcelTitle("经纪人");
 

@@ -106,7 +106,7 @@ namespace FluentExcel
         /// <param name="title">The excel cell title (fist row).</param>
         /// <param name="formatter">The formatter will be used for formatting the value.</param>
         /// <param name="allowMerge">If set to <c>true</c> allow merge the same value cells.</param>
-        public void HasExcelCell(int index, string title, string formatter, bool allowMerge)
+        public void HasExcelCell(int index, string title, string formatter = null, bool allowMerge = false)
         {
             CellConfig.Index = index;
             CellConfig.Title = title;
@@ -116,7 +116,7 @@ namespace FluentExcel
         }
 
         /// <summary>
-        /// Configures the excel cell for the property. This method will try to autodiscover the column index by its <paramref name="title"/>
+        /// Configures the excel cell for the property with index autodiscover. This method will try to autodiscover the column index by its <paramref name="title"/>
         /// </summary>
         /// <param name="title">The excel cell title (fist row).</param>
         /// <param name="formatter">The formatter will be used for formatting the value.</param>
@@ -124,7 +124,7 @@ namespace FluentExcel
         /// <remarks>
         /// This method will try to autodiscover the column index by its <paramref name="title"/>
         /// </remarks>
-        public void HasExcelCell(string title, string formatter, bool allowMerge)
+        public void HasAutoIndexExcelCell(string title, string formatter = null, bool allowMerge = false)
         {
             CellConfig.Index = -1;
             CellConfig.Title = title;
