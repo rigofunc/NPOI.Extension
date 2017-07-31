@@ -13,6 +13,6 @@
     <description>$description$</description>
     <releaseNotes>1. Decouple the configuration from the POCO model by using fluent api; 2. Support none configuration POCO, so that if English is your mother language, none any more configurations;</releaseNotes>
     <copyright>Copyright © rigofunc (xuyingting). All rights reserved.</copyright>
-    <tags>npoi, xlsx, xls, Excel, Word, docx</tags>
+    <tags>npoi, excel, fluentexcel</tags>
   </metadata>
 </package>
