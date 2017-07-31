@@ -62,7 +62,12 @@ namespace samples
 
             // configures the ignore when exporting or importing.
             fc.Property(r => r.Area)
+              .HasExcelIndex(8)
+              .HasExcelTitle("Area")
               .IsIgnored(exportingIsIgnored: false, importingIsIgnored: true);
+
+            // or
+            //fc.Property(r => r.Area).IsIgnored(8, "Area", formatter: null, exportingIsIgnored: false, importingIsIgnored: true);
 
             fc.Property(r => r.HandleTime)
               .HasExcelIndex(2)
@@ -71,11 +76,11 @@ namespace samples
 
             // or 
             //fc.Property(r => r.HandleTime).HasExcelCell(2, "成交时间", formatter: "yyyy-MM-dd", allowMerge: false);
-			// or
+            // or
             //fc.Property(r => r.HandleTime).HasExcelCell(2, "成交时间", "yyyy-MM-dd");
 
 
-			fc.Property(r => r.Broker)
+            fc.Property(r => r.Broker)
               .HasExcelIndex(3)
               .HasExcelTitle("经纪人");
 
