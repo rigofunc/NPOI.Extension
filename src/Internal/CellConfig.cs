@@ -37,11 +37,11 @@ namespace FluentExcel
         /// <value><c>true</c> if is ignored; otherwise, <c>false</c>.</value>
         public bool IsExportIgnored { get; set; }
 
-		/// <summary>
-		/// Gets or sets a value indicating whether this value of the property is ignored when importing.
-		/// </summary>
-		/// <value><c>true</c> if is ignored; otherwise, <c>false</c>.</value>
-		public bool IsImportIgnored { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether this value of the property is ignored when importing.
+        /// </summary>
+        /// <value><c>true</c> if is ignored; otherwise, <c>false</c>.</value>
+        public bool IsImportIgnored { get; set; }
 
         /// <summary>
         /// Gets or sets the formatter for formatting the value.

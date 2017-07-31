@@ -117,9 +117,9 @@ namespace FluentExcel
                     if (config != null)
                     {
                         if (config.IsImportIgnored)
-							continue;
+                            continue;
 
-						index = config.Index;
+                        index = config.Index;
 
                         // Try to autodiscover index from title and cache
                         if (index < 0 && config.AutoIndex && !string.IsNullOrEmpty(config.Title))

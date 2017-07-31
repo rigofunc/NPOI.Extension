@@ -23,18 +23,12 @@ namespace FluentExcel
         /// <summary>
         /// Gets or sets the subject property of the generated excel file.
         /// </summary>
-        public string Subject { get; set; } = "The extensions of NPOI, which provides IEnumerable<T>; save to and load from excel.";
+        public string Subject { get; set; } = "The extensions of NPOI, which provides IEnumerable<T> has save to and load from excel functionalities.";
 
         /// <summary>
         /// Gets or sets a value indicating whether to use *.xlsx file extension.
         /// </summary>
         public bool UserXlsx { get; set; } = true;
-
-        /// <summary>
-        /// Gets or sets the date time formatter.
-        /// </summary>
-        [Obsolete("This configuration doesn't work now, please using fluent api or attribute to configure this.", true)]
-        public string DateFormatter { get; set; } = "yyyy-MM-dd HH:mm:ss";
 
         /// <summary>
         /// Gets the fluent configuration entry point for the specified <typeparamref name="TModel"/>.
