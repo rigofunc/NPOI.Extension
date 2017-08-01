@@ -174,7 +174,7 @@ namespace FluentExcel
                     }
 
                     // property type
-                    var propType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+                    var propType = prop.PropertyType.UnwrapNullableType();
 
                     var safeValue = Convert.ChangeType(value, propType, CultureInfo.CurrentCulture);
 
