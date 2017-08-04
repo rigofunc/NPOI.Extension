@@ -27,7 +27,7 @@ namespace samples
                 };
             }
 
-            var excelFile = @"/Users/rigofunc/Documents/sample.xlsx";
+            var excelFile = @"D:\sample.xlsx";
 
             // save to excel file
             reports.ToExcel(excelFile);
@@ -94,6 +94,7 @@ namespace samples
 
             fc.Property(r => r.Brokerage)
               .HasExcelIndex(6)
+              .HasDataFormatter("￥0.00")
               .HasExcelTitle("佣金(元)");
 
             fc.Property(r => r.Profits)
