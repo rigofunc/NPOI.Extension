@@ -91,6 +91,8 @@ namespace samples
 
             // configures the ignore when exporting or importing.
             fc.Property(r => r.Area)
+              .HasExcelIndex(8)
+              .HasExcelTitle("Area")
               .IsIgnored(exportingIsIgnored: false, importingIsIgnored: true);
 
             fc.Property(r => r.HandleTime)
@@ -118,6 +120,8 @@ namespace samples
 
             fc.Property(r => r.Brokerage)
               .HasExcelIndex(6)
+              // the formatter is Excel formatter, not the C# formatter
+              .HasDataFormatter("￥0.00")
               .HasExcelTitle("佣金(元)");
 
             fc.Property(r => r.Profits)
