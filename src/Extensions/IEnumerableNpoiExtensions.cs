@@ -272,7 +272,7 @@ namespace FluentExcel
                         cell = lastRow.CreateCell(column);
 
 						// set the same cell style
-						cell.CellStyle = sheet.GetRow(rowIndex - 1).GetCell(column).CellStyle;
+						cell.CellStyle = sheet.GetRow(rowIndex - 1)?.GetCell(column)?.CellStyle;
 
                         // set the cell formula
 						cell.CellFormula = $"{item.Formula}({GetCellPosition(1, column)}:{GetCellPosition(rowIndex - 1, column)})";
