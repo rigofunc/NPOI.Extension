@@ -251,7 +251,8 @@ namespace FluentExcel
 
         private static IWorkbook InitializeWorkbook(string excelFile)
         {
-            if (Path.GetExtension(excelFile).Equals(".xls"))
+            var extension = Path.GetExtension(excelFile);
+            if (extension.Equals(".xls"))
             {
                 using (var file = new FileStream(excelFile, FileMode.Open, FileAccess.Read))
                 {
@@ -262,7 +263,7 @@ namespace FluentExcel
                     return workbook;
                 }
             }
-            else if (Path.GetExtension(excelFile).Equals(".xlsx"))
+            else if (extension.Equals(".xlsx"))
             {
                 using (var file = new FileStream(excelFile, FileMode.Open, FileAccess.Read))
                 {
@@ -275,7 +276,7 @@ namespace FluentExcel
             }
             else
             {
-                throw new NotSupportedException($"not an excel file {excelFile}");
+                throw new NotSupportedException($"not an excel file (*.xls | *.xlsx) extension: {extension}");
             }
         }
     }

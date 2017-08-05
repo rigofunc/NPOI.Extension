@@ -45,17 +45,18 @@ namespace FluentExcel
                 throw new ArgumentNullException(nameof(source));
             }
 
-            if (Path.GetExtension(excelFile).Equals(".xls"))
+            var extension = Path.GetExtension(excelFile);
+            if (extension.Equals(".xls"))
             {
                 Excel.Setting.UserXlsx = false;
             }
-            else if (Path.GetExtension(excelFile).Equals(".xlsx"))
+            else if (extension.Equals(".xlsx"))
             {
                 Excel.Setting.UserXlsx = true;
             }
             else
             {
-                throw new NotSupportedException($"not an excel file extension (*.xls | *.xlsx) {excelFile}");
+                throw new NotSupportedException($"not an excel file (*.xls | *.xlsx) extension: {extension}");
             }
 
             var book = source.ToWorkbook(excelFile, sheetName);
@@ -88,7 +89,6 @@ namespace FluentExcel
                 // get the property config
                 if (fluentConfigEnabled && fluentConfig.PropertyConfigs.TryGetValue(property.Name, out var pc))
                 {
-                    // fluent configure first(Hight Priority)
                     cellConfigs[j] = pc.CellConfig;
                 }
                 else
