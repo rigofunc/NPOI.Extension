@@ -6,6 +6,10 @@ Using `Fluent API` to configure POCO excel behaviors, and then provides IEnumera
 
 The first features will be very useful for English not their mother language developers.
 
+# IMPORTAMT
+1. The repo fork from my [NPOI.Extension](https://github.com/xyting/NPOI.Extension), and remove all the attributes based features, and will only support `Fluent API`.
+2. All the issues found in [NPOI.Extension](https://github.com/xyting/NPOI.Extension) will be and only be fixed by [FluentExcel](https://github.com/Arch/FluentExcel), so, please update your codes use `FluentExcel`.
+
 # Overview
 
 ![FluentExcel demo](images/demo.PNG)
