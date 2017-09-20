@@ -121,17 +121,20 @@ namespace FluentExcel
         }
 
         /// <summary>
-        /// Adjust the auto index value for all the properties of specified <typeparamref name="TModel"/>.
+        /// Adjust the auto index value for all the has auto index configuration properties of specified <typeparamref name="TModel"/>.
         /// </summary>
         /// <returns>The <see cref="FluentConfiguration{TModel}"/>.</returns>
         public FluentConfiguration<TModel> AdjustAutoIndex()
         {
-            var index = 0;
-            foreach (var pc in _propertyConfigs.Values)
+            // TODO: need to fix the bug when the model has some doesn't ignored but hasn't any configuration properties.
+			var index = 0;
+            var autoIndexConfigs = _propertyConfigs.Values.Where(pc => pc.CellConfig.AutoIndex 
+                                                                 && 
+                                                                 !pc.CellConfig.IsExportIgnored
+                                                                 &&
+                                                                 pc.CellConfig.Index == -1).ToArray();
+            foreach (var pc in autoIndexConfigs)
             {
-                if (pc.CellConfig.IsExportIgnored || !pc.CellConfig.AutoIndex)
-                    continue;
-
                 while (_propertyConfigs.Values.Any(c => c.CellConfig.Index == index))
                 {
                     index++;
