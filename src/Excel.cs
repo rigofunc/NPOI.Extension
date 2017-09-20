@@ -69,7 +69,7 @@ namespace FluentExcel
             for (var j = 0; j < properties.Length; j++)
             {
                 var property = properties[j];
-                if (fluentConfigEnabled && fluentConfig.PropertyConfigs.TryGetValue(property.Name, out var pc))
+                if (fluentConfigEnabled && fluentConfig.PropertyConfigurations.TryGetValue(property.Name, out var pc))
                 {
                     // fluent configure first(Hight Priority)
                     propertyConfigurations[j] = pc;
@@ -83,7 +83,7 @@ namespace FluentExcel
             var statistics = new List<StatisticsConfiguration>();
             if (fluentConfigEnabled)
             {
-                statistics.AddRange(fluentConfig.StatisticsConfigs);
+                statistics.AddRange(fluentConfig.StatisticsConfigurations);
             }
 
             var list = new List<T>();

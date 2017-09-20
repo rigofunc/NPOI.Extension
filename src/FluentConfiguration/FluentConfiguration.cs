@@ -14,31 +14,31 @@ namespace FluentExcel
     /// <typeparam name="TModel">The type of model.</typeparam>
     public class FluentConfiguration<TModel> : IFluentConfiguration where TModel : class
     {
-        private Dictionary<string, PropertyConfiguration> _propertyConfigs;
-        private List<StatisticsConfiguration> _statisticsConfigs;
-        private List<FilterConfiguration> _filterConfigs;
-        private List<FreezeConfiguration> _freezeConfigs;
+        private Dictionary<string, PropertyConfiguration> _propertyConfigurations;
+        private List<StatisticsConfiguration> _statisticsConfigurations;
+        private List<FilterConfiguration> _filterConfigurations;
+        private List<FreezeConfiguration> _freezeConfigurations;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FluentConfiguration{TModel}"/> class.
         /// </summary>
         internal FluentConfiguration()
         {
-            _propertyConfigs = new Dictionary<string, PropertyConfiguration>();
-            _statisticsConfigs = new List<StatisticsConfiguration>();
-            _filterConfigs = new List<FilterConfiguration>();
-            _freezeConfigs = new List<FreezeConfiguration>();
+            _propertyConfigurations = new Dictionary<string, PropertyConfiguration>();
+            _statisticsConfigurations = new List<StatisticsConfiguration>();
+            _filterConfigurations = new List<FilterConfiguration>();
+            _freezeConfigurations = new List<FreezeConfiguration>();
         }
 
         /// <summary>
         /// Gets the property configs.
         /// </summary>
         /// <value>The property configs.</value>
-        public IReadOnlyDictionary<string, PropertyConfiguration> PropertyConfigs
+        public IReadOnlyDictionary<string, PropertyConfiguration> PropertyConfigurations
         {
             get
             {
-                return _propertyConfigs;
+                return _propertyConfigurations;
             }
         }
 
@@ -46,11 +46,11 @@ namespace FluentExcel
         /// Gets the statistics configs.
         /// </summary>
         /// <value>The statistics config.</value>
-        public IReadOnlyList<StatisticsConfiguration> StatisticsConfigs
+        public IReadOnlyList<StatisticsConfiguration> StatisticsConfigurations
         {
             get
             {
-                return _statisticsConfigs.AsReadOnly();
+                return _statisticsConfigurations.AsReadOnly();
             }
         }
 
@@ -58,11 +58,11 @@ namespace FluentExcel
         /// Gets the filter configs.
         /// </summary>
         /// <value>The filter config.</value>
-        public IReadOnlyList<FilterConfiguration> FilterConfigs
+        public IReadOnlyList<FilterConfiguration> FilterConfigurations
         {
             get
             {
-                return _filterConfigs.AsReadOnly();
+                return _filterConfigurations.AsReadOnly();
             }
         }
 
@@ -70,11 +70,11 @@ namespace FluentExcel
         /// Gets the freeze configs.
         /// </summary>
         /// <value>The freeze config.</value>
-        public IReadOnlyList<FreezeConfiguration> FreezeConfigs
+        public IReadOnlyList<FreezeConfiguration> FreezeConfigurations
         {
             get
             {
-                return _freezeConfigs.AsReadOnly();
+                return _freezeConfigurations.AsReadOnly();
             }
         }
 
@@ -88,10 +88,10 @@ namespace FluentExcel
         {
             var propertyInfo = GetPropertyInfo(propertyExpression);
 
-            if (!_propertyConfigs.TryGetValue(propertyInfo.Name, out var pc))
+            if (!_propertyConfigurations.TryGetValue(propertyInfo.Name, out var pc))
             {
                 pc = new PropertyConfiguration();
-                _propertyConfigs[propertyInfo.Name] = pc;
+                _propertyConfigurations[propertyInfo.Name] = pc;
             }
 
             return pc;
@@ -108,10 +108,10 @@ namespace FluentExcel
             {
                 var propertyInfo = GetPropertyInfo(propertyExpression);
 
-                if (!_propertyConfigs.TryGetValue(propertyInfo.Name, out var pc))
+                if (!_propertyConfigurations.TryGetValue(propertyInfo.Name, out var pc))
                 {
                     pc = new PropertyConfiguration();
-                    _propertyConfigs[propertyInfo.Name] = pc;
+                    _propertyConfigurations[propertyInfo.Name] = pc;
                 }
 
                 pc.IsIgnored(true, true);
@@ -128,14 +128,14 @@ namespace FluentExcel
         {
             // TODO: need to fix the bug when the model has some doesn't ignored but hasn't any configuration properties.
 			var index = 0;
-            var autoIndexConfigs = _propertyConfigs.Values.Where(pc => pc.AutoIndex 
-                                                                 && 
-                                                                 !pc.IsExportIgnored
-                                                                 &&
-                                                                 pc.Index == -1).ToArray();
+            var autoIndexConfigs = _propertyConfigurations.Values.Where(pc => pc.AutoIndex 
+                                                                        && 
+                                                                        !pc.IsExportIgnored
+                                                                        &&
+                                                                        pc.Index == -1).ToArray();
             foreach (var pc in autoIndexConfigs)
             {
-                while (_propertyConfigs.Values.Any(c => c.Index == index))
+                while (_propertyConfigurations.Values.Any(c => c.Index == index))
                 {
                     index++;
                 }
@@ -163,7 +163,7 @@ namespace FluentExcel
                 Columns = columnIndexes,
             };
 
-            _statisticsConfigs.Add(statistics);
+            _statisticsConfigurations.Add(statistics);
 
             return this;
         }
@@ -186,7 +186,7 @@ namespace FluentExcel
                 LastRow = lastRow,
             };
 
-            _filterConfigs.Add(filter);
+            _filterConfigurations.Add(filter);
 
             return this;
         }
@@ -209,7 +209,7 @@ namespace FluentExcel
                 TopRow = topMostRow,
             };
 
-            _freezeConfigs.Add(freeze);
+            _freezeConfigurations.Add(freeze);
 
             return this;
         }

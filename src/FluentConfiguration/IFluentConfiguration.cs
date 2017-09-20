@@ -13,24 +13,24 @@ namespace FluentExcel
         /// Gets the property configs.
         /// </summary>
         /// <value>The property configs.</value>
-        IReadOnlyDictionary<string, PropertyConfiguration> PropertyConfigs { get; }
+        IReadOnlyDictionary<string, PropertyConfiguration> PropertyConfigurations { get; }
 
         /// <summary>
         /// Gets the statistics configs.
         /// </summary>
         /// <value>The statistics config.</value>
-        IReadOnlyList<StatisticsConfiguration> StatisticsConfigs { get; }
+        IReadOnlyList<StatisticsConfiguration> StatisticsConfigurations { get; }
 
         /// <summary>
         /// Gets the filter configs.
         /// </summary>
         /// <value>The filter config.</value>
-        IReadOnlyList<FilterConfiguration> FilterConfigs { get; }
+        IReadOnlyList<FilterConfiguration> FilterConfigurations { get; }
 
         /// <summary>
         /// Gets the freeze configs.
         /// </summary>
         /// <value>The freeze config.</value>
-        IReadOnlyList<FreezeConfiguration> FreezeConfigs { get; }
+        IReadOnlyList<FreezeConfiguration> FreezeConfigurations { get; }
     }
 }

@@ -87,7 +87,7 @@ namespace FluentExcel
                 var property = properties[j];
 
                 // get the property config
-                if (fluentConfigEnabled && fluentConfig.PropertyConfigs.TryGetValue(property.Name, out var pc))
+                if (fluentConfigEnabled && fluentConfig.PropertyConfigurations.TryGetValue(property.Name, out var pc))
                 {
                     propertyConfigurations[j] = pc;
                 }
@@ -271,9 +271,9 @@ namespace FluentExcel
 
             if (rowIndex > 1 && fluentConfigEnabled)
             {
-                var statistics = fluentConfig.StatisticsConfigs;
-                var filterConfigs = fluentConfig.FilterConfigs;
-                var freezeConfigs = fluentConfig.FreezeConfigs;
+                var statistics = fluentConfig.StatisticsConfigurations;
+                var filterConfigs = fluentConfig.FilterConfigurations;
+                var freezeConfigs = fluentConfig.FreezeConfigurations;
 
                 // statistics row
                 foreach (var item in statistics)
