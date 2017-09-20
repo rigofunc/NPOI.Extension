@@ -4,6 +4,7 @@ namespace FluentExcel
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
 
@@ -97,7 +98,7 @@ namespace FluentExcel
         }
 
         /// <summary>
-        /// Configures the ignored properties for the specified <typeparamref name="TModel"/>. 
+        /// Configures the ignored properties for the specified <typeparamref name="TModel"/>.
         /// </summary>
         /// <param name="propertyExpressions">The a range of the property expression.</param>
         /// <returns>The <see cref="FluentConfiguration{TModel}"/>.</returns>
@@ -114,6 +115,29 @@ namespace FluentExcel
                 }
 
                 pc.IsIgnored(true, true);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Adjust the auto index value for all the properties of specified <typeparamref name="TModel"/>.
+        /// </summary>
+        /// <returns>The <see cref="FluentConfiguration{TModel}"/>.</returns>
+        public FluentConfiguration<TModel> AdjustAutoIndex()
+        {
+            var index = 0;
+            foreach (var pc in _propertyConfigs.Values)
+            {
+                if (pc.CellConfig.IsExportIgnored || !pc.CellConfig.AutoIndex)
+                    continue;
+
+                while (_propertyConfigs.Values.Any(c => c.CellConfig.Index == index))
+                {
+                    index++;
+                }
+
+                pc.HasExcelIndex(index++);
             }
 
             return this;
