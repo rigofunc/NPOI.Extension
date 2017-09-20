@@ -2,6 +2,8 @@
 
 namespace FluentExcel
 {
+    using System;
+
     /// <summary>
     /// Represents the configuration for the specfidied property.
     /// </summary>
@@ -83,6 +85,18 @@ namespace FluentExcel
         }
 
         /// <summary>
+        /// Configures the value converter for the specified property.
+        /// </summary>
+        /// <param name="valueConverter">The value converter.</param>
+        /// <returns>The <see cref="PropertyConfiguration"/>.</returns>
+        public PropertyConfiguration HasConverter(Func<object, object> valueConverter)
+        {
+            CellConfig.ValueConverter = valueConverter;
+
+            return this;
+        }
+
+        /// <summary>
         /// Configures whether to allow merge the same value cells for the specified property.
         /// </summary>
         /// <returns>The <see cref="PropertyConfiguration"/>.</returns>
@@ -130,13 +144,15 @@ namespace FluentExcel
         /// <param name="title">The excel cell title (fist row).</param>
         /// <param name="formatter">The formatter will be used for formatting the value.</param>
         /// <param name="allowMerge">If set to <c>true</c> allow merge the same value cells.</param>
-        public void HasExcelCell(int index, string title, string formatter = null, bool allowMerge = false)
+        /// <param name="valueConverter">The value converter.</param>
+        public void HasExcelCell(int index, string title, string formatter = null, bool allowMerge = false, Func<object, object> valueConverter = null)
         {
             CellConfig.Index = index;
             CellConfig.Title = title;
             CellConfig.Formatter = formatter;
             CellConfig.AutoIndex = false;
             CellConfig.AllowMerge = allowMerge;
+            CellConfig.ValueConverter = valueConverter;
         }
 
         /// <summary>
@@ -148,13 +164,15 @@ namespace FluentExcel
         /// <remarks>
         /// This method will try to autodiscover the column index by its <paramref name="title"/>
         /// </remarks>
-        public void HasAutoIndexExcelCell(string title, string formatter = null, bool allowMerge = false)
+        /// <param name="valueConverter">The value converter.</param>
+        public void HasAutoIndexExcelCell(string title, string formatter = null, bool allowMerge = false, Func<object, object> valueConverter = null)
         {
             CellConfig.Index = -1;
             CellConfig.Title = title;
             CellConfig.Formatter = formatter;
             CellConfig.AutoIndex = true;
             CellConfig.AllowMerge = allowMerge;
+            CellConfig.ValueConverter = valueConverter;
         }
     }
 }

@@ -2,6 +2,8 @@
 
 namespace FluentExcel
 {
+    using System;
+
     /// <summary>
     /// Represents the excel cell configuration for the specified model's property.
     /// </summary>
@@ -48,5 +50,10 @@ namespace FluentExcel
         /// </summary>
         /// <value>The formatter.</value>
         public string Formatter { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value converter to convert the value.
+        /// </summary>
+        public Func<object, object> ValueConverter { get; set; }
     }
 }

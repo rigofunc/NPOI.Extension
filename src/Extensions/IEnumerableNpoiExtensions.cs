@@ -140,6 +140,9 @@ namespace FluentExcel
                             continue;
 
                         index = config.Index;
+
+                        if (index < 0 && !config.AutoIndex)
+                            throw new Exception($"The excel cell index hasn't configure for the property: {property.Name}");
                     }
 
                     // this is the first time.
@@ -187,6 +190,14 @@ namespace FluentExcel
                     }
 
                     var unwrapType = property.PropertyType.UnwrapNullableType();
+
+                    // check the value converter.
+                    if (config?.ValueConverter != null)
+                    {
+                        value = config.ValueConverter(value);
+                        unwrapType = value.GetType().UnwrapNullableType();
+                    }
+
                     if (unwrapType == typeof(bool))
                     {
                         cell.SetCellValue((bool)value);
@@ -271,11 +282,11 @@ namespace FluentExcel
                     {
                         cell = lastRow.CreateCell(column);
 
-						// set the same cell style
-						cell.CellStyle = sheet.GetRow(rowIndex - 1)?.GetCell(column)?.CellStyle;
+                        // set the same cell style
+                        cell.CellStyle = sheet.GetRow(rowIndex - 1)?.GetCell(column)?.CellStyle;
 
                         // set the cell formula
-						cell.CellFormula = $"{item.Formula}({GetCellPosition(1, column)}:{GetCellPosition(rowIndex - 1, column)})";
+                        cell.CellFormula = $"{item.Formula}({GetCellPosition(1, column)}:{GetCellPosition(rowIndex - 1, column)})";
                     }
 
                     rowIndex++;
