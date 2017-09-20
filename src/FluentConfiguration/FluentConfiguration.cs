@@ -14,27 +14,27 @@ namespace FluentExcel
     /// <typeparam name="TModel">The type of model.</typeparam>
     public class FluentConfiguration<TModel> : IFluentConfiguration where TModel : class
     {
-        private IDictionary<string, PropertyConfiguration> _propertyConfigs;
-        private IList<StatisticsConfig> _statisticsConfigs;
-        private IList<FilterConfig> _filterConfigs;
-        private IList<FreezeConfig> _freezeConfigs;
+        private Dictionary<string, PropertyConfiguration> _propertyConfigs;
+        private List<StatisticsConfiguration> _statisticsConfigs;
+        private List<FilterConfiguration> _filterConfigs;
+        private List<FreezeConfiguration> _freezeConfigs;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FluentConfiguration{TModel}"/> class.
         /// </summary>
-        public FluentConfiguration()
+        internal FluentConfiguration()
         {
             _propertyConfigs = new Dictionary<string, PropertyConfiguration>();
-            _statisticsConfigs = new List<StatisticsConfig>();
-            _filterConfigs = new List<FilterConfig>();
-            _freezeConfigs = new List<FreezeConfig>();
+            _statisticsConfigs = new List<StatisticsConfiguration>();
+            _filterConfigs = new List<FilterConfiguration>();
+            _freezeConfigs = new List<FreezeConfiguration>();
         }
 
         /// <summary>
         /// Gets the property configs.
         /// </summary>
         /// <value>The property configs.</value>
-        IDictionary<string, PropertyConfiguration> IFluentConfiguration.PropertyConfigs
+        public IReadOnlyDictionary<string, PropertyConfiguration> PropertyConfigs
         {
             get
             {
@@ -46,11 +46,11 @@ namespace FluentExcel
         /// Gets the statistics configs.
         /// </summary>
         /// <value>The statistics config.</value>
-        IList<StatisticsConfig> IFluentConfiguration.StatisticsConfigs
+        public IReadOnlyList<StatisticsConfiguration> StatisticsConfigs
         {
             get
             {
-                return _statisticsConfigs;
+                return _statisticsConfigs.AsReadOnly();
             }
         }
 
@@ -58,11 +58,11 @@ namespace FluentExcel
         /// Gets the filter configs.
         /// </summary>
         /// <value>The filter config.</value>
-        IList<FilterConfig> IFluentConfiguration.FilterConfigs
+        public IReadOnlyList<FilterConfiguration> FilterConfigs
         {
             get
             {
-                return _filterConfigs;
+                return _filterConfigs.AsReadOnly();
             }
         }
 
@@ -70,11 +70,11 @@ namespace FluentExcel
         /// Gets the freeze configs.
         /// </summary>
         /// <value>The freeze config.</value>
-        IList<FreezeConfig> IFluentConfiguration.FreezeConfigs
+        public IReadOnlyList<FreezeConfiguration> FreezeConfigs
         {
             get
             {
-                return _freezeConfigs;
+                return _freezeConfigs.AsReadOnly();
             }
         }
 
@@ -128,14 +128,14 @@ namespace FluentExcel
         {
             // TODO: need to fix the bug when the model has some doesn't ignored but hasn't any configuration properties.
 			var index = 0;
-            var autoIndexConfigs = _propertyConfigs.Values.Where(pc => pc.CellConfig.AutoIndex 
+            var autoIndexConfigs = _propertyConfigs.Values.Where(pc => pc.AutoIndex 
                                                                  && 
-                                                                 !pc.CellConfig.IsExportIgnored
+                                                                 !pc.IsExportIgnored
                                                                  &&
-                                                                 pc.CellConfig.Index == -1).ToArray();
+                                                                 pc.Index == -1).ToArray();
             foreach (var pc in autoIndexConfigs)
             {
-                while (_propertyConfigs.Values.Any(c => c.CellConfig.Index == index))
+                while (_propertyConfigs.Values.Any(c => c.Index == index))
                 {
                     index++;
                 }
@@ -156,7 +156,7 @@ namespace FluentExcel
         /// for example, the column No. 1 and 3 will be SUM for first row to last row.</param>
         public FluentConfiguration<TModel> HasStatistics(string name, string formula, params int[] columnIndexes)
         {
-            var statistics = new StatisticsConfig
+            var statistics = new StatisticsConfiguration
             {
                 Name = name,
                 Formula = formula,
@@ -178,7 +178,7 @@ namespace FluentExcel
         /// <param name="lastRow">The last row index. If is null, the value is dynamic calculate by code.</param>
         public FluentConfiguration<TModel> HasFilter(int firstColumn, int lastColumn, int firstRow, int? lastRow = null)
         {
-            var filter = new FilterConfig
+            var filter = new FilterConfiguration
             {
                 FirstCol = firstColumn,
                 FirstRow = firstRow,
@@ -201,7 +201,7 @@ namespace FluentExcel
         /// <param name="topMostRow">The top most row index.</param>
         public FluentConfiguration<TModel> HasFreeze(int columnSplit, int rowSplit, int leftMostColumn, int topMostRow)
         {
-            var freeze = new FreezeConfig
+            var freeze = new FreezeConfiguration
             {
                 ColSplit = columnSplit,
                 RowSplit = rowSplit,

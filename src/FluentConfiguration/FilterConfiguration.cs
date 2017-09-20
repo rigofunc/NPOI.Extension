@@ -5,29 +5,29 @@ namespace FluentExcel
     /// <summary>
     /// Represents the excel fileter configration for the specified model.
     /// </summary>
-    internal class FilterConfig
+    public class FilterConfiguration
     {
         /// <summary>
-        /// Gets or sets the first row index.
+        /// Gets the first row index.
         /// </summary>
-        public int FirstRow { get; set; }
+        public int FirstRow { get; internal set; }
 
         /// <summary>
-        /// Gets or sets  the last row index.
+        /// Gets the last row index.
         /// </summary>
         /// <remarks>
         /// If the <see cref="LastRow"/> is null, the value is dynamic calculate by code.
         /// </remarks>
-        public int? LastRow { get; set; } = null;
+        public int? LastRow { get; internal set; } = null;
 
         /// <summary>
-        /// Gets or sets the first column index.
+        /// Gets the first column index.
         /// </summary>
-        public int FirstCol { get; set; }
+        public int FirstCol { get; internal set; }
 
         /// <summary>
-        /// Gets or sets the last column index.
+        /// Gets the last column index.
         /// </summary>
-        public int LastCol { get; set; }
+        public int LastCol { get; internal set; }
     }
 }

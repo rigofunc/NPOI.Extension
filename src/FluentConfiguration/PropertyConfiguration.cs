@@ -9,19 +9,52 @@ namespace FluentExcel
     /// </summary>
     public class PropertyConfiguration
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PropertyConfiguration"/> class.
-        /// </summary>
-        public PropertyConfiguration()
-        {
-            CellConfig = new CellConfig();
-        }
+		/// <summary>
+		/// Gets the title of the excel column.
+		/// </summary>
+		/// <remarks>
+		/// If the <see cref="Title"/> is null or empty, will use property name as the excel column title.
+		/// </remarks>
+		public string Title { get; internal set; }
 
-        /// <summary>
-        /// Gets the cell config.
-        /// </summary>
-        /// <value>The cell config.</value>
-        internal CellConfig CellConfig { get; }
+		/// <summary>
+		/// If <see cref="Index"/> was not set and AutoIndex is true FluentExcel will try to autodiscover the excel column index by its <see cref="Title"/> property.
+		/// </summary>
+		public bool AutoIndex { get; internal set; }
+
+		/// <summary>
+		/// Gets the exel column index.
+		/// </summary>
+		/// <value>The index.</value>
+		public int Index { get; internal set; } = -1;
+
+		/// <summary>
+		/// Gets a value indicating whether allow merge the same value exel cells.
+		/// </summary>
+		public bool AllowMerge { get; internal set; }
+
+		/// <summary>
+		/// Gets a value indicating whether this value of the property is ignored when exporting.
+		/// </summary>
+		/// <value><c>true</c> if is ignored; otherwise, <c>false</c>.</value>
+		public bool IsExportIgnored { get; internal set; }
+
+		/// <summary>
+		/// Gets a value indicating whether this value of the property is ignored when importing.
+		/// </summary>
+		/// <value><c>true</c> if is ignored; otherwise, <c>false</c>.</value>
+        public bool IsImportIgnored { get; internal set; }
+
+		/// <summary>
+		/// Gets the formatter for formatting the value.
+		/// </summary>
+		/// <value>The formatter.</value>
+		public string Formatter { get; internal set; }
+
+		/// <summary>
+		/// Gets the value converter to convert the value.
+		/// </summary>
+        public Func<object, object> ValueConverter { get; internal set; }
 
         /// <summary>
         /// Configures the excel cell index for the property.
@@ -33,8 +66,8 @@ namespace FluentExcel
         /// </remarks>
         public PropertyConfiguration HasExcelIndex(int index)
         {
-            CellConfig.Index = index;
-            CellConfig.AutoIndex = false;
+            Index = index;
+            AutoIndex = false;
 
             return this;
         }
@@ -49,7 +82,7 @@ namespace FluentExcel
         /// </remarks>
         public PropertyConfiguration HasExcelTitle(string title)
         {
-            CellConfig.Title = title;
+            Title = title;
 
             return this;
         }
@@ -64,7 +97,7 @@ namespace FluentExcel
         /// </remarks>
         public PropertyConfiguration HasDataFormatter(string formatter)
         {
-            CellConfig.Formatter = formatter;
+            Formatter = formatter;
 
             return this;
         }
@@ -78,8 +111,8 @@ namespace FluentExcel
         /// </remarks>
         public PropertyConfiguration HasAutoIndex()
         {
-            CellConfig.AutoIndex = true;
-            CellConfig.Index = -1;
+            AutoIndex = true;
+            Index = -1;
 
             return this;
         }
@@ -91,7 +124,7 @@ namespace FluentExcel
         /// <returns>The <see cref="PropertyConfiguration"/>.</returns>
         public PropertyConfiguration HasValueConverter(Func<object, object> valueConverter)
         {
-            CellConfig.ValueConverter = valueConverter;
+            ValueConverter = valueConverter;
 
             return this;
         }
@@ -102,7 +135,7 @@ namespace FluentExcel
         /// <returns>The <see cref="PropertyConfiguration"/>.</returns>
         public PropertyConfiguration IsMergeEnabled()
         {
-            CellConfig.AllowMerge = true;
+            AllowMerge = true;
 
             return this;
         }
@@ -114,8 +147,8 @@ namespace FluentExcel
         /// <param name="importingIsIgnored">If set to <c>true</c> importing is ignored.</param>
         public PropertyConfiguration IsIgnored(bool exportingIsIgnored, bool importingIsIgnored)
         {
-            CellConfig.IsExportIgnored = exportingIsIgnored;
-            CellConfig.IsImportIgnored = importingIsIgnored;
+            IsExportIgnored = exportingIsIgnored;
+            IsImportIgnored = importingIsIgnored;
 
             return this;
         }
@@ -130,11 +163,11 @@ namespace FluentExcel
         /// <param name="importingIsIgnored">If set to <c>true</c> importing is ignored.</param>
         public void IsIgnored(int index, string title, string formatter = null, bool exportingIsIgnored = true, bool importingIsIgnored = true)
         {
-            CellConfig.Index = index;
-            CellConfig.Title = title;
-            CellConfig.Formatter = formatter;
-            CellConfig.IsExportIgnored = exportingIsIgnored;
-            CellConfig.IsImportIgnored = importingIsIgnored;
+            Index = index;
+            Title = title;
+            Formatter = formatter;
+            IsExportIgnored = exportingIsIgnored;
+            IsImportIgnored = importingIsIgnored;
         }
 
         /// <summary>
@@ -147,12 +180,12 @@ namespace FluentExcel
         /// <param name="valueConverter">The value converter.</param>
         public void HasExcelCell(int index, string title, string formatter = null, bool allowMerge = false, Func<object, object> valueConverter = null)
         {
-            CellConfig.Index = index;
-            CellConfig.Title = title;
-            CellConfig.Formatter = formatter;
-            CellConfig.AutoIndex = false;
-            CellConfig.AllowMerge = allowMerge;
-            CellConfig.ValueConverter = valueConverter;
+            Index = index;
+            Title = title;
+            Formatter = formatter;
+            AutoIndex = false;
+            AllowMerge = allowMerge;
+            ValueConverter = valueConverter;
         }
 
         /// <summary>
@@ -167,12 +200,12 @@ namespace FluentExcel
         /// <param name="valueConverter">The value converter.</param>
         public void HasAutoIndexExcelCell(string title, string formatter = null, bool allowMerge = false, Func<object, object> valueConverter = null)
         {
-            CellConfig.Index = -1;
-            CellConfig.Title = title;
-            CellConfig.Formatter = formatter;
-            CellConfig.AutoIndex = true;
-            CellConfig.AllowMerge = allowMerge;
-            CellConfig.ValueConverter = valueConverter;
+            Index = -1;
+            Title = title;
+            Formatter = formatter;
+            AutoIndex = true;
+            AllowMerge = allowMerge;
+            ValueConverter = valueConverter;
         }
     }
 }

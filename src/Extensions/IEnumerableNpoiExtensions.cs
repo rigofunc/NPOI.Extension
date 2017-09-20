@@ -80,8 +80,8 @@ namespace FluentExcel
                 fluentConfigEnabled = true;
             }
 
-            // find out the configs
-            var cellConfigs = new CellConfig[properties.Length];
+            // find out the configurations
+            var propertyConfigurations = new PropertyConfiguration[properties.Length];
             for (var j = 0; j < properties.Length; j++)
             {
                 var property = properties[j];
@@ -89,11 +89,11 @@ namespace FluentExcel
                 // get the property config
                 if (fluentConfigEnabled && fluentConfig.PropertyConfigs.TryGetValue(property.Name, out var pc))
                 {
-                    cellConfigs[j] = pc.CellConfig;
+                    propertyConfigurations[j] = pc;
                 }
                 else
                 {
-                    cellConfigs[j] = null;
+                    propertyConfigurations[j] = null;
                 }
             }
 
@@ -133,7 +133,7 @@ namespace FluentExcel
                     var property = properties[i];
 
                     int index = i;
-                    var config = cellConfigs[i];
+                    var config = propertyConfigurations[i];
                     if (config != null)
                     {
                         if (config.IsExportIgnored)
@@ -230,7 +230,7 @@ namespace FluentExcel
             }
 
             // merge cells
-            var mergableConfigs = cellConfigs.Where(c => c != null && c.AllowMerge).ToList();
+            var mergableConfigs = propertyConfigurations.Where(c => c != null && c.AllowMerge).ToList();
             if (mergableConfigs.Any())
             {
                 // merge cell style

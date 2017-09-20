@@ -65,22 +65,22 @@ namespace FluentExcel
                 fluentConfigEnabled = true;
             }
 
-            var cellConfigs = new CellConfig[properties.Length];
+            var propertyConfigurations = new PropertyConfiguration[properties.Length];
             for (var j = 0; j < properties.Length; j++)
             {
                 var property = properties[j];
                 if (fluentConfigEnabled && fluentConfig.PropertyConfigs.TryGetValue(property.Name, out var pc))
                 {
                     // fluent configure first(Hight Priority)
-                    cellConfigs[j] = pc.CellConfig;
+                    propertyConfigurations[j] = pc;
                 }
                 else
                 {
-                    cellConfigs[j] = null;
+                    propertyConfigurations[j] = null;
                 }
             }
 
-            var statistics = new List<StatisticsConfig>();
+            var statistics = new List<StatisticsConfiguration>();
             if (fluentConfigEnabled)
             {
                 statistics.AddRange(fluentConfig.StatisticsConfigs);
@@ -113,7 +113,7 @@ namespace FluentExcel
                     var prop = properties[i];
 
                     int index = i;
-                    var config = cellConfigs[i];
+                    var config = propertyConfigurations[i];
                     if (config != null)
                     {
                         if (config.IsImportIgnored)
