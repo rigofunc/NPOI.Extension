@@ -9,11 +9,11 @@ namespace FluentExcel
     /// </summary>
     public interface IFluentConfiguration
     {
-        /// <summary>
-        /// Gets the property configs.
-        /// </summary>
-        /// <value>The property configs.</value>
-        IReadOnlyDictionary<string, PropertyConfiguration> PropertyConfigurations { get; }
+		/// <summary>
+		/// Gets the property configurations.
+		/// </summary>
+		/// <value>The property configs.</value>
+		IReadOnlyDictionary<string, PropertyConfiguration> PropertyConfigurations { get; }
 
         /// <summary>
         /// Gets the statistics configs.
@@ -22,15 +22,15 @@ namespace FluentExcel
         IReadOnlyList<StatisticsConfiguration> StatisticsConfigurations { get; }
 
         /// <summary>
-        /// Gets the filter configs.
+        /// Gets the filter configurations.
         /// </summary>
         /// <value>The filter config.</value>
         IReadOnlyList<FilterConfiguration> FilterConfigurations { get; }
 
-        /// <summary>
-        /// Gets the freeze configs.
-        /// </summary>
-        /// <value>The freeze config.</value>
-        IReadOnlyList<FreezeConfiguration> FreezeConfigurations { get; }
+		/// <summary>
+		/// Gets the freeze configurations.
+		/// </summary>
+		/// <value>The freeze config.</value>
+		IReadOnlyList<FreezeConfiguration> FreezeConfigurations { get; }
     }
 }

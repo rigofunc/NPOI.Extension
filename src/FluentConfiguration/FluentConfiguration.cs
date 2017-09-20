@@ -30,11 +30,11 @@ namespace FluentExcel
             _freezeConfigurations = new List<FreezeConfiguration>();
         }
 
-        /// <summary>
-        /// Gets the property configs.
-        /// </summary>
-        /// <value>The property configs.</value>
-        public IReadOnlyDictionary<string, PropertyConfiguration> PropertyConfigurations
+		/// <summary>
+		/// Gets the property configurations.
+		/// </summary>
+		/// <value>The property configs.</value>
+		public IReadOnlyDictionary<string, PropertyConfiguration> PropertyConfigurations
         {
             get
             {
@@ -42,11 +42,11 @@ namespace FluentExcel
             }
         }
 
-        /// <summary>
-        /// Gets the statistics configs.
-        /// </summary>
-        /// <value>The statistics config.</value>
-        public IReadOnlyList<StatisticsConfiguration> StatisticsConfigurations
+		/// <summary>
+		/// Gets the statistics configurations.
+		/// </summary>
+		/// <value>The statistics config.</value>
+		public IReadOnlyList<StatisticsConfiguration> StatisticsConfigurations
         {
             get
             {
@@ -54,11 +54,11 @@ namespace FluentExcel
             }
         }
 
-        /// <summary>
-        /// Gets the filter configs.
-        /// </summary>
-        /// <value>The filter config.</value>
-        public IReadOnlyList<FilterConfiguration> FilterConfigurations
+		/// <summary>
+		/// Gets the filter configurations.
+		/// </summary>
+		/// <value>The filter config.</value>
+		public IReadOnlyList<FilterConfiguration> FilterConfigurations
         {
             get
             {
@@ -66,11 +66,11 @@ namespace FluentExcel
             }
         }
 
-        /// <summary>
-        /// Gets the freeze configs.
-        /// </summary>
-        /// <value>The freeze config.</value>
-        public IReadOnlyList<FreezeConfiguration> FreezeConfigurations
+		/// <summary>
+		/// Gets the freeze configurations.
+		/// </summary>
+		/// <value>The freeze config.</value>
+		public IReadOnlyList<FreezeConfiguration> FreezeConfigurations
         {
             get
             {
