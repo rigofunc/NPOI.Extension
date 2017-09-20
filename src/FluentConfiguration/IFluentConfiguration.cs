@@ -15,11 +15,11 @@ namespace FluentExcel
 		/// <value>The property configs.</value>
 		IReadOnlyDictionary<string, PropertyConfiguration> PropertyConfigurations { get; }
 
-        /// <summary>
-        /// Gets the statistics configs.
-        /// </summary>
-        /// <value>The statistics config.</value>
-        IReadOnlyList<StatisticsConfiguration> StatisticsConfigurations { get; }
+		/// <summary>
+		/// Gets the statistics configurations.
+		/// </summary>
+		/// <value>The statistics config.</value>
+		IReadOnlyList<StatisticsConfiguration> StatisticsConfigurations { get; }
 
         /// <summary>
         /// Gets the filter configurations.
