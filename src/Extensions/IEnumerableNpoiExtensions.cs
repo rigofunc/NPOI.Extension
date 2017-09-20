@@ -142,7 +142,7 @@ namespace FluentExcel
                         index = config.Index;
 
                         if (index < 0 && !config.AutoIndex)
-                            throw new Exception($"The excel cell index hasn't configure for the property: {property.Name}");
+                            throw new Exception($"The excel cell index value hasn't been configured for the property: {property.Name}, see HasExcelIndex(int index) or AdjustAutoIndex() methods for more informations.");
                     }
 
                     // this is the first time.

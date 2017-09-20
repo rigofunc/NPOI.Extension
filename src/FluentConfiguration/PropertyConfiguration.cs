@@ -89,7 +89,7 @@ namespace FluentExcel
         /// </summary>
         /// <param name="valueConverter">The value converter.</param>
         /// <returns>The <see cref="PropertyConfiguration"/>.</returns>
-        public PropertyConfiguration HasConverter(Func<object, object> valueConverter)
+        public PropertyConfiguration HasValueConverter(Func<object, object> valueConverter)
         {
             CellConfig.ValueConverter = valueConverter;
 
