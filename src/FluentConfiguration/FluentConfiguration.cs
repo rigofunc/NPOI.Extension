@@ -97,6 +97,29 @@ namespace FluentExcel
         }
 
         /// <summary>
+        /// Configures the ignored properties for the specified <typeparamref name="TModel"/>. 
+        /// </summary>
+        /// <param name="propertyExpressions">The a range of the property expression.</param>
+        /// <returns>The <see cref="FluentConfiguration{TModel}"/>.</returns>
+        public FluentConfiguration<TModel> HasIgnoredProperties(params Expression<Func<TModel, object>>[] propertyExpressions)
+        {
+            foreach (var propertyExpression in propertyExpressions)
+            {
+                var propertyInfo = GetPropertyInfo(propertyExpression);
+
+                if (!_propertyConfigs.TryGetValue(propertyInfo.Name, out var pc))
+                {
+                    pc = new PropertyConfiguration();
+                    _propertyConfigs[propertyInfo.Name] = pc;
+                }
+
+                pc.IsIgnored(true, true);
+            }
+
+            return this;
+        }
+
+        /// <summary>
         /// Configures the statistics for the specified <typeparamref name="TModel"/>. Only for vertical, not for horizontal statistics.
         /// </summary>
         /// <returns>The <see cref="FluentConfiguration{TModel}"/>.</returns>
