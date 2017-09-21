@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using FluentExcel;
 
-namespace FluentExcel.Samples
+namespace samples
 {
     public static class FluentConfigurationExtensions
     {

@@ -10,6 +10,9 @@ namespace samples
             // global call this
             FluentConfiguration();
 
+            // demo the extension point
+            //var fc = Excel.Setting.For<Report>().FromAnnotations();
+
             var len = 20;
             var reports = new Report[len];
             for (int i = 0; i < len; i++)
