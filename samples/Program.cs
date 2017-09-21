@@ -11,7 +11,8 @@ namespace samples
             FluentConfiguration();
 
             // demo the extension point
-            //var fc = Excel.Setting.For<Report>().FromAnnotations();
+            Excel.Setting.For<Report>().FromAnnotations()
+                                       .AdjustAutoIndex();
 
             var len = 20;
             var reports = new Report[len];

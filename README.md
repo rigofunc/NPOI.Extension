@@ -45,7 +45,8 @@ var loadFromExcel = Excel.Load<Report>(excelFile);
 # From Annotations by extenstion methods.
 
 ```csharp
-var fluentConfiguration = Excel.Setting.For<Report>().FromAnnotations();
+Excel.Setting.For<Report>().FromAnnotations()
+                           .AdjustAutoIndex();
 ```
 
 The following demo show how to extend the exist functionalities by extension methods.
