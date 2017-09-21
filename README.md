@@ -7,7 +7,7 @@ Using `Fluent API` to configure POCO excel behaviors, and then provides IEnumera
 The first features will be very useful for English not their mother language developers.
 
 # IMPORTAMT
-1. The repo fork from my [NPOI.Extension](https://github.com/xyting/NPOI.Extension), and remove all the attributes based features, and will only support `Fluent API`.
+1. The repo fork from my [NPOI.Extension](https://github.com/xyting/NPOI.Extension), and remove all the attributes based features (but can be extended, see following demo), and will only support `Fluent API`.
 2. All the issues found in [NPOI.Extension](https://github.com/xyting/NPOI.Extension) will be and only be fixed by [FluentExcel](https://github.com/Arch/FluentExcel), so, please update your codes use `FluentExcel`.
 
 # Overview
@@ -136,14 +136,93 @@ namespace samples
 }       
 ```
 
-## Export POCO to excel & Load IEnumerable&lt;T&gt; from excel.
+## Saving IEnumerable&lt;T&gt; to excel.
 
 ```csharp
 var excelFile = @"/Users/rigofunc/Documents/sample.xlsx";
 
 // save to excel file
 reports.ToExcel(excelFile);
+```
 
+## Loading IEnumerable&lt;T&gt; from excel.
+
+```csharp
 // load from excel
 var loadFromExcel = Excel.Load<Report>(excelFile);       
 ```
+
+# Extensions
+
+The following demo show how to extend the exist functionalities by extension methods. `NOTE:` the initial idea from @tupunco.
+
+```csharp
+public class Report
+{
+    [Display(Name = "城市")]
+    public string City { get; set; }
+    [Display(Name = "楼盘")]
+    public string Building { get; set; }
+    [Display(Name = "区域")]
+    public string Area { get; set; }
+    [Display(Name = "成交时间")]
+    public DateTime HandleTime { get; set; }
+    [Display(Name = "经纪人")]
+    public string Broker { get; set; }
+    [Display(Name = "客户")]
+    public string Customer { get; set; }
+    [Display(Name = "房源")]
+    public string Room { get; set; }
+    [Display(Name = "佣金(元)")]
+    public decimal Brokerage { get; set; }
+    [Display(Name = "收益(元)")]
+    public decimal Profits { get; set; }
+}
+```
+
+Defines the extension methods.
+
+```csharp
+public static class FluentConfigurationExtensions
+{
+    public static FluentConfiguration<TModel> FromAnnotations<TModel>(this FluentConfiguration<TModel> fluentConfiguration) where TModel : class
+    {
+        var properties = typeof(TModel).GetProperties();
+        foreach (var property in properties)
+        {
+            var pc = fluentConfiguration.Property(property);
+
+            var display = property.GetCustomAttribute<DisplayAttribute>();
+            if (display != null)
+            {
+                pc.HasExcelTitle(display.Name);
+                if (display.GetOrder().HasValue)
+                {
+                    pc.HasExcelIndex(display.Order);
+                }
+            }
+            else
+            {
+                pc.HasExcelTitle(property.Name);
+            }
+
+            var format = property.GetCustomAttribute<DisplayFormatAttribute>();
+            if (format != null)
+            {
+                pc.HasDataFormatter(format.DataFormatString
+                                          .Replace("{0:", "")
+                                          .Replace("}", ""));
+            }
+
+            if (pc.Index < 0)
+            {
+                pc.HasAutoIndex();
+            }
+        }
+
+        return fluentConfiguration;
+    }
+}
+```
+
+
