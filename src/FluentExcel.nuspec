@@ -11,7 +11,7 @@
     <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>1. Decouple the configuration from the POCO model by using fluent api; 2. Support none configuration POCO, so that if English is your mother language, none any more configurations;</releaseNotes>
+    <releaseNotes>1. Add method to batch ignore properties at once; 2. Provides extension point for supporting configuration from annonations; 3. Add method to adjust auto index value for simplifying the usage.</releaseNotes>
     <copyright>Copyright © rigofunc (xuyingting). All rights reserved.</copyright>
     <tags>npoi, excel, fluentexcel</tags>
   </metadata>
