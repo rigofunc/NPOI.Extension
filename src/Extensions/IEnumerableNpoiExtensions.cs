@@ -182,24 +182,24 @@ namespace FluentExcel
                     var value = property.GetValue(item, null);
                     if (value == null)
                         continue;
-                    
+
                     var unwrapType = property.PropertyType.UnwrapNullableType();
 
-					// give a chance to the value converter.
-					if (config?.ValueConverter != null)
+                    // give a chance to the value converter.
+                    if (config?.ValueConverter != null)
                     {
                         value = config.ValueConverter(value);
-						if (value == null)
-							continue;
-                        
+                        if (value == null)
+                            continue;
+
                         unwrapType = value.GetType().UnwrapNullableType();
                     }
 
-					var cell = row.CreateCell(index);
-					if (cellStyles.TryGetValue(i, out var cellStyle))
-					{
-						cell.CellStyle = cellStyle;
-					}
+                    var cell = row.CreateCell(index);
+                    if (cellStyles.TryGetValue(i, out var cellStyle))
+                    {
+                        cell.CellStyle = cellStyle;
+                    }
 
                     if (unwrapType == typeof(bool))
                     {

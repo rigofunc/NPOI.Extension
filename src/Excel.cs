@@ -13,15 +13,6 @@ namespace FluentExcel
     using NPOI.XSSF.UserModel;
 
     /// <summary>
-    /// Represents the cell value converter, which convert the value to another value.
-    /// </summary>
-    /// <param name="row">The row of the excel sheet.</param>
-    /// <param name="cell">The cell of the excel sheet.</param>
-    /// <param name="value">The value to convert.</param>
-    /// <returns>The converted value.</returns>
-    public delegate object ValueConverter(int row, int cell, object value);
-
-    /// <summary>
     /// Provides some methods for loading <see cref="IEnumerable{T}"/> from excel.
     /// </summary>
     public static class Excel
@@ -41,9 +32,8 @@ namespace FluentExcel
         /// <param name="excelFile">The excel file.</param>
         /// <param name="startRow">The row to start read.</param>
         /// <param name="sheetIndex">Which sheet to read.</param>
-        /// <param name="valueConverter">The cell value convert.</param>
         /// <returns>The <see cref="IEnumerable{T}"/> loading from excel.</returns>
-        public static IEnumerable<T> Load<T>(string excelFile, int startRow = 1, int sheetIndex = 0, ValueConverter valueConverter = null) where T : class, new()
+        public static IEnumerable<T> Load<T>(string excelFile, int startRow = 1, int sheetIndex = 0) where T : class, new()
         {
             if (!File.Exists(excelFile))
             {
@@ -149,9 +139,11 @@ namespace FluentExcel
                     }
 
                     var value = row.GetCellValue(index, _formulaEvaluator);
-                    if (valueConverter != null)
+
+                    // give a chance to the value converter.
+                    if (config?.ValueConverter != null)
                     {
-                        value = valueConverter(row.RowNum, index, value);
+                        value = config.ValueConverter(value);
                     }
 
                     if (value == null)

@@ -9,51 +9,51 @@ namespace FluentExcel
     /// </summary>
     public class PropertyConfiguration
     {
-		/// <summary>
-		/// Gets the title of the excel column.
-		/// </summary>
-		/// <remarks>
-		/// If the <see cref="Title"/> is null or empty, will use property name as the excel column title.
-		/// </remarks>
-		public string Title { get; internal set; }
+        /// <summary>
+        /// Gets the title of the excel column.
+        /// </summary>
+        /// <remarks>
+        /// If the <see cref="Title"/> is null or empty, will use property name as the excel column title.
+        /// </remarks>
+        public string Title { get; internal set; }
 
-		/// <summary>
-		/// If <see cref="Index"/> was not set and AutoIndex is true FluentExcel will try to autodiscover the excel column index by its <see cref="Title"/> property.
-		/// </summary>
-		public bool AutoIndex { get; internal set; }
+        /// <summary>
+        /// If <see cref="Index"/> was not set and AutoIndex is true FluentExcel will try to autodiscover the excel column index by its <see cref="Title"/> property.
+        /// </summary>
+        public bool AutoIndex { get; internal set; }
 
-		/// <summary>
-		/// Gets the exel column index.
-		/// </summary>
-		/// <value>The index.</value>
-		public int Index { get; internal set; } = -1;
+        /// <summary>
+        /// Gets the exel column index.
+        /// </summary>
+        /// <value>The index.</value>
+        public int Index { get; internal set; } = -1;
 
-		/// <summary>
-		/// Gets a value indicating whether allow merge the same value exel cells.
-		/// </summary>
-		public bool AllowMerge { get; internal set; }
+        /// <summary>
+        /// Gets a value indicating whether allow merge the same value exel cells.
+        /// </summary>
+        public bool AllowMerge { get; internal set; }
 
-		/// <summary>
-		/// Gets a value indicating whether this value of the property is ignored when exporting.
-		/// </summary>
-		/// <value><c>true</c> if is ignored; otherwise, <c>false</c>.</value>
-		public bool IsExportIgnored { get; internal set; }
+        /// <summary>
+        /// Gets a value indicating whether this value of the property is ignored when exporting.
+        /// </summary>
+        /// <value><c>true</c> if is ignored; otherwise, <c>false</c>.</value>
+        public bool IsExportIgnored { get; internal set; }
 
-		/// <summary>
-		/// Gets a value indicating whether this value of the property is ignored when importing.
-		/// </summary>
-		/// <value><c>true</c> if is ignored; otherwise, <c>false</c>.</value>
+        /// <summary>
+        /// Gets a value indicating whether this value of the property is ignored when importing.
+        /// </summary>
+        /// <value><c>true</c> if is ignored; otherwise, <c>false</c>.</value>
         public bool IsImportIgnored { get; internal set; }
 
-		/// <summary>
-		/// Gets the formatter for formatting the value.
-		/// </summary>
-		/// <value>The formatter.</value>
-		public string Formatter { get; internal set; }
+        /// <summary>
+        /// Gets the formatter for formatting the value.
+        /// </summary>
+        /// <value>The formatter.</value>
+        public string Formatter { get; internal set; }
 
-		/// <summary>
-		/// Gets the value converter to convert the value.
-		/// </summary>
+        /// <summary>
+        /// Gets the value converter to convert the value.
+        /// </summary>
         public Func<object, object> ValueConverter { get; internal set; }
 
         /// <summary>
