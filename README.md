@@ -42,15 +42,15 @@ reports.ToExcel(excelFile);
 var loadFromExcel = Excel.Load<Report>(excelFile);       
 ```
 
-## From Annotations by extenstion methods.
+# From Annotations by extenstion methods.
 
 ```csharp
 var fluentConfiguration = Excel.Setting.For<Report>().FromAnnotations();
 ```
 
-The following demo show how to extend the exist functionalities by extension methods. `NOTE:` the initial idea from @tupunco.
+The following demo show how to extend the exist functionalities by extension methods.
 
-### 1. Applying annotations to the specified model
+## 1. Applying annotations to the specified model
 
 ```csharp
 public class Report
@@ -76,7 +76,7 @@ public class Report
 }
 ```
 
-### 2. Defines the extension methods.
+## 2. Defines the extension methods.
 
 ```csharp
 public static class FluentConfigurationExtensions
