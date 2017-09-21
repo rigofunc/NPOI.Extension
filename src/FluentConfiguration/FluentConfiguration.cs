@@ -98,6 +98,27 @@ namespace FluentExcel
         }
 
         /// <summary>
+        /// Gets the property configuration by the specified property info for the specified <typeparamref name="TModel"/>.
+        /// </summary>
+        /// <param name="propertyInfo">The property information.</param>
+        /// <returns>The <see cref="PropertyConfiguration"/>.</returns>
+        public PropertyConfiguration Property(PropertyInfo propertyInfo)
+        {
+            if (propertyInfo.DeclaringType != typeof(TModel))
+            {
+                throw new InvalidOperationException($"Property does not belong to {nameof(TModel)}");
+            }
+
+            if (!_propertyConfigurations.TryGetValue(propertyInfo.Name, out var pc))
+            {
+                pc = new PropertyConfiguration();
+                _propertyConfigurations[propertyInfo.Name] = pc;
+            }
+
+            return pc;
+        }
+
+        /// <summary>
         /// Configures the ignored properties for the specified <typeparamref name="TModel"/>.
         /// </summary>
         /// <param name="propertyExpressions">The a range of the property expression.</param>
