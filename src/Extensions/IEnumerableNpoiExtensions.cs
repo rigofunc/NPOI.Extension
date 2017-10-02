@@ -201,6 +201,14 @@ namespace FluentExcel
                     {
                         cell.CellStyle = cellStyle;
                     }
+                    else if (!string.IsNullOrEmpty(config.Formatter) && value is IFormattable fv)
+                    {
+						// the formatter isn't excel supported formatter, but it's a C# formatter.
+                        // The result is the Excel cell data type become String.
+                        cell.SetCellValue(fv.ToString(config.Formatter, CultureInfo.CurrentCulture));
+
+                        continue;
+					}
 
                     if (unwrapType == typeof(bool))
                     {
@@ -216,10 +224,6 @@ namespace FluentExcel
                             || unwrapType == typeof(float))
                     {
                         cell.SetCellValue(Convert.ToDouble(value));
-                    }
-                    else if (!string.IsNullOrEmpty(config.Formatter) && value is IFormattable fv)
-                    {
-                        cell.SetCellValue(fv.ToString(config.Formatter, CultureInfo.CurrentCulture));
                     }
                     else
                     {
