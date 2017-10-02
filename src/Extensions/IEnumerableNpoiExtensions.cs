@@ -179,14 +179,12 @@ namespace FluentExcel
                         titleCell.SetCellValue(title);
                     }
 
-                    var value = property.GetValue(item, null);
-                    if (value == null)
-                        continue;
-
                     var unwrapType = property.PropertyType.UnwrapNullableType();
 
-                    // give a chance to the value converter.
-                    if (config?.ValueConverter != null)
+					var value = property.GetValue(item, null);
+
+					// give a chance to the value converter even though value is null.
+					if (config?.ValueConverter != null)
                     {
                         value = config.ValueConverter(value);
                         if (value == null)
@@ -195,7 +193,10 @@ namespace FluentExcel
                         unwrapType = value.GetType().UnwrapNullableType();
                     }
 
-                    var cell = row.CreateCell(index);
+					if (value == null)
+						continue;
+
+					var cell = row.CreateCell(index);
                     if (cellStyles.TryGetValue(i, out var cellStyle))
                     {
                         cell.CellStyle = cellStyle;
