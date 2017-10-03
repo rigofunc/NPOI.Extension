@@ -150,12 +150,12 @@ namespace FluentExcel
                     {
                         // if not title, using property name as title.
                         var title = property.Name;
-                        if (!string.IsNullOrEmpty(config.Title))
+                        if (!string.IsNullOrEmpty(config?.Title))
                         {
                             title = config.Title;
                         }
 
-                        if (!string.IsNullOrEmpty(config.Formatter))
+                        if (!string.IsNullOrEmpty(config?.Formatter))
                         {
                             try
                             {
@@ -201,7 +201,7 @@ namespace FluentExcel
                     {
                         cell.CellStyle = cellStyle;
                     }
-                    else if (!string.IsNullOrEmpty(config.Formatter) && value is IFormattable fv)
+                    else if (!string.IsNullOrEmpty(config?.Formatter) && value is IFormattable fv)
                     {
 						// the formatter isn't excel supported formatter, but it's a C# formatter.
                         // The result is the Excel cell data type become String.
@@ -218,10 +218,10 @@ namespace FluentExcel
                     {
                         cell.SetCellValue(Convert.ToDateTime(value));
                     }
-                    else if (unwrapType.IsInteger()
-                            || unwrapType == typeof(decimal)
-                            || unwrapType == typeof(double)
-                            || unwrapType == typeof(float))
+                    else if (unwrapType.IsInteger() || 
+                             unwrapType == typeof(decimal) || 
+                             unwrapType == typeof(double) || 
+                             unwrapType == typeof(float))
                     {
                         cell.SetCellValue(Convert.ToDouble(value));
                     }
