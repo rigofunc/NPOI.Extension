@@ -24,75 +24,59 @@ namespace FluentExcel
         private static IFormulaEvaluator _formulaEvaluator;
 
         public static byte[] ToExcelContent<T>(this IEnumerable<T> source, string sheetName = "sheet0", int maxRowsPerSheet = int.MaxValue, bool overwrite = false)
+            where T : class
         {
-            int sheetIndex = 0;
-            IEnumerable<byte> output = Enumerable.Empty<byte>();
-            while (source.Any())
-            {
-                output = output.Concat(ToExcelContent(source.Take(maxRowsPerSheet), s => sheetName + (sheetIndex > 0 ? "_" + sheetIndex.ToString() : ""), overwrite));
-                sheetIndex++;
-                source = source.Skip(maxRowsPerSheet);
-            }
-            return output.ToArray();
+            return ToExcel(source, null, s => sheetName, maxRowsPerSheet, overwrite);
         }
 
-        public static byte[] ToExcelContent<T>(this IEnumerable<T> source, Expression<Func<T, string>> sheetSelector, bool overwrite = false)
+        public static void ToExcel<T>(this IEnumerable<T> source, string excelFile, string sheetName = "sheet0", int maxRowsPerSheet = int.MaxValue, bool overwrite = false)
+            where T : class
+        {
+            //TODO check the file's path is valid
+            ToExcel(source, excelFile, s => sheetName, maxRowsPerSheet, overwrite);
+        }
+
+        public static byte[] ToExcel<T>(this IEnumerable<T> source, string excelFile, Expression<Func<T, string>> sheetSelector, int maxRowsPerSheet = int.MaxValue, bool overwrite = false)
+            where T : class
         {
             if (source == null)
             {
                 throw new ArgumentNullException(nameof(source));
             }
-            using (var ms = new MemoryStream())
+
+            bool isVolatile = string.IsNullOrWhiteSpace(excelFile);
+            if (!isVolatile)
             {
+                var extension = Path.GetExtension(excelFile);
+                if (extension.Equals(".xls"))
+                {
+                    Excel.Setting.UserXlsx = false;
+                }
+                else if (extension.Equals(".xlsx"))
+                {
+                    Excel.Setting.UserXlsx = true;
+                }
+                else
+                {
+                    throw new NotSupportedException($"not an excel file (*.xls | *.xlsx) extension: {extension}");
+                }
+            }
+
+            using (Stream ms = isVolatile ? (Stream)new MemoryStream() : new FileStream(excelFile, FileMode.OpenOrCreate, FileAccess.Write))
+            {
+                int sheetIndex = 0;
+                IEnumerable<byte> output = Enumerable.Empty<byte>();
                 foreach (var sheet in source.AsQueryable().GroupBy(sheetSelector))
                 {
-                    var book = sheet.ToWorkbook(null, sheet.Key, overwrite);
-                    book.Write(ms);
+                    while (source.Any())
+                    {
+                        var book = sheet.Take(maxRowsPerSheet).ToWorkbook(null, sheet.Key + (sheetIndex > 0 ? "_" + sheetIndex.ToString() : ""), overwrite);
+                        book.Write(ms);
+                        sheetIndex++;
+                        source = source.Skip(maxRowsPerSheet);
+                    }
                 }
-                return ms.ToArray();
-            }
-        }
-
-        public static void ToExcel<T>(this IEnumerable<T> source, string excelFile, string sheetName = "sheet0", int maxRowsPerSheet = int.MaxValue, bool overwrite = false) where T : class
-        {
-            int sheetIndex = 0;
-            while (source.Any())
-            {
-                ToExcel(source.Take(maxRowsPerSheet), excelFile, s => sheetName + (sheetIndex > 0 ? "_" + sheetIndex.ToString() : ""), overwrite);
-                sheetIndex++;
-                source = source.Skip(maxRowsPerSheet);
-            }
-        }
-
-        public static void ToExcel<T>(this IEnumerable<T> source, string excelFile, Expression<Func<T, string>> sheetSelector, bool overwrite = false) where T : class
-        {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            var extension = Path.GetExtension(excelFile);
-            if (extension.Equals(".xls"))
-            {
-                Excel.Setting.UserXlsx = false;
-            }
-            else if (extension.Equals(".xlsx"))
-            {
-                Excel.Setting.UserXlsx = true;
-            }
-            else
-            {
-                throw new NotSupportedException($"not an excel file (*.xls | *.xlsx) extension: {extension}");
-            }
-
-            foreach (var sheet in source.AsQueryable().GroupBy(sheetSelector))
-            {
-                var book = sheet.ToWorkbook(excelFile, sheet.Key, overwrite);
-                // Write the stream data of workbook to file
-                using (var stream = new FileStream(excelFile, FileMode.OpenOrCreate, FileAccess.Write))
-                {
-                    book.Write(stream);
-                }
+                return isVolatile ? ((MemoryStream)ms).ToArray() : null;
             }
         }
 
@@ -129,6 +113,7 @@ namespace FluentExcel
             var workbook = InitializeWorkbook(excelFile);
 
             // new sheet
+            //TODO check the sheet's name is valid
             var sheet = workbook.GetSheet(sheetName);
             if (sheet == null)
             {
