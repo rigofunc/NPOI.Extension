@@ -1,6 +1,4 @@
-﻿using System;
-using FluentExcel;
-
+﻿using FluentExcel;
 using System;
 
 namespace samples
