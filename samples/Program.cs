@@ -33,7 +33,7 @@ namespace samples
                 };
             }
 
-            var excelFile = @"sample.xlsx";
+            var excelFile = @"/Users/rigofunc/Documents/sample.xlsx";
 
             // save to split sheets excel file
             reports.ToExcel(excelFile, r => r.HandleTime.Date.ToString("yyyy-MM"), overwrite: true);
