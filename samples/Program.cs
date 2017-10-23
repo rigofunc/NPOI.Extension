@@ -35,8 +35,11 @@ namespace samples
 
             var excelFile = @"/Users/rigofunc/Documents/sample.xlsx";
 
-            // save to split sheets excel file
+            // save to excel file with multiple sheets based on expression
             reports.ToExcel(excelFile, r => r.HandleTime.Date.ToString("yyyy-MM"), overwrite: true);
+
+            // save to excel file with multiple sheets based on maxRows
+            reports.ToExcel(excelFile, "reports", 7, overwrite: true);
 
             // save to excel file
             reports.ToExcel(excelFile);

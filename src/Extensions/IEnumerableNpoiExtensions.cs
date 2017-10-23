@@ -2,16 +2,13 @@
 
 namespace FluentExcel
 {
-    using System;
     using NPOI.HPSF;
     using NPOI.HSSF.UserModel;
     using NPOI.HSSF.Util;
     using NPOI.SS.UserModel;
     using NPOI.SS.Util;
     using NPOI.XSSF.UserModel;
-
     using System;
-
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
@@ -26,9 +23,17 @@ namespace FluentExcel
     {
         private static IFormulaEvaluator _formulaEvaluator;
 
-        public static byte[] ToExcelContent<T>(this IEnumerable<T> source, string sheetName = "sheet0", bool overwrite = false)
+        public static byte[] ToExcelContent<T>(this IEnumerable<T> source, string sheetName = "sheet0", int maxRowsPerSheet = int.MaxValue, bool overwrite = false)
         {
-            return ToExcelContent(source, s => sheetName, overwrite);
+            int sheetIndex = 0;
+            IEnumerable<byte> output = Enumerable.Empty<byte>();
+            while (source.Any())
+            {
+                output = output.Concat(ToExcelContent(source.Take(maxRowsPerSheet), s => sheetName + (sheetIndex > 0 ? "_" + sheetIndex.ToString() : ""), overwrite));
+                sheetIndex++;
+                source = source.Skip(maxRowsPerSheet);
+            }
+            return output.ToArray();
         }
 
         public static byte[] ToExcelContent<T>(this IEnumerable<T> source, Expression<Func<T, string>> sheetSelector, bool overwrite = false)
@@ -48,9 +53,15 @@ namespace FluentExcel
             }
         }
 
-        public static void ToExcel<T>(this IEnumerable<T> source, string excelFile, string sheetName = "sheet0", bool overwrite = false) where T : class
+        public static void ToExcel<T>(this IEnumerable<T> source, string excelFile, string sheetName = "sheet0", int maxRowsPerSheet = int.MaxValue, bool overwrite = false) where T : class
         {
-            ToExcel(source, excelFile, s => sheetName, overwrite);
+            int sheetIndex = 0;
+            while (source.Any())
+            {
+                ToExcel(source.Take(maxRowsPerSheet), excelFile, s => sheetName + (sheetIndex > 0 ? "_" + sheetIndex.ToString() : ""), overwrite);
+                sheetIndex++;
+                source = source.Skip(maxRowsPerSheet);
+            }
         }
 
         public static void ToExcel<T>(this IEnumerable<T> source, string excelFile, Expression<Func<T, string>> sheetSelector, bool overwrite = false) where T : class
