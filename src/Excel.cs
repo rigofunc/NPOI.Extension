@@ -247,30 +247,6 @@ namespace FluentExcel
             var workbook = WorkbookFactory.Create(new FileStream(excelFile, FileMode.Open, FileAccess.Read));
             _formulaEvaluator = workbook.GetCreationHelper().CreateFormulaEvaluator();
             return workbook;
-
-            //// Obsolete
-            //if (extension.Equals(".xls"))
-            //{
-            //    using (var file = new FileStream(excelFile, FileMode.Open, FileAccess.Read))
-            //    {
-            //        var workbook = new HSSFWorkbook(file);
-            // _formulaEvaluator = new HSSFFormulaEvaluator(workbook);
-            //        return workbook;
-            //    }
-            //}
-            //else if (extension.Equals(".xlsx"))
-            //{
-            //    using (var file = new FileStream(excelFile, FileMode.Open, FileAccess.Read))
-            //    {
-            //        var workbook = new XSSFWorkbook(file);
-            // _formulaEvaluator = new XSSFFormulaEvaluator(workbook);
-            //        return workbook;
-            //    }
-            //}
-            //else
-            //{
-            //    throw new NotSupportedException($"not an excel file (*.xls | *.xlsx) extension: {extension}");
-            //}
         }
     }
 }
