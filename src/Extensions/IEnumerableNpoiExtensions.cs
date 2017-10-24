@@ -66,25 +66,27 @@ namespace FluentExcel
                 excelFile = null;
             }
 
+            IWorkbook book = InitializeWorkbook(excelFile);
             using (Stream ms = isVolatile ? (Stream)new MemoryStream() : new FileStream(excelFile, FileMode.OpenOrCreate, FileAccess.Write))
             {
-                int sheetIndex = 0;
                 IEnumerable<byte> output = Enumerable.Empty<byte>();
                 foreach (var sheet in source.AsQueryable().GroupBy(sheetSelector))
                 {
-                    while (source.Any())
+                    int sheetIndex = 0;
+                    var content = sheet.Select(row => row);
+                    while (content.Any())
                     {
-                        var book = sheet.Take(maxRowsPerSheet).ToWorkbook(excelFile, sheet.Key + (sheetIndex > 0 ? "_" + sheetIndex.ToString() : ""), overwrite);
-                        book.Write(ms);
+                        book = content.Take(maxRowsPerSheet).ToWorkbook(book, sheet.Key + (sheetIndex > 0 ? "_" + sheetIndex.ToString() : ""), overwrite);
                         sheetIndex++;
-                        source = source.Skip(maxRowsPerSheet);
+                        content = content.Skip(maxRowsPerSheet);
                     }
                 }
+                book.Write(ms);
                 return isVolatile ? ((MemoryStream)ms).ToArray() : null;
             }
         }
 
-        internal static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, string excelFile, string sheetName, bool overwrite = false)
+        internal static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, IWorkbook workbook, string sheetName, bool overwrite = false)
         {
             // can static properties or only instance properties?
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
@@ -112,9 +114,6 @@ namespace FluentExcel
                     propertyConfigurations[j] = null;
                 }
             }
-
-            // init work book.
-            var workbook = InitializeWorkbook(excelFile);
 
             // new sheet
             //TODO check the sheet's name is valid
