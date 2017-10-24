@@ -61,6 +61,10 @@ namespace FluentExcel
                     throw new NotSupportedException($"not an excel file (*.xls | *.xlsx) extension: {extension}");
                 }
             }
+            else
+            {
+                excelFile = null;
+            }
 
             using (Stream ms = isVolatile ? (Stream)new MemoryStream() : new FileStream(excelFile, FileMode.OpenOrCreate, FileAccess.Write))
             {
@@ -70,7 +74,7 @@ namespace FluentExcel
                 {
                     while (source.Any())
                     {
-                        var book = sheet.Take(maxRowsPerSheet).ToWorkbook(null, sheet.Key + (sheetIndex > 0 ? "_" + sheetIndex.ToString() : ""), overwrite);
+                        var book = sheet.Take(maxRowsPerSheet).ToWorkbook(excelFile, sheet.Key + (sheetIndex > 0 ? "_" + sheetIndex.ToString() : ""), overwrite);
                         book.Write(ms);
                         sheetIndex++;
                         source = source.Skip(maxRowsPerSheet);

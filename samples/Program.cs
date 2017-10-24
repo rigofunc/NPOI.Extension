@@ -1,5 +1,6 @@
 ﻿using FluentExcel;
 using System;
+using System.IO;
 
 namespace samples
 {
@@ -31,7 +32,12 @@ namespace samples
                 };
             }
 
-            var excelFile = @"/Users/rigofunc/Documents/sample.xlsx";
+            string path = Directory.GetParent(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)).FullName;
+            if (Environment.OSVersion.Version.Major >= 6)
+            {
+                path = Directory.GetParent(path).ToString();
+            }
+            var excelFile = path + "/Documents/sample.xls";
 
             // save to excel file with multiple sheets based on expression
             reports.ToExcel(excelFile, r => r.HandleTime.Date.ToString("yyyy-MM"), overwrite: true);

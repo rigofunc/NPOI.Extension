@@ -2,15 +2,13 @@
 
 namespace FluentExcel
 {
+    using NPOI.SS.UserModel;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    using NPOI.HSSF.UserModel;
-    using NPOI.SS.UserModel;
-    using NPOI.XSSF.UserModel;
 
     /// <summary>
     /// Provides some methods for loading <see cref="IEnumerable{T}"/> from excel.
@@ -26,8 +24,8 @@ namespace FluentExcel
         public static ExcelSetting Setting { get; set; } = new ExcelSetting();
 
         /// <summary>
-        /// Loading <see cref="IEnumerable{T}"/> from specified excel file.
-        /// /// </summary>
+        /// Loading <see cref="IEnumerable{T}"/> from specified excel file. ///
+        /// </summary>
         /// <typeparam name="T">The type of the model.</typeparam>
         /// <param name="excelFile">The excel file.</param>
         /// <param name="startRow">The row to start read.</param>
@@ -213,8 +211,10 @@ namespace FluentExcel
                     }
                 case CellType.String:
                     return cell.StringCellValue;
+
                 case CellType.Boolean:
                     return cell.BooleanCellValue;
+
                 case CellType.Error:
                     return FormulaError.ForInt(cell.ErrorCellValue).String;
 
@@ -244,32 +244,33 @@ namespace FluentExcel
         private static IWorkbook InitializeWorkbook(string excelFile)
         {
             var extension = Path.GetExtension(excelFile);
-            if (extension.Equals(".xls"))
-            {
-                using (var file = new FileStream(excelFile, FileMode.Open, FileAccess.Read))
-                {
-                    var workbook = new HSSFWorkbook(file);
+            var workbook = WorkbookFactory.Create(new FileStream(excelFile, FileMode.Open, FileAccess.Read));
+            _formulaEvaluator = workbook.GetCreationHelper().CreateFormulaEvaluator();
+            return workbook;
 
-                    _formulaEvaluator = new HSSFFormulaEvaluator(workbook);
-
-                    return workbook;
-                }
-            }
-            else if (extension.Equals(".xlsx"))
-            {
-                using (var file = new FileStream(excelFile, FileMode.Open, FileAccess.Read))
-                {
-                    var workbook = new XSSFWorkbook(file);
-
-                    _formulaEvaluator = new XSSFFormulaEvaluator(workbook);
-
-                    return workbook;
-                }
-            }
-            else
-            {
-                throw new NotSupportedException($"not an excel file (*.xls | *.xlsx) extension: {extension}");
-            }
+            //// Obsolete
+            //if (extension.Equals(".xls"))
+            //{
+            //    using (var file = new FileStream(excelFile, FileMode.Open, FileAccess.Read))
+            //    {
+            //        var workbook = new HSSFWorkbook(file);
+            // _formulaEvaluator = new HSSFFormulaEvaluator(workbook);
+            //        return workbook;
+            //    }
+            //}
+            //else if (extension.Equals(".xlsx"))
+            //{
+            //    using (var file = new FileStream(excelFile, FileMode.Open, FileAccess.Read))
+            //    {
+            //        var workbook = new XSSFWorkbook(file);
+            // _formulaEvaluator = new XSSFFormulaEvaluator(workbook);
+            //        return workbook;
+            //    }
+            //}
+            //else
+            //{
+            //    throw new NotSupportedException($"not an excel file (*.xls | *.xlsx) extension: {extension}");
+            //}
         }
     }
 }
