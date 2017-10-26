@@ -2,18 +2,19 @@
 
 namespace FluentExcel
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using System.Reflection;
     using NPOI.HPSF;
     using NPOI.HSSF.UserModel;
     using NPOI.HSSF.Util;
     using NPOI.SS.UserModel;
     using NPOI.SS.Util;
     using NPOI.XSSF.UserModel;
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Reflection;
 
     /// <summary>
     /// Defines some extensions for <see cref="IEnumerable{T}"/> that using NPOI to provides excel functionality.
@@ -22,53 +23,70 @@ namespace FluentExcel
     {
         private static IFormulaEvaluator _formulaEvaluator;
 
-        public static byte[] ToExcelContent<T>(this IEnumerable<T> source, string sheetName = "sheet0")
+        public static byte[] ToExcelContent<T>(this IEnumerable<T> source, string sheetName = "sheet0", int maxRowsPerSheet = int.MaxValue, bool overwrite = false)
+            where T : class
         {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            var book = source.ToWorkbook(null, sheetName);
-
-            using (var ms = new MemoryStream())
-            {
-                book.Write(ms);
-                return ms.ToArray();
-            }
+            return ToExcel(source, null, s => sheetName, maxRowsPerSheet, overwrite);
         }
 
-        public static void ToExcel<T>(this IEnumerable<T> source, string excelFile, string sheetName = "sheet0") where T : class
+        public static void ToExcel<T>(this IEnumerable<T> source, string excelFile, string sheetName = "sheet0", int maxRowsPerSheet = int.MaxValue, bool overwrite = false)
+            where T : class
+        {
+            //TODO check the file's path is valid
+            ToExcel(source, excelFile, s => sheetName, maxRowsPerSheet, overwrite);
+        }
+
+        public static byte[] ToExcel<T>(this IEnumerable<T> source, string excelFile, Expression<Func<T, string>> sheetSelector, int maxRowsPerSheet = int.MaxValue, bool overwrite = false)
+            where T : class
         {
             if (source == null)
             {
                 throw new ArgumentNullException(nameof(source));
             }
 
-            var extension = Path.GetExtension(excelFile);
-            if (extension.Equals(".xls"))
+            bool isVolatile = string.IsNullOrWhiteSpace(excelFile);
+            if (!isVolatile)
             {
-                Excel.Setting.UserXlsx = false;
-            }
-            else if (extension.Equals(".xlsx"))
-            {
-                Excel.Setting.UserXlsx = true;
+                var extension = Path.GetExtension(excelFile);
+                if (extension.Equals(".xls"))
+                {
+                    Excel.Setting.UserXlsx = false;
+                }
+                else if (extension.Equals(".xlsx"))
+                {
+                    Excel.Setting.UserXlsx = true;
+                }
+                else
+                {
+                    throw new NotSupportedException($"not an excel file (*.xls | *.xlsx) extension: {extension}");
+                }
             }
             else
             {
-                throw new NotSupportedException($"not an excel file (*.xls | *.xlsx) extension: {extension}");
+                excelFile = null;
             }
 
-            var book = source.ToWorkbook(excelFile, sheetName);
-
-            // Write the stream data of workbook to file
-            using (var stream = new FileStream(excelFile, FileMode.OpenOrCreate, FileAccess.Write))
+            IWorkbook book = InitializeWorkbook(excelFile);
+            using (Stream ms = isVolatile ? (Stream)new MemoryStream() : new FileStream(excelFile, FileMode.OpenOrCreate, FileAccess.Write))
             {
-                book.Write(stream);
+                IEnumerable<byte> output = Enumerable.Empty<byte>();
+                foreach (var sheet in source.AsQueryable().GroupBy(sheetSelector))
+                {
+                    int sheetIndex = 0;
+                    var content = sheet.Select(row => row);
+                    while (content.Any())
+                    {
+                        book = content.Take(maxRowsPerSheet).ToWorkbook(book, sheet.Key + (sheetIndex > 0 ? "_" + sheetIndex.ToString() : ""), overwrite);
+                        sheetIndex++;
+                        content = content.Skip(maxRowsPerSheet);
+                    }
+                }
+                book.Write(ms);
+                return isVolatile ? ((MemoryStream)ms).ToArray() : null;
             }
         }
 
-        internal static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, string excelFile, string sheetName)
+        internal static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, IWorkbook workbook, string sheetName, bool overwrite = false)
         {
             // can static properties or only instance properties?
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
@@ -97,10 +115,8 @@ namespace FluentExcel
                 }
             }
 
-            // init work book.
-            var workbook = InitializeWorkbook(excelFile);
-
             // new sheet
+            //TODO check the sheet's name is valid
             var sheet = workbook.GetSheet(sheetName);
             if (sheet == null)
             {
@@ -108,8 +124,8 @@ namespace FluentExcel
             }
             else
             {
-                // doesn't override the exist sheet
-                sheet = workbook.CreateSheet();
+                // doesn't override the exist sheet if not required
+                if (!overwrite) sheet = workbook.CreateSheet();
             }
 
             // cache cell styles
@@ -181,10 +197,10 @@ namespace FluentExcel
 
                     var unwrapType = property.PropertyType.UnwrapNullableType();
 
-					var value = property.GetValue(item, null);
+                    var value = property.GetValue(item, null);
 
-					// give a chance to the value converter even though value is null.
-					if (config?.ValueConverter != null)
+                    // give a chance to the value converter even though value is null.
+                    if (config?.ValueConverter != null)
                     {
                         value = config.ValueConverter(value);
                         if (value == null)
@@ -193,22 +209,22 @@ namespace FluentExcel
                         unwrapType = value.GetType().UnwrapNullableType();
                     }
 
-					if (value == null)
-						continue;
+                    if (value == null)
+                        continue;
 
-					var cell = row.CreateCell(index);
+                    var cell = row.CreateCell(index);
                     if (cellStyles.TryGetValue(i, out var cellStyle))
                     {
                         cell.CellStyle = cellStyle;
                     }
                     else if (!string.IsNullOrEmpty(config?.Formatter) && value is IFormattable fv)
                     {
-						// the formatter isn't excel supported formatter, but it's a C# formatter.
+                        // the formatter isn't excel supported formatter, but it's a C# formatter.
                         // The result is the Excel cell data type become String.
                         cell.SetCellValue(fv.ToString(config.Formatter, CultureInfo.CurrentCulture));
 
                         continue;
-					}
+                    }
 
                     if (unwrapType == typeof(bool))
                     {
@@ -218,9 +234,9 @@ namespace FluentExcel
                     {
                         cell.SetCellValue(Convert.ToDateTime(value));
                     }
-                    else if (unwrapType.IsInteger() || 
-                             unwrapType == typeof(decimal) || 
-                             unwrapType == typeof(double) || 
+                    else if (unwrapType.IsInteger() ||
+                             unwrapType == typeof(decimal) ||
+                             unwrapType == typeof(double) ||
                              unwrapType == typeof(float))
                     {
                         cell.SetCellValue(Convert.ToDouble(value));

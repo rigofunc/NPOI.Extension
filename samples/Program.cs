@@ -1,11 +1,12 @@
-﻿using System;
-using FluentExcel;
+﻿using FluentExcel;
+using System;
+using System.IO;
 
 namespace samples
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             // global call this
             FluentConfiguration();
@@ -22,7 +23,7 @@ namespace samples
                 {
                     City = "ningbo",
                     Building = "世茂首府",
-                    HandleTime = DateTime.Now,
+                    HandleTime = DateTime.Now.AddDays(7 * i),
                     Broker = "rigofunc 18957139**7",
                     Customer = "yingting 18957139**7",
                     Room = "2#1703",
@@ -31,7 +32,18 @@ namespace samples
                 };
             }
 
-            var excelFile = @"/Users/rigofunc/Documents/sample.xlsx";
+            string path = Directory.GetParent(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)).FullName;
+            if (Environment.OSVersion.Version.Major >= 6)
+            {
+                path = Directory.GetParent(path).ToString();
+            }
+            var excelFile = path + "/Documents/sample.xls";
+
+            // save to excel file with multiple sheets based on expression
+            reports.ToExcel(excelFile, r => r.HandleTime.Date.ToString("yyyy-MM"), overwrite: true);
+
+            // save to excel file with multiple sheets based on maxRows
+            reports.ToExcel(excelFile, "reports", 7, overwrite: true);
 
             // save to excel file
             reports.ToExcel(excelFile);
@@ -43,7 +55,7 @@ namespace samples
         /// <summary>
         /// Use fluent configuration api. (doesn't poison your POCO)
         /// </summary>
-        static void FluentConfiguration()
+        private static void FluentConfiguration()
         {
             var fc = Excel.Setting.For<Report>();
 
@@ -78,11 +90,10 @@ namespace samples
               .HasExcelTitle("成交时间")
               .HasDataFormatter("yyyy-MM-dd");
 
-            // or 
+            // or
             //fc.Property(r => r.HandleTime).HasExcelCell(2, "成交时间", formatter: "yyyy-MM-dd", allowMerge: false);
             // or
             //fc.Property(r => r.HandleTime).HasExcelCell(2, "成交时间", "yyyy-MM-dd");
-
 
             fc.Property(r => r.Broker)
               .HasExcelIndex(3)
