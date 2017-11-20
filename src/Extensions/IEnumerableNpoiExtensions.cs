@@ -2,12 +2,6 @@
 
 namespace FluentExcel
 {
-    using NPOI.HPSF;
-    using NPOI.HSSF.UserModel;
-    using NPOI.HSSF.Util;
-    using NPOI.SS.UserModel;
-    using NPOI.SS.Util;
-    using NPOI.XSSF.UserModel;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
@@ -15,6 +9,12 @@ namespace FluentExcel
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
+    using NPOI.HPSF;
+    using NPOI.HSSF.UserModel;
+    using NPOI.HSSF.Util;
+    using NPOI.SS.UserModel;
+    using NPOI.SS.Util;
+    using NPOI.XSSF.UserModel;
 
     /// <summary>
     /// Defines some extensions for <see cref="IEnumerable{T}"/> that using NPOI to provides excel functionality.
@@ -87,6 +87,7 @@ namespace FluentExcel
         }
 
         internal static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, IWorkbook workbook, string sheetName, bool overwrite = false)
+            where T : class
         {
             // can static properties or only instance properties?
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
@@ -96,6 +97,9 @@ namespace FluentExcel
             if (Excel.Setting.FluentConfigs.TryGetValue(typeof(T), out var fluentConfig))
             {
                 fluentConfigEnabled = true;
+
+                // adjust the auto index.
+                (fluentConfig as FluentConfiguration<T>)?.AdjustAutoIndex();
             }
 
             // find out the configurations
@@ -155,13 +159,10 @@ namespace FluentExcel
                         if (config.IsExportIgnored)
                             continue;
 
-                        if (!config.AutoIndex)
-                        {
-                            index = config.Index;
-                        }
+                        index = config.Index;
 
-                        if (index < 0 && !config.AutoIndex)
-                            throw new Exception($"The excel cell index value hasn't been configured for the property: {property.Name}, see HasExcelIndex(int index) or AdjustAutoIndex() methods for more informations.");
+                        if (index < 0)
+                            throw new Exception($"The excel cell index value cannot be less then '0' for the property: {property.Name}, see HasExcelIndex(int index) methods for more informations.");
                     }
 
                     // this is the first time.

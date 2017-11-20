@@ -147,21 +147,40 @@ namespace FluentExcel
         /// <returns>The <see cref="FluentConfiguration{TModel}"/>.</returns>
         public FluentConfiguration<TModel> AdjustAutoIndex()
         {
-            // TODO: need to fix the bug when the model has some doesn't ignored but hasn't any configuration properties.
             var index = 0;
-            var autoIndexConfigs = _propertyConfigurations.Values.Where(pc => pc.AutoIndex
-                                                                        &&
-                                                                        !pc.IsExportIgnored
-                                                                        &&
-                                                                        pc.Index == -1).ToArray();
-            foreach (var pc in autoIndexConfigs)
+            var properties = typeof(TModel).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
+            foreach (var property in properties)
             {
-                while (_propertyConfigurations.Values.Any(c => c.Index == index))
+                if (!_propertyConfigurations.TryGetValue(property.Name, out var pc))
                 {
-                    index++;
+                    if (_propertyConfigurations.Values.Any(c => c.Index == index))
+                    {
+                        // the default index had been used, so calculate a new one for it.
+                        _propertyConfigurations[property.Name] = pc = new PropertyConfiguration
+                        {
+                            Title = property.Name,
+                            AutoIndex = true,
+                            Index = -1
+                        };
+                    }
+                    else
+                    {
+                        // the default index not be used, 'I' will use it.
+                        index++;
+
+                        continue;
+                    }
                 }
 
-                pc.HasExcelIndex(index++);
+                if (pc.AutoIndex && !pc.IsExportIgnored && pc.Index == -1)
+                {
+                    while (_propertyConfigurations.Values.Any(c => c.Index == index))
+                    {
+                        index++;
+                    }
+
+                    pc.HasExcelIndex(index++);
+                }
             }
 
             return this;

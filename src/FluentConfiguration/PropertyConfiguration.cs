@@ -66,6 +66,11 @@ namespace FluentExcel
         /// </remarks>
         public PropertyConfiguration HasExcelIndex(int index)
         {
+            if (index < 0)
+            {
+                throw new IndexOutOfRangeException("The index cannot be less then 0");
+            }
+
             Index = index;
             AutoIndex = false;
 
@@ -163,6 +168,11 @@ namespace FluentExcel
         /// <param name="importingIsIgnored">If set to <c>true</c> importing is ignored.</param>
         public void IsIgnored(int index, string title, string formatter = null, bool exportingIsIgnored = true, bool importingIsIgnored = true)
         {
+            if (index < 0)
+            {
+                throw new IndexOutOfRangeException("The index cannot be less then 0");
+            }
+
             Index = index;
             Title = title;
             Formatter = formatter;
@@ -180,6 +190,11 @@ namespace FluentExcel
         /// <param name="valueConverter">The value converter.</param>
         public void HasExcelCell(int index, string title, string formatter = null, bool allowMerge = false, Func<object, object> valueConverter = null)
         {
+            if (index < 0)
+            {
+                throw new IndexOutOfRangeException("The index cannot be less then 0");
+            }
+
             Index = index;
             Title = title;
             Formatter = formatter;
