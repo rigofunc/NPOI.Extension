@@ -4,6 +4,8 @@ namespace FluentExcel
 {
     using System;
     using System.Collections.Generic;
+    using NPOI.HSSF.Util;
+    using NPOI.SS.UserModel;
 
     /// <summary>
     /// Represents the all setting for save to and loading from excel.
@@ -31,6 +33,12 @@ namespace FluentExcel
         public bool UserXlsx { get; set; } = true;
 
         /// <summary>
+        /// Gets or sets the title cell style applier.
+        /// </summary>
+        /// <value>The title cell style applier.</value>
+        public Action<ICellStyle, IFont> TitleCellStyleApplier { get; set; } = DefaultTitleCellStyleApplier;
+
+        /// <summary>
         /// Gets the fluent configuration entry point for the specified <typeparamref name="TModel"/>.
         /// </summary>
         /// <typeparam name="TModel">The type of the model.</typeparam>
@@ -54,5 +62,17 @@ namespace FluentExcel
         /// </summary>
         /// <value>The model fluent configs.</value>
         internal IDictionary<Type, IFluentConfiguration> FluentConfigs { get; } = new Dictionary<Type, IFluentConfiguration>();
+
+        internal static void DefaultTitleCellStyleApplier(ICellStyle cellStyle, IFont font)
+        {
+            cellStyle.Alignment = HorizontalAlignment.Center;
+            cellStyle.VerticalAlignment = VerticalAlignment.Center;
+            cellStyle.FillPattern = FillPattern.Bricks;
+            cellStyle.FillBackgroundColor = HSSFColor.Grey40Percent.Index;
+            cellStyle.FillForegroundColor = HSSFColor.White.Index;
+
+            font.Boldweight = (short)FontBoldWeight.Bold;
+            cellStyle.SetFont(font);
+        }
     }
 }
