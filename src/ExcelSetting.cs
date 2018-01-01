@@ -67,9 +67,6 @@ namespace FluentExcel
         {
             cellStyle.Alignment = HorizontalAlignment.Center;
             cellStyle.VerticalAlignment = VerticalAlignment.Center;
-            cellStyle.FillPattern = FillPattern.Bricks;
-            cellStyle.FillBackgroundColor = HSSFColor.Grey40Percent.Index;
-            cellStyle.FillForegroundColor = HSSFColor.White.Index;
 
             font.Boldweight = (short)FontBoldWeight.Bold;
             cellStyle.SetFont(font);
