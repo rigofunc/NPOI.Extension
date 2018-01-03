@@ -1,4 +1,6 @@
 ﻿using FluentExcel;
+using NPOI.HSSF.Util;
+using NPOI.SS.UserModel;
 using System;
 using System.IO;
 
@@ -14,6 +16,9 @@ namespace samples
             // demo the extension point
             Excel.Setting.For<Report>().FromAnnotations()
                                        .AdjustAutoIndex();
+
+            // Change title cell style
+            //Excel.Setting.TitleCellStyleApplier = MyTitleCellApplier;
 
             var len = 20;
             var reports = new Report[len];
@@ -115,6 +120,18 @@ namespace samples
             fc.Property(r => r.Profits)
               .HasExcelIndex(7)
               .HasExcelTitle("收益(元)");
+        }
+
+        private static void MyTitleCellApplier(ICellStyle cellStyle, IFont font)
+        {
+            cellStyle.Alignment = HorizontalAlignment.Center;
+            cellStyle.VerticalAlignment = VerticalAlignment.Center;
+
+            cellStyle.FillPattern = FillPattern.SolidForeground;
+            cellStyle.FillForegroundColor = HSSFColor.Green.Index;
+
+            font.Color = HSSFColor.White.Index;
+            cellStyle.SetFont(font);
         }
     }
 }
