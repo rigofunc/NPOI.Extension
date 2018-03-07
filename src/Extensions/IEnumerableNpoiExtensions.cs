@@ -2,6 +2,11 @@
 
 namespace FluentExcel
 {
+    using NPOI.HPSF;
+    using NPOI.HSSF.UserModel;
+    using NPOI.SS.UserModel;
+    using NPOI.SS.Util;
+    using NPOI.XSSF.UserModel;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
@@ -9,12 +14,6 @@ namespace FluentExcel
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
-    using NPOI.HPSF;
-    using NPOI.HSSF.UserModel;
-    using NPOI.HSSF.Util;
-    using NPOI.SS.UserModel;
-    using NPOI.SS.Util;
-    using NPOI.XSSF.UserModel;
 
     /// <summary>
     /// Defines some extensions for <see cref="IEnumerable{T}"/> that using NPOI to provides excel functionality.
@@ -196,7 +195,7 @@ namespace FluentExcel
                         }
 
                         var titleCell = titleRow.CreateCell(index);
-                        if (titleStyle != null) 
+                        if (titleStyle != null)
                         {
                             titleCell.CellStyle = titleStyle;
                         }
@@ -367,6 +366,11 @@ namespace FluentExcel
                     var workbook = new XSSFWorkbook();
 
                     _formulaEvaluator = new XSSFFormulaEvaluator(workbook);
+
+                    var props = workbook.GetProperties();
+                    props.CoreProperties.Creator = setting.Author;
+                    props.CoreProperties.Subject = setting.Subject;
+                    props.ExtendedProperties.GetUnderlyingProperties().Company = setting.Company;
 
                     return workbook;
                 }
