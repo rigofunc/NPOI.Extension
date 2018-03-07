@@ -2,11 +2,6 @@
 
 namespace FluentExcel
 {
-    using NPOI.HPSF;
-    using NPOI.HSSF.UserModel;
-    using NPOI.SS.UserModel;
-    using NPOI.SS.Util;
-    using NPOI.XSSF.UserModel;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
@@ -14,6 +9,12 @@ namespace FluentExcel
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
+    using NPOI.HPSF;
+    using NPOI.HSSF.UserModel;
+    using NPOI.HSSF.Util;
+    using NPOI.SS.UserModel;
+    using NPOI.SS.Util;
+    using NPOI.XSSF.UserModel;
 
     /// <summary>
     /// Defines some extensions for <see cref="IEnumerable{T}"/> that using NPOI to provides excel functionality.
