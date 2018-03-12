@@ -196,7 +196,7 @@ namespace FluentExcel
                         }
 
                         var titleCell = titleRow.CreateCell(index);
-                        if (titleStyle != null) 
+                        if (titleStyle != null)
                         {
                             titleCell.CellStyle = titleStyle;
                         }
@@ -367,6 +367,11 @@ namespace FluentExcel
                     var workbook = new XSSFWorkbook();
 
                     _formulaEvaluator = new XSSFFormulaEvaluator(workbook);
+
+                    var props = workbook.GetProperties();
+                    props.CoreProperties.Creator = setting.Author;
+                    props.CoreProperties.Subject = setting.Subject;
+                    props.ExtendedProperties.GetUnderlyingProperties().Company = setting.Company;
 
                     return workbook;
                 }
