@@ -138,6 +138,22 @@ namespace FluentExcel
 
                     var value = row.GetCellValue(index, _formulaEvaluator);
 
+                    // give a chance to the value validator
+                    if (config?.ValueValidator != null)
+                    {
+                        var validationResult = config.ValueValidator(row.RowNum - 1, config.Index, value);
+                        if (false == validationResult)
+                        {
+                            if (fluentConfig.SkipInvalidRows)
+                            {
+                                itemIsValid = false;
+                                break;
+                            }
+
+                            throw new ArgumentException($"Validation of cell value at row {row.RowNum}, column {config.Title}({config.Index + 1}) failed! Value: [{value}]");
+                        }
+                    }
+
                     // give a chance to the value converter.
                     if (config?.ValueConverter != null)
                     {

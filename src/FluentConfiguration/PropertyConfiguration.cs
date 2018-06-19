@@ -5,6 +5,15 @@ namespace FluentExcel
     using System;
 
     /// <summary>
+    /// Value validator delegate, validate value before <see cref="PropertyConfiguration.ValueConverter"/>
+    /// </summary>
+    /// <param name="rowIndex">Row index of current cell in excel</param>
+    /// <param name="columnIndex">Column index of current cell in excel</param>
+    /// <param name="value">value of current cell</param>
+    /// <returns>Wether the value passes validation</returns>
+    public delegate bool ValueValidatorDelegate(int rowIndex, int columnIndex, object value);
+
+    /// <summary>
     /// Represents the configuration for the specfidied property.
     /// </summary>
     public class PropertyConfiguration
@@ -50,6 +59,11 @@ namespace FluentExcel
         /// </summary>
         /// <value>The formatter.</value>
         public string Formatter { get; internal set; }
+
+        /// <summary>
+        /// Gets the value validator to validate the value.
+        /// </summary>
+        public ValueValidatorDelegate ValueValidator { get; internal set; }
 
         /// <summary>
         /// Gets the value converter to convert the value.
@@ -130,6 +144,18 @@ namespace FluentExcel
         public PropertyConfiguration HasValueConverter(Func<object, object> valueConverter)
         {
             ValueConverter = valueConverter;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configures the value validator for the specified property.
+        /// </summary>
+        /// <param name="valueValidator">The value validator.</param>
+        /// <returns>The <see cref="PropertyConfiguration"/>.</returns>
+        public PropertyConfiguration HasValueValidator(ValueValidatorDelegate valueValidator)
+        {
+            ValueValidator = valueValidator;
 
             return this;
         }

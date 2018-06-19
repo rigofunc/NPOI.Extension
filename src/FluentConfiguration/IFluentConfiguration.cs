@@ -32,5 +32,10 @@ namespace FluentExcel
         /// </summary>
         /// <value>The freeze config.</value>
         IReadOnlyList<FreezeConfiguration> FreezeConfigurations { get; }
+
+        /// <summary>
+        /// Gets the value indicating whether to skip the rows with validation failure while loading the excel data.
+        /// </summary>
+        bool SkipInvalidRows { get; }
     }
 }
