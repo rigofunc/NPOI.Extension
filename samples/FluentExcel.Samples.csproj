@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFrameworks>net461</TargetFrameworks>
-    <OutputType>exe</OutputType>
+    <OutputType>Exe</OutputType>
+    <StartupObject>samples.Program</StartupObject>
     <Authors>RigoFunc (xuyingting)</Authors>
     <Description>The examples of the FluentExcel</Description>
     <Copyright>Copyright © RigoFunc (xuyingting). All rights reserved.</Copyright>
@@ -11,9 +12,6 @@
     <RepositoryUrl>https://github.com/Arch/FluentExcel</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
     <PackageTags>FluentExcel, NPOI, Fluent API, NPOI.Extension, xyting, Arch, dotnetcore</PackageTags>
-    <ApplicationIcon />
-    <OutputType>Exe</OutputType>
-    <StartupObject>samples.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
