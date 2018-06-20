@@ -14,10 +14,19 @@ namespace FluentExcel
     /// <typeparam name="TModel">The type of model.</typeparam>
     public class FluentConfiguration<TModel> : IFluentConfiguration where TModel : class
     {
+        /// <summary>
+        /// Typed row data validator delegate, validate current row before adding it to the result list.
+        /// </summary>
+        /// <param name="rowIndex">Index of current row in excel</param>
+        /// <param name="rowData">Model data of current row</param>
+        /// <returns>Whether the row data passes validation</returns>
+        public delegate bool RowDataValidatorTypedDelegate(int rowIndex, TModel rowData);
+
         private Dictionary<string, PropertyConfiguration> _propertyConfigurations;
         private List<StatisticsConfiguration> _statisticsConfigurations;
         private List<FilterConfiguration> _filterConfigurations;
         private List<FreezeConfiguration> _freezeConfigurations;
+        private RowDataValidatorDelegate _rowDataValidator;
         private bool _skipInvalidRows;
 
         /// <summary>
@@ -78,6 +87,12 @@ namespace FluentExcel
                 return _freezeConfigurations.AsReadOnly();
             }
         }
+
+        /// <summary>
+        /// Gets the row data validator.
+        /// </summary>
+        /// <value>The row data validator.</value>
+        public RowDataValidatorDelegate RowDataValidator { get { return _rowDataValidator; } }
 
         /// <summary>
         /// Gets the value indicating whether to skip the rows with validation failure while loading the excel data.
@@ -257,6 +272,30 @@ namespace FluentExcel
             };
 
             _freezeConfigurations.Add(freeze);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configures the row data validator which validates each row before adding it to the result list.
+        /// </summary>
+        /// <returns>The <see cref="FluentConfiguration{TModel}"/>.</returns>
+        /// <param name="rowDataValidator">The row data validator</param>
+        public FluentConfiguration<TModel> HasRowDataValidator(RowDataValidatorTypedDelegate rowDataValidator)
+        {
+            if (null == rowDataValidator)
+            {
+                _rowDataValidator = null;
+                return this;
+            }
+
+            _rowDataValidator = (rowIndex, rowData) =>
+            {
+                var model = rowData as TModel;
+                if (null == model && null != rowData) throw new ArgumentException($"the row data is not of type {typeof(TModel).Name}", nameof(rowData));
+
+                return rowDataValidator(rowIndex, model);
+            };
 
             return this;
         }

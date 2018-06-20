@@ -138,10 +138,10 @@ namespace FluentExcel
 
                     var value = row.GetCellValue(index, _formulaEvaluator);
 
-                    // give a chance to the value validator
-                    if (config?.ValueValidator != null)
+                    // give a chance to the cell value validator
+                    if (null != config?.CellValueValidator)
                     {
-                        var validationResult = config.ValueValidator(row.RowNum - 1, config.Index, value);
+                        var validationResult = config.CellValueValidator(row.RowNum - 1, config.Index, value);
                         if (false == validationResult)
                         {
                             if (fluentConfig.SkipInvalidRows)
@@ -189,6 +189,22 @@ namespace FluentExcel
 
                 if (itemIsValid)
                 {
+                    // give a chance to the row data validator
+                    if (null != fluentConfig?.RowDataValidator)
+                    {
+                        var validationResult = fluentConfig.RowDataValidator(row.RowNum - 1, item);
+                        if (false == validationResult)
+                        {
+                            if (fluentConfig.SkipInvalidRows)
+                            {
+                                itemIsValid = false;
+                                continue;
+                            }
+
+                            throw new ArgumentException($"Validation of row data at row {row.RowNum} failed!");
+                        }
+                    }
+
                     list.Add(item);
                 }
             }
