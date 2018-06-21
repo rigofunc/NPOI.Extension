@@ -86,9 +86,15 @@ namespace FluentExcel
             }
         }
 
-        public static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, IWorkbook workbook, string sheetName, bool overwrite = false)
+        public static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, string sheetName = "sheet0") where T : class
+            => ToWorkbook<T>(source, InitializeWorkbook(null), sheetName, false);
+        public static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, IWorkbook workbook, string sheetName = "sheet0", bool overwrite = false)
             where T : class
         {
+            if (null == source) throw new ArgumentNullException(nameof(source));
+            if (null == workbook) throw new ArgumentNullException(nameof(workbook));
+            if (string.IsNullOrWhiteSpace(sheetName)) throw new ArgumentException($"sheet name cannot be null or whitespace", nameof(sheetName));
+
             // can static properties or only instance properties?
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
 
