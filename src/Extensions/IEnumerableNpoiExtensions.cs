@@ -87,8 +87,12 @@ namespace FluentExcel
         }
 
         public static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, string sheetName = "sheet0") where T : class
-            => ToWorkbook<T>(source, InitializeWorkbook(null), sheetName, false);
-        public static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, IWorkbook workbook, string sheetName = "sheet0", bool overwrite = false)
+            => ToWorkbook<T>(source, Excel.Setting, sheetName);
+        public static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, ExcelSetting excelSetting, string sheetName = "sheet0") where T : class
+            => ToWorkbook<T>(source, InitializeWorkbook(null, excelSetting), excelSetting, sheetName, false);
+        public static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, IWorkbook workbook, string sheetName = "sheet0", bool overwrite = false) where T : class
+            => ToWorkbook<T>(source, workbook, Excel.Setting, sheetName, overwrite);
+        public static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, IWorkbook workbook, ExcelSetting excelSetting, string sheetName = "sheet0", bool overwrite = false)
             where T : class
         {
             if (null == source) throw new ArgumentNullException(nameof(source));
@@ -100,7 +104,7 @@ namespace FluentExcel
 
             bool fluentConfigEnabled = false;
             // get the fluent config
-            if (Excel.Setting.FluentConfigs.TryGetValue(typeof(T), out var fluentConfig))
+            if (excelSetting.FluentConfigs.TryGetValue(typeof(T), out var fluentConfig))
             {
                 fluentConfigEnabled = true;
 
@@ -143,11 +147,11 @@ namespace FluentExcel
 
             // title row cell style
             ICellStyle titleStyle = null;
-            if (Excel.Setting.TitleCellStyleApplier != null)
+            if (excelSetting.TitleCellStyleApplier != null)
             {
                 titleStyle = workbook.CreateCellStyle();
                 var font = workbook.CreateFont();
-                Excel.Setting.TitleCellStyleApplier(titleStyle, font);
+                excelSetting.TitleCellStyleApplier(titleStyle, font);
             }
 
             var titleRow = sheet.CreateRow(0);
@@ -352,9 +356,9 @@ namespace FluentExcel
             return workbook;
         }
 
-        private static IWorkbook InitializeWorkbook(string excelFile)
+        private static IWorkbook InitializeWorkbook(string excelFile, ExcelSetting excelSetting = null)
         {
-            var setting = Excel.Setting;
+            var setting = excelSetting ?? Excel.Setting;
             if (setting.UseXlsx)
             {
                 if (!string.IsNullOrEmpty(excelFile) && File.Exists(excelFile))
