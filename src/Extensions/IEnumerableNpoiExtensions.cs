@@ -86,7 +86,7 @@ namespace FluentExcel
             }
         }
 
-        internal static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, IWorkbook workbook, string sheetName, bool overwrite = false)
+        public static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, IWorkbook workbook, string sheetName, bool overwrite = false)
             where T : class
         {
             // can static properties or only instance properties?
