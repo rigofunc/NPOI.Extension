@@ -50,11 +50,11 @@ namespace FluentExcel
                 var extension = Path.GetExtension(excelFile);
                 if (extension.Equals(".xls"))
                 {
-                    Excel.Setting.UserXlsx = false;
+                    Excel.Setting.UseXlsx = false;
                 }
                 else if (extension.Equals(".xlsx"))
                 {
-                    Excel.Setting.UserXlsx = true;
+                    Excel.Setting.UseXlsx = true;
                 }
                 else
                 {
@@ -349,7 +349,7 @@ namespace FluentExcel
         private static IWorkbook InitializeWorkbook(string excelFile)
         {
             var setting = Excel.Setting;
-            if (setting.UserXlsx)
+            if (setting.UseXlsx)
             {
                 if (!string.IsNullOrEmpty(excelFile) && File.Exists(excelFile))
                 {
