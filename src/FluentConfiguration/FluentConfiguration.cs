@@ -258,7 +258,7 @@ namespace FluentExcel
         /// </summary>
         /// <returns>The <see cref="FluentConfiguration{TModel}"/>.</returns>
         /// <param name="columnSplit">The column number to split.</param>
-        /// <param name="rowSplit">The row number to split.param>
+        /// <param name="rowSplit">The row number to split.</param>
         /// <param name="leftMostColumn">The left most culomn index.</param>
         /// <param name="topMostRow">The top most row index.</param>
         public FluentConfiguration<TModel> HasFreeze(int columnSplit, int rowSplit, int leftMostColumn, int topMostRow)
