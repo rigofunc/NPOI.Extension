@@ -141,9 +141,9 @@ namespace FluentExcel
             return Load<T>(sheet, excelSetting, startRow);
         }
 
-        private static IEnumerable<T> Load<T>(ISheet sheet, int startRow = 1) where T : class, new()
+        public static IEnumerable<T> Load<T>(ISheet sheet, int startRow = 1) where T : class, new()
             => Load<T>(sheet, Excel.Setting, startRow);
-        private static IEnumerable<T> Load<T>(ISheet sheet, ExcelSetting excelSetting, int startRow = 1) where T : class, new()
+        public static IEnumerable<T> Load<T>(ISheet sheet, ExcelSetting excelSetting, int startRow = 1) where T : class, new()
         {
             if (null == sheet) throw new ArgumentNullException(nameof(sheet));
 
