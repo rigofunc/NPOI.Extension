@@ -105,7 +105,7 @@ namespace FluentExcel
             var sheet = workbook.GetSheetAt(sheetIndex);
             if (null == sheet) throw new ArgumentException($"Excel sheet with specified index [{sheetIndex}] not found", nameof(sheetIndex));
 
-            return Load<T>(sheet, excelSetting, startRow);
+            return Load<T>(sheet, _formulaEvaluator, excelSetting, startRow);
         }
 
         /// <summary>
@@ -138,12 +138,12 @@ namespace FluentExcel
             var sheet = workbook.GetSheet(sheetName);
             if (null == sheet) throw new ArgumentException($"Excel sheet with specified name [{sheetName}] not found", nameof(sheetName));
 
-            return Load<T>(sheet, excelSetting, startRow);
+            return Load<T>(sheet, _formulaEvaluator, excelSetting, startRow);
         }
 
-        public static IEnumerable<T> Load<T>(ISheet sheet, int startRow = 1) where T : class, new()
-            => Load<T>(sheet, Excel.Setting, startRow);
-        public static IEnumerable<T> Load<T>(ISheet sheet, ExcelSetting excelSetting, int startRow = 1) where T : class, new()
+        public static IEnumerable<T> Load<T>(ISheet sheet, IFormulaEvaluator formulaEvaluator, int startRow = 1) where T : class, new()
+            => Load<T>(sheet, formulaEvaluator, Excel.Setting, startRow);
+        public static IEnumerable<T> Load<T>(ISheet sheet, IFormulaEvaluator formulaEvaluator, ExcelSetting excelSetting, int startRow = 1) where T : class, new()
         {
             if (null == sheet) throw new ArgumentNullException(nameof(sheet));
 
@@ -240,7 +240,7 @@ namespace FluentExcel
                         }
                     }
 
-                    var value = row.GetCellValue(index, _formulaEvaluator);
+                    var value = row.GetCellValue(index, formulaEvaluator);
 
                     // give a chance to the cell value validator
                     if (null != config?.CellValueValidator)
