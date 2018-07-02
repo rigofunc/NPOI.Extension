@@ -259,9 +259,9 @@ namespace FluentExcel
                     }
 
                     // give a chance to the value converter.
-                    if (config?.ValueConverter != null)
+                    if (config?.CellValueConverter != null)
                     {
-                        value = config.ValueConverter(value);
+                        value = config.CellValueConverter(row.RowNum - 1, config.Index, value);
                     }
 
                     if (value == null)

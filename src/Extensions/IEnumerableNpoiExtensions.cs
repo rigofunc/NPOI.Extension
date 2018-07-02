@@ -218,9 +218,9 @@ namespace FluentExcel
                     var value = property.GetValue(item, null);
 
                     // give a chance to the value converter even though value is null.
-                    if (config?.ValueConverter != null)
+                    if (config?.CellValueConverter != null)
                     {
-                        value = config.ValueConverter(value);
+                        value = config.CellValueConverter(rowIndex, index, value);
                         if (value == null)
                             continue;
 
