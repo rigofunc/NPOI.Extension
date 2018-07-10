@@ -50,11 +50,11 @@ namespace FluentExcel
                 var extension = Path.GetExtension(excelFile);
                 if (extension.Equals(".xls"))
                 {
-                    Excel.Setting.UserXlsx = false;
+                    Excel.Setting.UseXlsx = false;
                 }
                 else if (extension.Equals(".xlsx"))
                 {
-                    Excel.Setting.UserXlsx = true;
+                    Excel.Setting.UseXlsx = true;
                 }
                 else
                 {
@@ -86,15 +86,25 @@ namespace FluentExcel
             }
         }
 
-        internal static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, IWorkbook workbook, string sheetName, bool overwrite = false)
+        public static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, string sheetName = "sheet0") where T : class
+            => ToWorkbook<T>(source, Excel.Setting, sheetName);
+        public static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, ExcelSetting excelSetting, string sheetName = "sheet0") where T : class
+            => ToWorkbook<T>(source, InitializeWorkbook(null, excelSetting), excelSetting, sheetName, false);
+        public static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, IWorkbook workbook, string sheetName = "sheet0", bool overwrite = false) where T : class
+            => ToWorkbook<T>(source, workbook, Excel.Setting, sheetName, overwrite);
+        public static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, IWorkbook workbook, ExcelSetting excelSetting, string sheetName = "sheet0", bool overwrite = false)
             where T : class
         {
+            if (null == source) throw new ArgumentNullException(nameof(source));
+            if (null == workbook) throw new ArgumentNullException(nameof(workbook));
+            if (string.IsNullOrWhiteSpace(sheetName)) throw new ArgumentException($"sheet name cannot be null or whitespace", nameof(sheetName));
+
             // can static properties or only instance properties?
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
 
             bool fluentConfigEnabled = false;
             // get the fluent config
-            if (Excel.Setting.FluentConfigs.TryGetValue(typeof(T), out var fluentConfig))
+            if (excelSetting.FluentConfigs.TryGetValue(typeof(T), out var fluentConfig))
             {
                 fluentConfigEnabled = true;
 
@@ -137,11 +147,11 @@ namespace FluentExcel
 
             // title row cell style
             ICellStyle titleStyle = null;
-            if (Excel.Setting.TitleCellStyleApplier != null)
+            if (excelSetting.TitleCellStyleApplier != null)
             {
                 titleStyle = workbook.CreateCellStyle();
                 var font = workbook.CreateFont();
-                Excel.Setting.TitleCellStyleApplier(titleStyle, font);
+                excelSetting.TitleCellStyleApplier(titleStyle, font);
             }
 
             var titleRow = sheet.CreateRow(0);
@@ -208,9 +218,9 @@ namespace FluentExcel
                     var value = property.GetValue(item, null);
 
                     // give a chance to the value converter even though value is null.
-                    if (config?.ValueConverter != null)
+                    if (config?.CellValueConverter != null)
                     {
-                        value = config.ValueConverter(value);
+                        value = config.CellValueConverter(rowIndex, index, value);
                         if (value == null)
                             continue;
 
@@ -346,10 +356,10 @@ namespace FluentExcel
             return workbook;
         }
 
-        private static IWorkbook InitializeWorkbook(string excelFile)
+        private static IWorkbook InitializeWorkbook(string excelFile, ExcelSetting excelSetting = null)
         {
-            var setting = Excel.Setting;
-            if (setting.UserXlsx)
+            var setting = excelSetting ?? Excel.Setting;
+            if (setting.UseXlsx)
             {
                 if (!string.IsNullOrEmpty(excelFile) && File.Exists(excelFile))
                 {

@@ -30,7 +30,7 @@ namespace FluentExcel
         /// <summary>
         /// Gets or sets a value indicating whether to use *.xlsx file extension.
         /// </summary>
-        public bool UserXlsx { get; set; } = true;
+        public bool UseXlsx { get; set; } = true;
 
         /// <summary>
         /// Gets or sets the title cell style applier.

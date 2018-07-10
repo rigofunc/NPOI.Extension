@@ -32,23 +32,127 @@ namespace FluentExcel
         /// <param name="sheetIndex">Which sheet to read.</param>
         /// <returns>The <see cref="IEnumerable{T}"/> loading from excel.</returns>
         public static IEnumerable<T> Load<T>(string excelFile, int startRow = 1, int sheetIndex = 0) where T : class, new()
+            => Load<T>(excelFile, Setting, startRow, sheetIndex);
+
+        /// <summary>
+        /// Loading <see cref="IEnumerable{T}"/> from specified excel file. ///
+        /// </summary>
+        /// <typeparam name="T">The type of the model.</typeparam>
+        /// <param name="excelFile">The excel file.</param>
+        /// <param name="excelSetting">The excel setting to use to load data.</param>
+        /// <param name="startRow">The row to start read.</param>
+        /// <param name="sheetIndex">Which sheet to read.</param>
+        /// <returns>The <see cref="IEnumerable{T}"/> loading from excel.</returns>
+        public static IEnumerable<T> Load<T>(string excelFile, ExcelSetting excelSetting, int startRow = 1, int sheetIndex = 0) where T : class, new()
         {
-            if (!File.Exists(excelFile))
-            {
-                throw new FileNotFoundException();
-            }
+            if (!File.Exists(excelFile)) throw new FileNotFoundException();
 
-            var workbook = InitializeWorkbook(excelFile);
+            return Load<T>(File.OpenRead(excelFile), excelSetting, startRow, sheetIndex);
+        }
 
-            // currently, only handle sheet one (or call side using foreach to support multiple sheet)
+        /// <summary>
+        /// Loading <see cref="IEnumerable{T}"/> from specified excel file. ///
+        /// </summary>
+        /// <typeparam name="T">The type of the model.</typeparam>
+        /// <param name="excelFile">The excel file.</param>
+        /// <param name="sheetName">Which sheet to read.</param>
+        /// <param name="startRow">The row to start read.</param>
+        /// <returns>The <see cref="IEnumerable{T}"/> loading from excel.</returns>
+        public static IEnumerable<T> Load<T>(string excelFile, string sheetName, int startRow = 1) where T : class, new()
+            => Load<T>(excelFile, Setting, sheetName, startRow);
+
+        /// <summary>
+        /// Loading <see cref="IEnumerable{T}"/> from specified excel file. ///
+        /// </summary>
+        /// <typeparam name="T">The type of the model.</typeparam>
+        /// <param name="excelFile">The excel file.</param>
+        /// <param name="excelSetting">The excel setting to use to load data.</param>
+        /// <param name="sheetName">Which sheet to read.</param>
+        /// <param name="startRow">The row to start read.</param>
+        /// <returns>The <see cref="IEnumerable{T}"/> loading from excel.</returns>
+        public static IEnumerable<T> Load<T>(string excelFile, ExcelSetting excelSetting, string sheetName, int startRow = 1) where T : class, new()
+        {
+            if (!File.Exists(excelFile)) throw new FileNotFoundException();
+
+            return Load<T>(File.OpenRead(excelFile), excelSetting, sheetName, startRow);
+        }
+
+        /// <summary>
+        /// Loading <see cref="IEnumerable{T}"/> from specified excel file. ///
+        /// </summary>
+        /// <typeparam name="T">The type of the model.</typeparam>
+        /// <param name="excelStream">The excel stream.</param>
+        /// <param name="startRow">The row to start read.</param>
+        /// <param name="sheetIndex">Which sheet to read.</param>
+        /// <returns>The <see cref="IEnumerable{T}"/> loading from excel.</returns>
+        public static IEnumerable<T> Load<T>(Stream excelStream, int startRow = 1, int sheetIndex = 0) where T : class, new()
+            => Load<T>(excelStream, Setting, startRow, sheetIndex);
+
+        /// <summary>
+        /// Loading <see cref="IEnumerable{T}"/> from specified excel file. ///
+        /// </summary>
+        /// <typeparam name="T">The type of the model.</typeparam>
+        /// <param name="excelStream">The excel stream.</param>
+        /// <param name="excelSetting">The excel setting to use to load data.</param>
+        /// <param name="startRow">The row to start read.</param>
+        /// <param name="sheetIndex">Which sheet to read.</param>
+        /// <returns>The <see cref="IEnumerable{T}"/> loading from excel.</returns>
+        public static IEnumerable<T> Load<T>(Stream excelStream, ExcelSetting excelSetting, int startRow = 1, int sheetIndex = 0) where T : class, new()
+        {
+            var workbook = InitializeWorkbook(excelStream);
+
+            // currently, only handle one sheet (or call side using foreach to support multiple sheet)
             var sheet = workbook.GetSheetAt(sheetIndex);
+            if (null == sheet) throw new ArgumentException($"Excel sheet with specified index [{sheetIndex}] not found", nameof(sheetIndex));
+
+            return Load<T>(sheet, _formulaEvaluator, excelSetting, startRow);
+        }
+
+        /// <summary>
+        /// Loading <see cref="IEnumerable{T}"/> from specified excel file. ///
+        /// </summary>
+        /// <typeparam name="T">The type of the model.</typeparam>
+        /// <param name="excelStream">The excel stream.</param>
+        /// <param name="sheetName">Which sheet to read.</param>
+        /// <param name="startRow">The row to start read.</param>
+        /// <returns>The <see cref="IEnumerable{T}"/> loading from excel.</returns>
+        public static IEnumerable<T> Load<T>(Stream excelStream, string sheetName, int startRow = 1) where T : class, new()
+            => Load<T>(excelStream, Setting, sheetName, startRow);
+
+        /// <summary>
+        /// Loading <see cref="IEnumerable{T}"/> from specified excel file. ///
+        /// </summary>
+        /// <typeparam name="T">The type of the model.</typeparam>
+        /// <param name="excelStream">The excel stream.</param>
+        /// <param name="excelSetting">The excel setting to use to load data.</param>
+        /// <param name="sheetName">Which sheet to read.</param>
+        /// <param name="startRow">The row to start read.</param>
+        /// <returns>The <see cref="IEnumerable{T}"/> loading from excel.</returns>
+        public static IEnumerable<T> Load<T>(Stream excelStream, ExcelSetting excelSetting, string sheetName, int startRow = 1) where T : class, new()
+        {
+            if (string.IsNullOrWhiteSpace(sheetName)) throw new ArgumentException($"sheet name cannot be null or whitespace", nameof(sheetName));
+
+            var workbook = InitializeWorkbook(excelStream);
+
+            // currently, only handle one sheet (or call side using foreach to support multiple sheet)
+            var sheet = workbook.GetSheet(sheetName);
+            if (null == sheet) throw new ArgumentException($"Excel sheet with specified name [{sheetName}] not found", nameof(sheetName));
+
+            return Load<T>(sheet, _formulaEvaluator, excelSetting, startRow);
+        }
+
+        public static IEnumerable<T> Load<T>(ISheet sheet, IFormulaEvaluator formulaEvaluator, int startRow = 1) where T : class, new()
+            => Load<T>(sheet, formulaEvaluator, Excel.Setting, startRow);
+        public static IEnumerable<T> Load<T>(ISheet sheet, IFormulaEvaluator formulaEvaluator, ExcelSetting excelSetting, int startRow = 1) where T : class, new()
+        {
+            if (null == sheet) throw new ArgumentNullException(nameof(sheet));
 
             // get the writable properties
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty);
 
             bool fluentConfigEnabled = false;
             // get the fluent config
-            if (Setting.FluentConfigs.TryGetValue(typeof(T), out var fluentConfig))
+            if (excelSetting.FluentConfigs.TryGetValue(typeof(T), out var fluentConfig))
             {
                 fluentConfigEnabled = true;
             }
@@ -136,12 +240,28 @@ namespace FluentExcel
                         }
                     }
 
-                    var value = row.GetCellValue(index, _formulaEvaluator);
+                    var value = row.GetCellValue(index, formulaEvaluator);
+
+                    // give a chance to the cell value validator
+                    if (null != config?.CellValueValidator)
+                    {
+                        var validationResult = config.CellValueValidator(row.RowNum - 1, config.Index, value);
+                        if (false == validationResult)
+                        {
+                            if (fluentConfig.SkipInvalidRows)
+                            {
+                                itemIsValid = false;
+                                break;
+                            }
+
+                            throw new ArgumentException($"Validation of cell value at row {row.RowNum}, column {config.Title}({config.Index + 1}) failed! Value: [{value}]");
+                        }
+                    }
 
                     // give a chance to the value converter.
-                    if (config?.ValueConverter != null)
+                    if (config?.CellValueConverter != null)
                     {
-                        value = config.ValueConverter(value);
+                        value = config.CellValueConverter(row.RowNum - 1, config.Index, value);
                     }
 
                     if (value == null)
@@ -173,6 +293,22 @@ namespace FluentExcel
 
                 if (itemIsValid)
                 {
+                    // give a chance to the row data validator
+                    if (null != fluentConfig?.RowDataValidator)
+                    {
+                        var validationResult = fluentConfig.RowDataValidator(row.RowNum - 1, item);
+                        if (false == validationResult)
+                        {
+                            if (fluentConfig.SkipInvalidRows)
+                            {
+                                itemIsValid = false;
+                                continue;
+                            }
+
+                            throw new ArgumentException($"Validation of row data at row {row.RowNum} failed!");
+                        }
+                    }
+
                     list.Add(item);
                 }
             }
@@ -242,9 +378,10 @@ namespace FluentExcel
         }
 
         private static IWorkbook InitializeWorkbook(string excelFile)
+            => InitializeWorkbook(File.OpenRead(excelFile));
+        private static IWorkbook InitializeWorkbook(Stream excelStream)
         {
-            var extension = Path.GetExtension(excelFile);
-            var workbook = WorkbookFactory.Create(new FileStream(excelFile, FileMode.Open, FileAccess.Read));
+            var workbook = WorkbookFactory.Create(excelStream);
             _formulaEvaluator = workbook.GetCreationHelper().CreateFormulaEvaluator();
             return workbook;
         }

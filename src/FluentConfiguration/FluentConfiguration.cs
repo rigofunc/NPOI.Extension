@@ -14,10 +14,20 @@ namespace FluentExcel
     /// <typeparam name="TModel">The type of model.</typeparam>
     public class FluentConfiguration<TModel> : IFluentConfiguration where TModel : class
     {
+        /// <summary>
+        /// Typed row data validator delegate, validate current row before adding it to the result list.
+        /// </summary>
+        /// <param name="rowIndex">Index of current row in excel</param>
+        /// <param name="rowData">Model data of current row</param>
+        /// <returns>Whether the row data passes validation</returns>
+        public delegate bool RowDataValidatorTypedDelegate(int rowIndex, TModel rowData);
+
         private Dictionary<string, PropertyConfiguration> _propertyConfigurations;
         private List<StatisticsConfiguration> _statisticsConfigurations;
         private List<FilterConfiguration> _filterConfigurations;
         private List<FreezeConfiguration> _freezeConfigurations;
+        private RowDataValidatorDelegate _rowDataValidator;
+        private bool _skipInvalidRows;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FluentConfiguration{TModel}"/> class.
@@ -77,6 +87,18 @@ namespace FluentExcel
                 return _freezeConfigurations.AsReadOnly();
             }
         }
+
+        /// <summary>
+        /// Gets the row data validator.
+        /// </summary>
+        /// <value>The row data validator.</value>
+        public RowDataValidatorDelegate RowDataValidator { get { return _rowDataValidator; } }
+
+        /// <summary>
+        /// Gets the value indicating whether to skip the rows with validation failure while loading the excel data.
+        /// </summary>
+        /// <returns></returns>
+        public bool SkipInvalidRows { get { return _skipInvalidRows; } }
 
         /// <summary>
         /// Gets the property configuration by the specified property expression for the specified <typeparamref name="TModel"/> and its <typeparamref name="TProperty"/>.
@@ -192,7 +214,7 @@ namespace FluentExcel
         /// <returns>The <see cref="FluentConfiguration{TModel}"/>.</returns>
         /// <param name="name">The statistics name. (e.g. Total). In current version, the default name location is (last row, first cell)</param>
         /// <param name="formula">The cell formula, such as SUM, AVERAGE and so on, which applyable for vertical statistics..</param>
-        /// <param name="columnIndexes">The column indexes for statistics. if <paramref name="formula"/>is SUM, and <paramref name="columnIndexes"/> is [1,3], 
+        /// <param name="columnIndexes">The column indexes for statistics. if <paramref name="formula"/>is SUM, and <paramref name="columnIndexes"/> is [1,3],
         /// for example, the column No. 1 and 3 will be SUM for first row to last row.</param>
         public FluentConfiguration<TModel> HasStatistics(string name, string formula, params int[] columnIndexes)
         {
@@ -236,7 +258,7 @@ namespace FluentExcel
         /// </summary>
         /// <returns>The <see cref="FluentConfiguration{TModel}"/>.</returns>
         /// <param name="columnSplit">The column number to split.</param>
-        /// <param name="rowSplit">The row number to split.param>
+        /// <param name="rowSplit">The row number to split.</param>
         /// <param name="leftMostColumn">The left most culomn index.</param>
         /// <param name="topMostRow">The top most row index.</param>
         public FluentConfiguration<TModel> HasFreeze(int columnSplit, int rowSplit, int leftMostColumn, int topMostRow)
@@ -250,6 +272,42 @@ namespace FluentExcel
             };
 
             _freezeConfigurations.Add(freeze);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configures the row data validator which validates each row before adding it to the result list.
+        /// </summary>
+        /// <returns>The <see cref="FluentConfiguration{TModel}"/>.</returns>
+        /// <param name="rowDataValidator">The row data validator</param>
+        public FluentConfiguration<TModel> HasRowDataValidator(RowDataValidatorTypedDelegate rowDataValidator)
+        {
+            if (null == rowDataValidator)
+            {
+                _rowDataValidator = null;
+                return this;
+            }
+
+            _rowDataValidator = (rowIndex, rowData) =>
+            {
+                var model = rowData as TModel;
+                if (null == model && null != rowData) throw new ArgumentException($"the row data is not of type {typeof(TModel).Name}", nameof(rowData));
+
+                return rowDataValidator(rowIndex, model);
+            };
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configure whether to skip the rows with validation failure while loading the excel data.
+        /// </summary>
+        /// <returns>The <see cref="FluentConfiguration{TModel}"/>.</returns>
+        /// <param name="shouldSkip">whether to skip</param>
+        public FluentConfiguration<TModel> ShouldSkipInvalidRows(bool shouldSkip = false)
+        {
+            _skipInvalidRows = shouldSkip;
 
             return this;
         }
