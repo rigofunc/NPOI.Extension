@@ -32,6 +32,11 @@ namespace FluentExcel
         public bool UseXlsx { get; set; } = true;
 
         /// <summary>
+        /// Gets or sets a valude indicating whether to autosize the columns. Recommmended to disable this for performance issues if the amount of data is huge.
+        /// </summary>
+        public bool AutoSizeColumnsEnabled { get; set; } = true;
+
+        /// <summary>
         /// Gets or sets the title cell style applier.
         /// </summary>
         /// <value>The title cell style applier.</value>

@@ -2,13 +2,13 @@
 
 namespace FluentExcel
 {
-    using NPOI.SS.UserModel;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using NPOI.SS.UserModel;
 
     /// <summary>
     /// Provides some methods for loading <see cref="IEnumerable{T}"/> from excel.
@@ -24,7 +24,7 @@ namespace FluentExcel
         public static ExcelSetting Setting { get; set; } = new ExcelSetting();
 
         /// <summary>
-        /// Loading <see cref="IEnumerable{T}"/> from specified excel file. ///
+        /// Loading <see cref="IEnumerable{T}"/> from specified excel file.
         /// </summary>
         /// <typeparam name="T">The type of the model.</typeparam>
         /// <param name="excelFile">The excel file.</param>
@@ -35,7 +35,7 @@ namespace FluentExcel
             => Load<T>(excelFile, Setting, startRow, sheetIndex);
 
         /// <summary>
-        /// Loading <see cref="IEnumerable{T}"/> from specified excel file. ///
+        /// Loading <see cref="IEnumerable{T}"/> from specified excel file.
         /// </summary>
         /// <typeparam name="T">The type of the model.</typeparam>
         /// <param name="excelFile">The excel file.</param>
@@ -51,7 +51,7 @@ namespace FluentExcel
         }
 
         /// <summary>
-        /// Loading <see cref="IEnumerable{T}"/> from specified excel file. ///
+        /// Loading <see cref="IEnumerable{T}"/> from specified excel file.
         /// </summary>
         /// <typeparam name="T">The type of the model.</typeparam>
         /// <param name="excelFile">The excel file.</param>
@@ -62,7 +62,7 @@ namespace FluentExcel
             => Load<T>(excelFile, Setting, sheetName, startRow);
 
         /// <summary>
-        /// Loading <see cref="IEnumerable{T}"/> from specified excel file. ///
+        /// Loading <see cref="IEnumerable{T}"/> from specified excel file.
         /// </summary>
         /// <typeparam name="T">The type of the model.</typeparam>
         /// <param name="excelFile">The excel file.</param>
@@ -78,7 +78,7 @@ namespace FluentExcel
         }
 
         /// <summary>
-        /// Loading <see cref="IEnumerable{T}"/> from specified excel file. ///
+        /// Loading <see cref="IEnumerable{T}"/> from specified excel stream.
         /// </summary>
         /// <typeparam name="T">The type of the model.</typeparam>
         /// <param name="excelStream">The excel stream.</param>
@@ -89,7 +89,7 @@ namespace FluentExcel
             => Load<T>(excelStream, Setting, startRow, sheetIndex);
 
         /// <summary>
-        /// Loading <see cref="IEnumerable{T}"/> from specified excel file. ///
+        /// Loading <see cref="IEnumerable{T}"/> from specified excel stream.
         /// </summary>
         /// <typeparam name="T">The type of the model.</typeparam>
         /// <param name="excelStream">The excel stream.</param>
@@ -109,7 +109,7 @@ namespace FluentExcel
         }
 
         /// <summary>
-        /// Loading <see cref="IEnumerable{T}"/> from specified excel file. ///
+        /// Loading <see cref="IEnumerable{T}"/> from specified excel stream.
         /// </summary>
         /// <typeparam name="T">The type of the model.</typeparam>
         /// <param name="excelStream">The excel stream.</param>
@@ -120,7 +120,7 @@ namespace FluentExcel
             => Load<T>(excelStream, Setting, sheetName, startRow);
 
         /// <summary>
-        /// Loading <see cref="IEnumerable{T}"/> from specified excel file. ///
+        /// Loading <see cref="IEnumerable{T}"/> from specified excel stream.
         /// </summary>
         /// <typeparam name="T">The type of the model.</typeparam>
         /// <param name="excelStream">The excel stream.</param>
@@ -142,7 +142,8 @@ namespace FluentExcel
         }
 
         public static IEnumerable<T> Load<T>(ISheet sheet, IFormulaEvaluator formulaEvaluator, int startRow = 1) where T : class, new()
-            => Load<T>(sheet, formulaEvaluator, Excel.Setting, startRow);
+            => Load<T>(sheet, formulaEvaluator, Setting, startRow);
+
         public static IEnumerable<T> Load<T>(ISheet sheet, IFormulaEvaluator formulaEvaluator, ExcelSetting excelSetting, int startRow = 1) where T : class, new()
         {
             if (null == sheet) throw new ArgumentNullException(nameof(sheet));
@@ -367,18 +368,9 @@ namespace FluentExcel
             }
         }
 
-        internal static object GetDefault(this Type type)
-        {
-            if (type.IsValueType)
-            {
-                return Activator.CreateInstance(type);
-            }
-
-            return null;
-        }
-
         private static IWorkbook InitializeWorkbook(string excelFile)
             => InitializeWorkbook(File.OpenRead(excelFile));
+
         private static IWorkbook InitializeWorkbook(Stream excelStream)
         {
             var workbook = WorkbookFactory.Create(excelStream);

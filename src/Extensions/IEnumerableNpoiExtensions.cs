@@ -11,7 +11,6 @@ namespace FluentExcel
     using System.Reflection;
     using NPOI.HPSF;
     using NPOI.HSSF.UserModel;
-    using NPOI.HSSF.Util;
     using NPOI.SS.UserModel;
     using NPOI.SS.Util;
     using NPOI.XSSF.UserModel;
@@ -37,6 +36,12 @@ namespace FluentExcel
         }
 
         public static byte[] ToExcel<T>(this IEnumerable<T> source, string excelFile, Expression<Func<T, string>> sheetSelector, int maxRowsPerSheet = int.MaxValue, bool overwrite = false)
+           where T : class
+        {
+            return ToExcel(source, excelFile, Excel.Setting, sheetSelector, maxRowsPerSheet, overwrite);
+        }
+
+        public static byte[] ToExcel<T>(this IEnumerable<T> source, string excelFile, ExcelSetting excelSetting, Expression<Func<T, string>> sheetSelector, int maxRowsPerSheet = int.MaxValue, bool overwrite = false)
             where T : class
         {
             if (source == null)
@@ -50,11 +55,11 @@ namespace FluentExcel
                 var extension = Path.GetExtension(excelFile);
                 if (extension.Equals(".xls"))
                 {
-                    Excel.Setting.UseXlsx = false;
+                    excelSetting.UseXlsx = false;
                 }
                 else if (extension.Equals(".xlsx"))
                 {
-                    Excel.Setting.UseXlsx = true;
+                    excelSetting.UseXlsx = true;
                 }
                 else
                 {
@@ -66,7 +71,7 @@ namespace FluentExcel
                 excelFile = null;
             }
 
-            IWorkbook book = InitializeWorkbook(excelFile);
+            IWorkbook book = InitializeWorkbook(excelFile, excelSetting);
             using (Stream ms = isVolatile ? (Stream)new MemoryStream() : new FileStream(excelFile, FileMode.OpenOrCreate, FileAccess.Write))
             {
                 IEnumerable<byte> output = Enumerable.Empty<byte>();
@@ -88,10 +93,13 @@ namespace FluentExcel
 
         public static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, string sheetName = "sheet0") where T : class
             => ToWorkbook<T>(source, Excel.Setting, sheetName);
+
         public static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, ExcelSetting excelSetting, string sheetName = "sheet0") where T : class
             => ToWorkbook<T>(source, InitializeWorkbook(null, excelSetting), excelSetting, sheetName, false);
+
         public static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, IWorkbook workbook, string sheetName = "sheet0", bool overwrite = false) where T : class
             => ToWorkbook<T>(source, workbook, Excel.Setting, sheetName, overwrite);
+
         public static IWorkbook ToWorkbook<T>(this IEnumerable<T> source, IWorkbook workbook, ExcelSetting excelSetting, string sheetName = "sheet0", bool overwrite = false)
             where T : class
         {
@@ -99,7 +107,7 @@ namespace FluentExcel
             if (null == workbook) throw new ArgumentNullException(nameof(workbook));
             if (string.IsNullOrWhiteSpace(sheetName)) throw new ArgumentException($"sheet name cannot be null or whitespace", nameof(sheetName));
 
-            // can static properties or only instance properties?
+            // TODO: can static properties or only instance properties?
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
 
             bool fluentConfigEnabled = false;
@@ -114,23 +122,22 @@ namespace FluentExcel
 
             // find out the configurations
             var propertyConfigurations = new PropertyConfiguration[properties.Length];
-            for (var j = 0; j < properties.Length; j++)
+            for (var i = 0; i < properties.Length; i++)
             {
-                var property = properties[j];
+                var property = properties[i];
 
                 // get the property config
                 if (fluentConfigEnabled && fluentConfig.PropertyConfigurations.TryGetValue(property.Name, out var pc))
                 {
-                    propertyConfigurations[j] = pc;
+                    propertyConfigurations[i] = pc;
                 }
                 else
                 {
-                    propertyConfigurations[j] = null;
+                    propertyConfigurations[i] = null;
                 }
             }
 
-            // new sheet
-            //TODO check the sheet's name is valid
+            // TODO check the sheet's name is valid
             var sheet = workbook.GetSheet(sheetName);
             if (sheet == null)
             {
@@ -348,9 +355,12 @@ namespace FluentExcel
             }
 
             // autosize the all columns
-            for (int i = 0; i < properties.Length; i++)
+            if (excelSetting.AutoSizeColumnsEnabled)
             {
-                sheet.AutoSizeColumn(i);
+                for (int i = 0; i < properties.Length; i++)
+                {
+                    sheet.AutoSizeColumn(i);
+                }
             }
 
             return workbook;
