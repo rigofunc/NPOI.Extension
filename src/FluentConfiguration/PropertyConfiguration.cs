@@ -5,24 +5,6 @@ namespace FluentExcel
     using System;
 
     /// <summary>
-    /// Cell value validator delegate, validate current cell value before <see cref="PropertyConfiguration.CellValueConverter"/>
-    /// </summary>
-    /// <param name="rowIndex">Row index of current cell in excel</param>
-    /// <param name="columnIndex">Column index of current cell in excel</param>
-    /// <param name="value">Value of current cell</param>
-    /// <returns>Whether the value passes validation</returns>
-    public delegate bool CellValueValidatorDelegate(int rowIndex, int columnIndex, object value);
-
-    /// <summary>
-    /// Cell value converter delegate.
-    /// </summary>
-    /// <param name="rowIndex">Row index of current cell in excel</param>
-    /// <param name="columnIndex">Column index of current cell in excel</param>
-    /// <param name="value">Value of current cell</param>
-    /// <returns>The converted value</returns>
-    public delegate object CellValueConverterDelegate(int rowIndex, int columnIndex, object value);
-
-    /// <summary>
     /// Represents the configuration for the specfidied property.
     /// </summary>
     public class PropertyConfiguration
@@ -72,12 +54,12 @@ namespace FluentExcel
         /// <summary>
         /// Gets the cell value validator to validate the cell value.
         /// </summary>
-        public CellValueValidatorDelegate CellValueValidator { get; internal set; }
+        public CellValueValidator CellValueValidator { get; internal set; }
 
         /// <summary>
         /// Gets the value converter to convert the value.
         /// </summary>
-        public CellValueConverterDelegate CellValueConverter { get; internal set; }
+        public CellValueConverter CellValueConverter { get; internal set; }
 
         /// <summary>
         /// Configures the excel cell index for the property.
@@ -150,7 +132,7 @@ namespace FluentExcel
         /// </summary>
         /// <param name="cellValueConverter">The value converter.</param>
         /// <returns>The <see cref="PropertyConfiguration"/>.</returns>
-        public PropertyConfiguration HasValueConverter(CellValueConverterDelegate cellValueConverter)
+        public PropertyConfiguration HasValueConverter(CellValueConverter cellValueConverter)
         {
             CellValueConverter = cellValueConverter;
 
@@ -162,7 +144,7 @@ namespace FluentExcel
         /// </summary>
         /// <param name="cellValueValidator">The value validator.</param>
         /// <returns>The <see cref="PropertyConfiguration"/>.</returns>
-        public PropertyConfiguration HasValueValidator(CellValueValidatorDelegate cellValueValidator)
+        public PropertyConfiguration HasValueValidator(CellValueValidator cellValueValidator)
         {
             CellValueValidator = cellValueValidator;
 
@@ -223,7 +205,7 @@ namespace FluentExcel
         /// <param name="formatter">The formatter will be used for formatting the value.</param>
         /// <param name="allowMerge">If set to <c>true</c> allow merge the same value cells.</param>
         /// <param name="cellValueConverter">The value converter.</param>
-        public void HasExcelCell(int index, string title, string formatter = null, bool allowMerge = false, CellValueConverterDelegate cellValueConverter = null)
+        public void HasExcelCell(int index, string title, string formatter = null, bool allowMerge = false, CellValueConverter cellValueConverter = null)
         {
             if (index < 0)
             {
@@ -248,7 +230,7 @@ namespace FluentExcel
         /// This method will try to autodiscover the column index by its <paramref name="title"/>
         /// </remarks>
         /// <param name="cellValueConverter">The value converter.</param>
-        public void HasAutoIndexExcelCell(string title, string formatter = null, bool allowMerge = false, CellValueConverterDelegate cellValueConverter = null)
+        public void HasAutoIndexExcelCell(string title, string formatter = null, bool allowMerge = false, CellValueConverter cellValueConverter = null)
         {
             Index = -1;
             Title = title;

@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Authors>rigofunc (xuyingting)</Authors>
@@ -9,8 +8,8 @@
     <PackageLicenseUrl>https://github.com/Arch/FluentExcel/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/Arch/FluentExcel</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
-    <PackageTags>FluentExcel, NPOI, Fluent API, NPOI.Extension, xyting, Arch, dotnetcore</PackageTags>
-    <Version>1.1.3.0</Version>
+    <PackageTags>FluentExcel, NPOI, Fluent API, NPOI.Extension</PackageTags>
+    <Version>2.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

@@ -4,7 +4,6 @@ namespace FluentExcel
 {
     using System;
     using System.Collections.Generic;
-    using NPOI.HSSF.Util;
     using NPOI.SS.UserModel;
 
     /// <summary>

@@ -11,7 +11,7 @@
     <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>1. End user can specified the title cell style by setting Excel.Setting.TitleCellStyleApplier.</releaseNotes>
+    <releaseNotes>This release support netstandard 2.0.</releaseNotes>
     <copyright>Copyright © rigofunc (xuyingting). All rights reserved.</copyright>
     <tags>npoi, excel, fluentexcel</tags>
   </metadata>
