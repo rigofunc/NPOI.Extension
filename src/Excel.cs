@@ -199,6 +199,15 @@ namespace FluentExcel
                     continue;
                 }
 
+                // ignore whitespace rows if requested
+                if (true == fluentConfig?.IgnoreWhitespaceRows)
+                {
+                    if (row.Cells.All(x =>
+                        CellType.Blank == x.CellType
+                        || (CellType.String == x.CellType && string.IsNullOrWhiteSpace(x.StringCellValue))
+                    )) continue;
+                }
+
                 var item = new T();
                 var itemIsValid = true;
                 for (int i = 0; i < properties.Length; i++)
