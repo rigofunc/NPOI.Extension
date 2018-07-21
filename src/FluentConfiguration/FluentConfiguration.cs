@@ -20,6 +20,7 @@ namespace FluentExcel
         private List<FreezeConfiguration> _freezeConfigurations;
         private RowDataValidator _rowDataValidator;
         private bool _skipInvalidRows;
+        private bool _ignoreWhitespaceRows;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FluentConfiguration{TModel}"/> class.
@@ -89,8 +90,14 @@ namespace FluentExcel
         /// <summary>
         /// Gets the value indicating whether to skip the rows with validation failure while loading the excel data.
         /// </summary>
-        /// <returns></returns>
+        /// <value>whether to skip the rows with validation failure</value>
         public bool SkipInvalidRows { get { return _skipInvalidRows; } }
+
+        /// <summary>
+        /// Gets the value indicating whether to ignore the rows whose cells are all blank or whitespace.
+        /// </summary>
+        /// <value>whether to ignore the rows whose cells are all blank or whitespace</value>
+        public bool IgnoreWhitespaceRows { get { return _ignoreWhitespaceRows; } }
 
         /// <summary>
         /// Gets the property configuration by the specified property expression for the specified <typeparamref name="TModel"/> and its <typeparamref name="TProperty"/>.
@@ -300,6 +307,18 @@ namespace FluentExcel
         public FluentConfiguration<TModel> ShouldSkipInvalidRows(bool shouldSkip = false)
         {
             _skipInvalidRows = shouldSkip;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configure whether to ignore the rows whose cells are all blank or whitespace while loading the excel data.
+        /// </summary>
+        /// <returns>The <see cref="FluentConfiguration{TModel}"/>.</returns>
+        /// <param name="shouldIgnore">whether to ignore</param>
+        public FluentConfiguration<TModel> ShouldIgnoreWhitespaceRows(bool shouldIgnore = true)
+        {
+            _ignoreWhitespaceRows = shouldIgnore;
 
             return this;
         }

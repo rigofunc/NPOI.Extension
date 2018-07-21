@@ -43,5 +43,11 @@ namespace FluentExcel
         /// Gets the value indicating whether to skip the rows with validation failure while loading the excel data.
         /// </summary>
         bool SkipInvalidRows { get; }
+
+        /// <summary>
+        /// Gets the value indicating whether to ignore the rows whose cells are all blank or whitespace.
+        /// </summary>
+        /// <value>whether to ignore the rows whose cells are all blank or whitespace</value>
+        bool IgnoreWhitespaceRows { get; }
     }
 }
