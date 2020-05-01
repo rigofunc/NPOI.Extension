@@ -114,12 +114,13 @@ namespace NPOI.Extension
             var cellStyles = new Dictionary<int, ICellStyle>();
 
             // title row cell style
-            var titleStyle = workbook.CreateCellStyle();
-            titleStyle.Alignment = HorizontalAlignment.Center;
-            titleStyle.VerticalAlignment = VerticalAlignment.Center;
-            titleStyle.FillPattern = FillPattern.Bricks;
-            titleStyle.FillBackgroundColor = HSSFColor.Grey40Percent.Index;
-            titleStyle.FillForegroundColor = HSSFColor.White.Index;
+            ICellStyle titleStyle = null;
+            if (Excel.Setting.TitleCellStyleApplier != null)
+            {
+                titleStyle = workbook.CreateCellStyle();
+                var font = workbook.CreateFont();
+                Excel.Setting.TitleCellStyleApplier(titleStyle, font);
+            }
 
             var titleRow = sheet.CreateRow(0);
             var rowIndex = 1;

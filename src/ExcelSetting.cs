@@ -2,6 +2,8 @@
 
 namespace NPOI.Extension
 {
+    using NPOI.HSSF.Util;
+    using NPOI.SS.UserModel;
     using System;
     using System.Collections.Generic;
 
@@ -36,11 +38,17 @@ namespace NPOI.Extension
         [Obsolete("This configuration doesn't work now, please using fluent api or attribute to configure this.", true)]
         public string DateFormatter { get; set; } = "yyyy-MM-dd HH:mm:ss";
 
-		/// <summary>
-		/// Gets the fluent configuration entry point for the specified <typeparamref name="TModel"/>.
-		/// </summary>
+        /// <summary>
+        /// Gets or sets the title cell style applier.
+        /// </summary>
+        /// <value>The title cell style applier.</value>
+        public Action<ICellStyle, IFont> TitleCellStyleApplier { get; set; } = DefaultTitleCellStyleApplier;
+
+        /// <summary>
+        /// Gets the fluent configuration entry point for the specified <typeparamref name="TModel"/>.
+        /// </summary>
         /// <returns>The <see cref="FluentConfiguration{TModel}"/>.</returns>
-		/// <typeparam name="TModel">The type of the model.</typeparam>
+        /// <typeparam name="TModel">The type of the model.</typeparam>
         public FluentConfiguration<TModel> For<TModel>() where TModel : class
 		{
             var mc = new FluentConfiguration<TModel>();
@@ -55,5 +63,17 @@ namespace NPOI.Extension
         /// </summary>
         /// <value>The model fluent configs.</value>
         internal IDictionary<Type, IFluentConfiguration> FluentConfigs { get; } = new Dictionary<Type, IFluentConfiguration>();
-	}
+
+        internal static void DefaultTitleCellStyleApplier(ICellStyle cellStyle, IFont font)
+        {
+            cellStyle.Alignment = HorizontalAlignment.Center;
+            cellStyle.VerticalAlignment = VerticalAlignment.Center;
+            cellStyle.FillPattern = FillPattern.Bricks;
+            cellStyle.FillBackgroundColor = HSSFColor.Grey40Percent.Index;
+            cellStyle.FillForegroundColor = HSSFColor.White.Index;
+
+            font.Boldweight = (short)FontBoldWeight.Bold;
+            cellStyle.SetFont(font);
+        }
+    }
 }
