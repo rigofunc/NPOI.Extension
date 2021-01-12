@@ -1,6 +1,6 @@
 The extensions for the NPOI, which provides IEnumerable&lt;T&gt; have save to and load from excel functionalities.
 
-# IMPORTAMT
+# IMPORTANT
 1. The future features will be support by [FluentExcel](https://github.com/Arch/FluentExcel), and will only support `Fluent API`.
 2. All the issues found in this repo will be and only be fixed by [FluentExcel](https://github.com/Arch/FluentExcel), so, please update your code to use `FluentExcel`.
 
